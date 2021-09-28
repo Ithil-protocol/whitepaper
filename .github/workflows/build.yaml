@@ -13,13 +13,4 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: whitepaper.pdf
-      - name: upload windows artifact 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: /release
-          asset_path: /
-          asset_name: whitepaper.pdf
-          asset_content_type: application/pdf
+          path: whitepaper.pdf
