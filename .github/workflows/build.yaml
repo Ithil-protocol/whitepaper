@@ -13,5 +13,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: whitepaper.pdf
+          name: whitepaper
           path: whitepaper.pdf
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Release.txt
