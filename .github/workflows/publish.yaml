@@ -6,11 +6,15 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v1
-      - name: Compile LaTeX document
+      - name: Compile LaTeX whitepaper
         uses: dante-ev/latex-action@master
         with:
-          root_file: sources/whitepaper.tex
+          root_file: sources/ithil-whitepaper.tex
+      - name: Compile LaTeX liteepaper
+        uses: dante-ev/latex-action@master
+        with:
+          root_file: sources/ithil-liteepaper.tex
       - name: Create a new release
         uses: softprops/action-gh-release@v1
         with:
-          files: whitepaper.pdf
+          files: ithil-*.pdf
