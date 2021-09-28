@@ -13,4 +13,4 @@ jobs:
       - name: Create a new release
         uses: softprops/action-gh-release@v1
         with:
-          files: sources/whitepaper.pdf
+          files: whitepaper.pdf
