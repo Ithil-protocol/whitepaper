@@ -10,12 +10,7 @@ jobs:
         uses: dante-ev/latex-action@master
         with:
           root_file: sources/whitepaper.tex
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: whitepaper
-          path: whitepaper.pdf
-      - name: Release
+      - name: Create a release
         uses: softprops/action-gh-release@v1
         with:
-          files: whitepaper
+          files: sources/whitepaper.pdf
