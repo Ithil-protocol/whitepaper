@@ -13,7 +13,7 @@ jobs:
       - name: Compile LaTeX liteepaper
         uses: dante-ev/latex-action@master
         with:
-          root_file: sources/ithil-liteepaper.tex
+          root_file: sources/ithil-litepaper.tex
       - name: Create a new release
         uses: softprops/action-gh-release@v1
         with:
