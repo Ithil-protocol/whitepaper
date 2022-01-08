@@ -1,5 +1,6 @@
-name: Build LaTeX document
+name: Build and update LaTeX whitepaper
 on: [push]
+
 jobs:
   build_whitepaper:
     runs-on: ubuntu-latest
@@ -11,6 +12,17 @@ jobs:
         uses: dante-ev/latex-action@master
         with:
           root_file: sources/ithil-whitepaper.tex
+
+      - name: Configure git information
+        run: |
+          git config --global user.name $GITHUB_ACTOR
+          git config --global user.email $GITHUB_ACTOR@users.noreply.github.com
+
+      - name: Prepare PDF file
+        run: |
+          git add ithil-whitepaper.pdf
+          git commit -am "Updated the whitepaper"
+          git push
 
       - name: Create a new release
         uses: softprops/action-gh-release@v1

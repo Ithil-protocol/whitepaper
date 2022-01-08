@@ -1,0 +1,20 @@
+name: Publish LaTeX whitepaper
+on:
+    workflow_dispatch:
+
+jobs:
+  build_whitepaper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v1
+      
+      - name: Compile LaTeX whitepaper
+        uses: dante-ev/latex-action@master
+        with:
+          root_file: sources/ithil-whitepaper.tex
+
+      - name: Create a new release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ithil-whitepaper.pdf
