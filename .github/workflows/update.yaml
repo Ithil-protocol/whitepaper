@@ -18,13 +18,8 @@ jobs:
           git config --global user.name $GITHUB_ACTOR
           git config --global user.email $GITHUB_ACTOR@users.noreply.github.com
 
-      - name: Prepare PDF file
+      - name: Prepare and commit the new PDF file
         run: |
           git add ithil-whitepaper.pdf
           git commit -am "Updated the whitepaper"
           git push
-
-      - name: Create a new release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: ithil-whitepaper.pdf

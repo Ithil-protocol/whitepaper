@@ -65,7 +65,7 @@ The vault is responsible for the following tasks:
 \begin{itemize}
 \item Handling staking and unstaking
 \item Calculation of the interest rate applied when taking a loan
-\item Lending tokens to one of Ithil's supported strategies
+\item Lending tokens to one of Ithil’s supported strategies
 It also contains a list of {\it whitelisted tokens} approved by the governance that can be provided by LPs or borrowed by the traders.
 \end{itemize}
 
@@ -92,21 +92,21 @@ Assume an old investor withdraws $W_i \le A_i$ from the pool. Then, we will say 
 \section{Interest Rate}
 
 The interest rate is investment-specific and represents the risk beyond the investment as seen from the lender's perspective.
-Both the interest rate and the fixed fee applied are returned as a parameter from the dedicate vault's functions, while the repayment and the logic for the calculation of risk is included in the implementation of the investment strategies. The riskiness is captured in an integer called risk factor which is passed to the vault borrow function as a parameter. The interest rate is then computed as
+Both the interest rate and the fixed fee applied are returned as a parameter from the dedicate vault’s functions, while the repayment and the logic for the calculation of risk is included in the implementation of the investment strategies. The riskiness is captured in an integer called risk factor which is passed to the vault borrow function as a parameter. The interest rate is then computed as
 
-$IR = IR_base + RF * L * l_c/l_f$
+$$IR = IR_base + RF * L * l_c/l_f$$
 
-Where $IR_base$ is the basic commonly-shared interest rate applied to all tokens decided by the governance, $L$ is the leverage and $l_c/l_f$ is the ration between {\it uncovered liquidity} and {\it free liquidity}: the free liquidity is the {\it available liquidity} in the vault for trading, in that particular token, while the {\it uncovered liquidity} is the amount of free liquidity which is not covered by the vault's insurance pool.
+Where $IR_base$ is the basic commonly-shared interest rate applied to all tokens decided by the governance, $L$ is the leverage and $l_c/l_f$ is the ration between {\it uncovered liquidity} and {\it free liquidity}: the free liquidity is the {\it available liquidity} in the vault for trading, in that particular token, while the {\it uncovered liquidity} is the amount of free liquidity which is not covered by the vault’s insurance pool.
 
 \section{Risk Factor}
 A position is liquidable if the quoted value of its entitlement, plus the margin, minus the quoted value of its debt, all expressed as an amount of margin tokens, is lower than a certain fraction, called the risk factor,
-of the position's margin. Therefore, assuming we are having a long position, calling $P$ the price of a unit of investment token expressed as amount of margin tokens, and $r$ the risk factor for the investment token, then the position can be liquidated if 
+of the position’s margin. Therefore, assuming we are having a long position, calling $P$ the price of a unit of investment token expressed as amount of margin tokens, and $r$ the risk factor for the investment token, then the position can be liquidated if 
 
-$EN x P + m - d - f < r x m $
+$$EN * P + m - d - f < r x m $$
 
 where $EN$ is the entitlement, $m$ the margin posted, $d$ the debt (or loan value taken from the vault) and $f$ the fees accrued excluding the liquidation penalty fees.
 
-The risk factor is token (pair) based: the more volatile the token pair, the higher the risk factor. The main purpose of a high risk factor is to protect the protocol's liquidity from further adverse market movements occurring before the actual liquidation occurs, or during the closure of the position, since the very action of performing a swap on any dex causes a price impact on the swapped pair.
+The risk factor is token (pair) based: the more volatile the token pair, the higher the risk factor. The main purpose of a high risk factor is to protect the protocol’s liquidity from further adverse market movements occurring before the actual liquidation occurs, or during the closure of the position, since the very action of performing a swap on any dex causes a price impact on the swapped pair.
 
 
 \section{Strategies}
@@ -189,7 +189,8 @@ Assume the day after we observe $r = 10.5$, i.e. an increase of $5$\% with respe
 Similar systems allow long trading with non-native token margin, and short trading with native token margin. In any case, the vault's gain will be of $1$\%, while the trader will be more exposed to the exchange ratio if the margin posted is of a non-native type.
 
 \section{Cross-chain support}
-Ithil 
+Ithil will support provisioning liquidity from multiple evm-compatible chains as well as running strategies on other chains too.
+For instance, LPs can provide liquidity from Ethereum mainnet, Polygon, Avalanche, Harmony, BSC and strategies can be run on all those L2 and sidechains thanks to Composable finance \textit{Persona}s.
 
 \section{Governance}
 In a first initial phase governance will be shared among the core team using a multiple key and a multisig contract. The admins will be able to harvest fees, vary the fee ratio and correct the risk factor but cannot alter in any way the current open positions nor interfere with the liquidity pools.
@@ -197,7 +198,7 @@ Since contracts are immutable and their implementation cannot be changed, a gove
 
 Ithil promotes a florid developer community, encouraging the creation of trading bots as well as the interaction with third party smart contracts to manage investments within the limits of the code itself.
 
-In a further step, the aforementioned administrative powers of this contract will be further limited by putting the protocol into a "owner-less" mode, where the core team relinquish control over admin functions to a voting system, thus making Ithil a DAO. A lack of centralized power is essential to the trustlessness of the protocol.
+In a further step, the aforementioned administrative powers of this contract will be further limited by putting the protocol into a “owner-less” mode, where the core team relinquish control over admin functions to a voting system, thus making Ithil a DAO. A lack of centralized power is essential to the trustlessness of the protocol.
 
 \section{Acknowledgments}
 
