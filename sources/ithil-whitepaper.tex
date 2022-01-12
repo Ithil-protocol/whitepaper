@@ -33,7 +33,7 @@
         \vspace{1.0cm}
 
         \begin{abstract}
-        Ithil aims at introducing undercollateralised leveraged strategies in DeFi - a game changer for traders, liquidity providers and other protocols who can now rely on a variety of investment products to address their needs. Modular and upgradable at its core, Ithil offers users and other protocols leveraged interactions with the DeFi space, enabling an entirely new range of trading opportunities, acting as an open box financial instrument open to everyone.
+        Ithil aims at introducing undercollateralised leveraged strategies in DeFi - a game changer for traders, liquidity providers and other protocols who can now rely on a variety of investment products to address their needs. Modular and upgradable at its core, Ithil offers users and other protocols leveraged interactions with the DeFi space, enabling an entirely new range of trading opportunities, acting as an open box financial instrument open to everyone. Simplicity is the key quality of Ithil, allowing everybody from the DeFi novice to sophisticated experts to access many investment strategies.
         \end{abstract}
             
     \end{center}
@@ -46,142 +46,126 @@ The DeFi has recently seen an incredible growth and expansion in the user base, 
 \subsection{What is Ithil}
 
 At its core, Ithil is build around the concept of uncollateralised leveraged trading.
-Leveraged investments are an ancient and famous financial tool which allow traders to invest more than their available liquidity, thanks to a system called leverage. Leveraged investments make it possible for users to take advantage of foreseen profitable market opportunities even if they don't have immediate access to the funds required. On the other hand, it comes with the risk of the trader losing more than in the case of a classical, non-leveraged investment.
+Leveraged investments are an ancient and famous financial tool which allow traders to invest more than their available liquidity, thanks to a system called leverage. They make it possible for users to take advantage of foreseen profitable market opportunities even if they don't have immediate access to the funds required. On the other hand, it comes with the risk of the trader losing more than in the case of a classical, non-leveraged investment.
 
-Ithil enables leveraged interactions with other DeFi protocols in a composable way, offering to its users a curated set of customisable investment strategies to choose from. Instead of using credit scores or past reputation, Ithil uses a decentralised network of bots to liquidate underperforming positions and prevent impaired loans to become detrimental to the protocol itself.
-It can be seen like a decentralised hedge fund yet with a difference: borrowed funds never leave the protocol and traders are ultimately responsible for their own profits or losses.
+Ithil enables leveraged interactions with other DeFi protocols in a composable way, offering to its users a curated set of customisable investment strategies to choose from. Ithil uses a decentralised network of bots to liquidate underperforming positions and prevent impaired loans to become detrimental to the protocol itself, compensating liquidators on the run.
+It can be seen like a decentralised hedge fund, and it differs from standard lending protocols for the fact that borrowed funds never leave the protocol, yet keeping traders as ultimately responsible for their own profits or losses.
 
 \subsection{Why is it different}
-There are many existing protocols trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users.
+There are many existing protocols trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users. Moreover, most protocols use stablecoins-backed loans, while using a value-agnostic vault Ithil can provide loans backed by virtually any ERC20 token, though community-based whitelisting prevents Ithil to support malignous tokens.
 
 \section{The Vault}
 The leveraged investment activities cannot happen without setting a protocol own liquidity, therefore liquidity providers (LPs) are of greatest importance for Ithil. Investors can provide their idle assets and earn profit from the trading fees.
 The vault is the core of the protocol; it consists of a non-upgradable contract where LPs lock their tokens to be offered for traders to perform various investment strategies.
 
-Ithil adopts a solid fee management system, in which the fees are withdrawn from the trader in a safe and predictable way, always assuring the trader's solvability.
-Our investing system is \textit{value-agnostic}: once a vault relative to the \verb|XYZ| token is created, we do not track its value (in USD or an underlying peg), instead simply assuring the generation of more \verb|XYZ| tokens.
+The vault's non-view functions, except stake and unstake, are not callable by external addresses: only community whitelisted senders are recognised to use them. In this way, all possible attacks can only occur on strategy level (see below), which decreases the economic rationale for an attacker.
+
+When a strategy is called, the margin is transferred as a form of payment to the vault or to the strategy, depending on the particular strategy used. The strategy then borrows from the vault the amount of capital required to perform the desired strategy and calls the relevant external protocols. When a position is closed, the vault's loan and relative fees are repayed by the strategy. See the strategies dedicated section for more details.
+
+Ithil's vault is \textit{value-agnostic}: once an amount of \verb|XYZ| tokens are staked, we do not track the relative value (in USD or an underlying peg) of such treasury; instead, we simply assure the generation of more \verb|XYZ| tokens.
 
 The vault is responsible for the following tasks:
 \begin{itemize}
-\item Handling staking and unstaking
-\item Calculation of the interest rate applied when taking a loan
-\item Lending tokens to one of Ithil’s supported strategies
-It also contains a list of {\it whitelisted tokens} approved by the governance that can be provided by LPs or borrowed by the traders.
+\item Handling staking and unstaking.
+\item Calculation of the interest rate applied when taking a loan.
+\item Lending tokens to one of Ithil’s supported strategies.
+\item Keeping account of the net loans and insurance reserve balance.
 \end{itemize}
 
-LPs are rewarded with \verb|iTokens|, Ithil's interest-bearing tokens representing liquidity put to work in the vault and can be used on other protocols, improving the whole ecosystem composability narrative.
+The vault also contains a list of {\it whitelisted tokens} approved by the governance that can be provided by LPs or borrowed by the traders. When LPs stake liquidity into the vault, they receive \verb|iTokens|, Ithil's interest-bearing tokens representing liquidity put to work in the vault and can be used on other protocols.
 
-\section{Fee Redistribution}
+\subsection{Fee Redistribution}
 
-Ithil generates a steady source of income in the form of fees paid by the traders. Such fees are then redistributed to the LPs proportionately on how much liquidity they provided by accruing value in the vault and increasing the backing of the yield-bearing \verb|iToken|: LPs will only get rewards in the specific token they provided. Provide \verb|DAI| receive \verb|DAI|.
-When the tokens are lent to a trader, the vault calculates the fixed fees and the interest rate applied to the loan. The fixed fees are token-specific, community-based percentages of the amount which goes out of the vault, and are the direct compensation to LP for providing their liquidity to Ithil. 
+Ithil generates income in the form of fees paid by the traders. Such fees are then redistributed to the LPs proportionately on how much liquidity they provided by accruing value in the vault and increasing the backing of the yield-bearing \verb|iToken|: LPs will only get rewards in the specific token they provided. When the tokens are lent for a strategy, the vault calculates the fixed fees and the interest rate applied to the loan. The fixed fees are token-specific, community-based percentages of the amount which goes out of the vault, and are the direct compensation to LP for providing their liquidity to Ithil. 
 
 In all cases, fees are considered when deciding whether to liquidate a position, so that the payment is assured for any trader's profit or loss scenario. In particular, a \textit{liquidation factor} $r$ is set for every position, such that the position is liquidated if the trader's payback goes below $r$\% of the margin.
 
-We denote by $L$ the total liquidity of a specific single-token deposit vault, which is the result of both deposits and unclaimed fees generated. To every investor depositing $D_i$ into the pool, we assign a \emph{claiming power} $\lambda_i \le D_i$. The amount of money investor $i$ can claim from the pool will be calculated as $$A_i := \frac{\lambda_i}{\lambda_1+\ldots+\lambda_n}L.$$ We need to calculate the claiming power so that no arbitrage is possible: if an investor deposits $D_i$, and no fee is generated, the investor can claim exactly $D_i$. Therefore
-$$ \frac{\lambda_i}{\lambda_1+\ldots+\lambda_i + \ldots +\lambda_n}(L+D_i) = D_i,$$ and solving for $\lambda_i$ we find $$\lambda_i := \frac{\lambda_1 + \ldots + \lambda_{i-1}+\lambda_{i+1}+\ldots+\lambda_n}{L}D_i.$$
+\subsubsection{Ithil's LP tokens}
+When an investor deposits an amount $D_{\text{TKN}}$ of ERC20 tokens \verb|TKN| in Ithil's vault, an amount $M_{\text{iTKN}}$ of LP tokens \verb|iTKN| are minted and transferred to the investor. Letting $S_{\text{iTKN}}$ be the total supply of \verb|iTKN|, $B_{\text{TKN}}$, $L_{\text{TKN}}$ and $I_{\text{TKN}}$ the vault's \verb|TKN| balance, net loans, and insurance reserve balance respectively, then the amount of tokens to be minted is calculated as follows:
+\begin{equation}\label{wrappedtokens}M_{\text{iTKN}} = \frac{S_{\text{iTKN}}}{B_{\text{TKN}} + L_{\text{TKN}} - I_{\text{TKN}}}D_{\text{TKN}}\end{equation}
 
-\subsection{Scenarios}
-By examining deposits and withdrawals scenarios, we find that the no-arbitrage formula also implies that the investors will not see other investor's moves.
-\subsubsection{New investor}
-Assume there is a new investor providing $D_{n+1}$ to the pool, and assume no fees are generated. Then the old investor $i$ will now claim $$A_i' = \frac{\lambda_i}{\lambda_1+\ldots + \lambda_{n+1}}(L+D_{n+1}),$$ but since $\lambda_{n+1} = \frac{\lambda_1+\ldots+\lambda_n}{L}D_{n+1}$, we have $$A_i' = \frac{\lambda_i(L+D_i)L}{(\lambda_1+\ldots+\lambda_n)(L+D_i)} = A_i$$ so the amount of money which $A_i$ can claim is exactly the one he or she used to have before the new investor's deposit.
+Similarly, an investor who owns a quantity $M_{\text{iTKN}}$ of LP tokens \verb|iTKN|, can redeem them any time to get $D_{\text{TKN}}$ \verb|TKN|, still calculated using Equation \eqref{wrappedtokens}; in this case, the vault will burn the investor's tokens. In the particular case in which the total balance of the vault is zero (vault's initialization for the particular token), then we mint wrapped tokens in a $1:1$ ratio.
 
-\subsubsection{Withdrawal}
-Assume an old investor withdraws $W_i \le A_i$ from the pool. Then, we will say that $W_i$ is proportionately distributed between the liquidity and the fees. In particular, the "liquidity" part withdrawn by the investor is $W_i\lambda_i/A_i$, thus the new claiming power of the investor will be $$\lambda_i' = \lambda_i - \frac{W_i\lambda_i}{A_i}=\lambda_i-W_i\frac{\lambda_0+\ldots+\lambda_n}{L}$$ In this way, the claim for another investor $j$ will be $$A_j' = \frac{\lambda_j}{\lambda_1+\ldots+\lambda_n - \frac{W_i\lambda_i}{A_i}}(L-W_i) = \frac{\lambda_j(L-W_i)L}{(\lambda_1+\ldots+\lambda_n)(L-W_i)} = \alpha_jL = A_j. $$ Therefore, funds withdrawal does not affect any other investor's claiming power, just like deposits do.
+The quantity $$\sigma_{\text{TKN}} := \frac{D_{\text{TKN}}}{M_{\text{iTKN}}}$$ is a function of the current vault's state and total LP token supply (and not on the particular deposit/withdraw amount), and we call it the {\it share price} for token \verb|TKN|. A higher share price means that more tokens can be redeemed by burning LP tokens, so we can say that the share price captures the amount of fees generated by the platform.
 
-\section{Interest Rate}
+\subsubsection{Absence of arbitrage}
+Notice that this system is arbitrage-free: assume (we omit the indices not to make the notation too heavy) another investor deposits $D'$ after the first one, thus getting $M'$ wrapped tokens according to Equation \eqref{wrappedtokens}, and that no fees have been generated in the meantime. This will increase the vault's balance by $D'$ and the total wrapped token supply by $M'$. According to Equation \eqref{wrappedtokens}, the first investor can now redeem
+\begin{equation}D_1 = \frac{B+D'+L-I}{S+M'}M = \frac{B+D'+L-I}{S+\frac{S}{B+L-I}D'}M = \frac{B+L-I}{S}M \end{equation}
+which is exactly the amount of tokens the first investor could redeem before the second one deposited, i.e. $D_1 = D$. Therefore, deposits or withdrawals from other investors do not affect the share price, and in particular, if an investors deposits and withdraws immediately some funds, he or she will get exactly the same amount that has been deposited. This means that the fees generated before one's own deposit cannot be claimed, and arbitrage is impossible.
+
+\subsection{Interest Rate}
 
 The interest rate is investment-specific and represents the risk beyond the investment as seen from the lender's perspective.
-Both the interest rate and the fixed fee applied are returned as a parameter from the dedicate vault’s functions, while the repayment and the logic for the calculation of risk is included in the implementation of the investment strategies. The riskiness is captured in an integer called risk factor which is passed to the vault borrow function as a parameter. The interest rate is then computed as
+Both the interest rate and the fixed fee applied are returned as a parameter from the dedicate vault’s functions, while the repayment and the logic for the calculation of risk is included in the implementation of the investment strategies. The riskiness is captured in an integer called {\it risk factor} $\beta$ (see following section) which is passed to the vault's \verb|borrow| function as a parameter. The interest rate is then computed as
 
-$$IR = IR_base + RF * L * l_c/l_f$$
+\begin{equation}\label{interestrate}r =  \left(1+\frac{\max{(L-I;0)}}{B}\right)\frac{(r_{\text{base}} + \beta)}{\kappa}\end{equation}
 
-Where $IR_base$ is the basic commonly-shared interest rate applied to all tokens decided by the governance, $L$ is the leverage and $l_c/l_f$ is the ration between {\it uncovered liquidity} and {\it free liquidity}: the free liquidity is the {\it available liquidity} in the vault for trading, in that particular token, while the {\it uncovered liquidity} is the amount of free liquidity which is not covered by the vault’s insurance pool.
-
-\section{Risk Factor}
-A position is liquidable if the quoted value of its entitlement, plus the margin, minus the quoted value of its debt, all expressed as an amount of margin tokens, is lower than a certain fraction, called the risk factor,
-of the position’s margin. Therefore, assuming we are having a long position, calling $P$ the price of a unit of investment token expressed as amount of margin tokens, and $r$ the risk factor for the investment token, then the position can be liquidated if 
-
-$$EN * P + m - d - f < r x m $$
-
-where $EN$ is the entitlement, $m$ the margin posted, $d$ the debt (or loan value taken from the vault) and $f$ the fees accrued excluding the liquidation penalty fees.
-
-The risk factor is token (pair) based: the more volatile the token pair, the higher the risk factor. The main purpose of a high risk factor is to protect the protocol’s liquidity from further adverse market movements occurring before the actual liquidation occurs, or during the closure of the position, since the very action of performing a swap on any dex causes a price impact on the swapped pair.
-
+Here $r_{\text{base}}$ is the basic commonly-shared interest rate applied to all tokens and decided by the governance, $\kappa$ is the {\it collateralization} of the loan (i.e. the ratio between the collateral posted by the trader, and the amount borrowed from the vault), $B$ is the vault's balance, $L$ is the net loan amount, and $I$ is the insurance reserve balance. Notice that if the position is entirely covered by its margin, i.e. $\kappa \rightarrow \infty$, then the interest rate becomes null (but the vault's fixed fee is always applied). This is consistent with the fact that no value has been borrowed from the vault. Notice also that the fees increase with the net loans and decrease with the insurance reserve balance: when too many loans have been granted, it will become expensive to open a new position, thus decreasing the value at risk of the vault.
 
 \section{Strategies}
-We can think of strategies as configurable actions executed across several other protocols in a composable way. They span from basic swaps to convoluted lending and farming of liquidity pools' tokens.
+We can think of strategies as configurable actions executed across several other protocols in a composable way. They span from basic swaps to convoluted lending and farming of liquidity pools' tokens. In general, the community can develop a strategy and whitelist it into Ithil; conversely, strategies can be de-listed from Ithil by a community decision.
 
-In order to be able to open a position in any strategy, a trader has to post a collateral to cover for potential losses caused by unfavorable market movements. The collateral can be posted in any token, and potentially gives the right to use any token type of the ones within the vault. The maximum loan size is determined by imposing that the interest rate, as of Equation (4), should not exceed a maximum interest rate fixed by the governance. For example, in the scenario of a very risky investment (high risk factor), or when most of the vault is uncovered (insurance pool amount too low), the allowed leverage is lower.
+In order to be able to open a position in any strategy, a trader has to post a collateral to cover for potential losses caused by unfavorable market movements. The collateral can be posted in any token, and potentially gives the right to use any token type of the ones within the vault. The maximum loan size is determined by imposing that the interest rate, as of Equation \eqref{interestrate}, should not exceed a maximum interest rate $r_{\text{max}}$ fixed by the governance; this is the same of saying that 
+$$\kappa \ge  \left(1+\frac{\max{(L-I;0)}}{B}\right)\frac{(r_{\text{base}} + \beta)}{r_{\text{max}}}$$
+ For example, in the scenario of a very risky investment (high risk factor), or when most of the vault is uncovered (insurance pool amount too low), the allowed leverage is lower.
 
-{\textbf for the time being we just support Margin Trading, in the future we will add more strategies, both high risk and low risk market neutral ones.}
+\subsection{Margin trading}
 
-\section{Margin trading}
+The first strategy we consider and support is Margin Trading. This is a classical investment strategy in which a trader borrows some tokens in an undercollateralized way, and swaps them on a dex to speculate on a price change of a particular token pair. When such swap is performed, a {\it position} is opened, which is stored onchain on Ithil's contract. The amount of tokens borrowed is called the {\it principal} of the position, while the amount obtained from the swap is the {\it allowance}.
 
-By \textbf{margin trading} we mean a trading style in which a \textbf{dealer} allows a \textbf{trader} to dispose of some of the dealer's money or assets, after the trader has posted a \textbf{margin} $M$ to the dealer's account or to an external, locked one. The quantity of money the dealer allows the trader to trade is called the \textbf{balance} $B$ of the trader. The balance might be in a currency which is different from the margin's one.
+Since the loan is undercollateralized, the allowance does not actually goes into the trader's hand. It is more convenient to say that the trader has bought the "right" to move the balance from the dealer's account to and from an external dex (which we will consider fixed).
 
-This is similar to a collateralised loan, except for the fact that the balance does not actually goes into the trader's hand. It is more convenient to say that the trader has bought the "right" to move the balance from the dealer's account to and from the \textbf{dex} (which we will consider fixed).
+We define the {\it ratio} $r$ as the exchange value of \verb|TKB|/\verb|TKA| as published by the dex. This can be seen as the number of tokens \verb|TKA| one can obtain by exchanging one unit of \verb|TKB|. Notice that things in reality are much more complicated, since the very action of exchanging tokens in the dex will move this ratio; we will not discuss these subtleties now and simply assume that if we exchange $x$ \verb|TKB| on the dex, we will get $xr$ \verb|TKA|. Ithil has quoters implemented to get precise estimates of an amount obtained by the dex, which are used to perform liquidation calculations (see later).
 
-Once the trader posts some margin to the dealer, the trader has the right to open a \textbf{position}. Typically, the balance is computed after the position order is received. A position is determined by the following data (by simplicity, we always assume that one token of the traded pair coincides with the margin token):
+\subsubsection{Long position}
+
+Assume the trader believes that the value of the ratio $r = 10$ is about to \emph{increase} in the future, and that his belief is strong enough that he is willing to post a $100$\verb|TKA| worth of margin and going into a \emph{long position} on \verb|TKB| with a leverage of $10$. At this point, the vault checks if there are $1000$\verb|TKA| available. If it is the case, it will exchange them to buy $100$ \verb|TKB| from the dex. We assume a fee of 1\% on the vault relative to \verb|TKA|, and a risk factor of $50$\% for liquidation. The vault then registers $900$\verb|TKA| in the net loans: they must be repayed when the position is closed.
+
+\textbf{Scenario of increasing $r$}
+Assume the day after we observe $r = 11$, i.e. an increase of $10$\% with respect to the previous day. At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now $1100$\verb|TKA| will be obtained for this amount. The debt of $900$\verb|TKA| is repayed and the vault will refund the trader with the extra $200$\verb|TKA|, minus $10$\verb|TKA| representing $1$\% of the swapped amount, which represent the fee of the vault. Therefore the trader will go home with $190$\verb|TKA|, that is a gain of $90$\% of the original investment when the market has only shown a $10$\% increase. This happens because of the leverage of $10$ the trader has chosen to undertake. To summarize:
 \begin{itemize}
-\item The margin $M$
-\item The margin token \verb|TKA|
-\item The destination token \verb|TKB|
-\item The \textbf{lever} $L > 0$.
-\item The \textbf{type} which can be either \textbf{long} or \textbf{short}.
+    \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $900$\verb|TKA|.
+    \item Trader's final balance: $190$\verb|TKA|, vault's final balance: $910$\verb|TKA|.
 \end{itemize}
 
-We define the \textbf{ratio} $r$ as the exchange value of \verb|TKB|/\verb|TKA| as published by the dex. This can be seen as the number of tokens \verb|TKA| one can obtain by exchanging one unit of \verb|TKB|. Notice that things in reality are much more complicated, since the very action of exchanging tokens in the dex will move this ratio; we will not discuss these subtleties now and simply assume that if we exchange $x$ \verb|TKB| on the dex, we will get $xr$ \verb|TKA|.
-
-\subsection{Long position}
-
-Assume the trader believes that the value of the ratio $r = 10$ is about to \emph{increase} in the future, and that his belief is strong enough that he is willing to post a $100$\verb|TKA| worth of margin and going into a \emph{long position} on \verb|TKB| with a leverage of $10$. At this point, the vault checks if there are $1000$\verb|TKA| available. If it is the case, it will exchange them to buy $100$ \verb|TKB| from the dex. We assume a fee of 1\% on the vault relative to \verb|TKA|, and a risk factor of $50$\% for liquidation.
-
-\subsubsection{Scenario of increasing $r$}
-Assume the day after we observe $r = 11$, i.e. an increase of $10$\% with respect to the previous day. At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now $1100$\verb|TKA| will be obtained for this amount. The original $1000$\verb|TKA| stay with the vault (recall that do not belong to the trader!) which will refund the trader with the locked margin of $100$\verb|TKA|, plus the extra $100$\verb|TKA| obtained by the exchange, minus $10$\verb|TKA| representing $1$\% of the swapped amount, which represent the fee of the vault. Therefore the trader will go home with $190$\verb|TKA|, that is a gain of $90$\% of the original investment when the market has only shown a $10$\% increase. This happens because of the leverage of $10$ the trader has chosen to undertake. To summarize:
+\textbf{Scenario of decreasing $r$: no liquidation}
+Assume the day after we observe $r = 9.8$, i.e. a decrease of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now only $980$\verb|TKA| will be obtained for this amount. Similarly to what happened before, the vault's debt of $900$\verb|TKA| is repayed and the remaining amount of $80$\verb|TKA|, minus $10$\verb|TKA| of fees, are transferred to the trader, which will go home with $70$\verb|TKA|, realising a loss of $30$\% of the original investment.
 \begin{itemize}
-    \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $1000$\verb|TKA|.
-    \item Trader's final balance: $190$\verb|TKA|, vault's final balance: $1010$\verb|TKA|.
+    \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $900$\verb|TKA|.
+    \item Trader's final balance: $70$\verb|TKA|, vault's final balance: $910$\verb|TKA|.
 \end{itemize}
 
-\subsubsection{Scenario of decreasing $r$: no liquidation}
-Assume the day after we observe $r = 9.8$, i.e. a decrease of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now only $980$\verb|TKA| will be obtained for this amount. The vault will now have to recover from the loss of $20$\verb|TKA|, and it will do by \emph{retaining} $20$\verb|TKA| from the trader's margin, plus $10$\verb|TKA| as fees. The vault will then leave the rest of the margin to the trader, which will go home with $70$\verb|TKA|, realising a loss of $30$\% of the original investment.
+\textbf{Scenario of decreasing $r$: liquidation}
+Assume the day after we observe $r = 9.5$, i.e. a decrease of $5$\% with respect to the previous day.  At this point, we notice that selling back the $100$\verb|TKB| to the dex, one can only obtain $950$\verb|TKA|. Since the margin is of $100$\verb|TKA|, the fees are $10$\verb|TKA|, and the risk factor has been set to $50$\%, the position will be \emph{liquidated}, i.e. closed by a liquidator, who then repays $900$\verb|TKA| plus fees to the vault, and gets the remaining margin of $40$\verb|TKA|.
 \begin{itemize}
-    \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $1000$\verb|TKA|.
-    \item Trader's final balance: $70$\verb|TKA|, vault's final balance: $1010$\verb|TKA|.
+    \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $900$\verb|TKA|.
+    \item Trader's final balance: $0$\verb|TKA|, vault's final balance: $910$\verb|TKA|.
 \end{itemize}
 
-\subsubsection{Scenario of decreasing $r$: liquidation}
-Assume the day after we observe $r = 9.5$, i.e. a decrease of $5$\% with respect to the previous day.  At this point, the vault notices that selling back the $100$\verb|TKB| to the dex, it can only obtain $950$\verb|TKA|. Since the margin is of $100$\verb|TKA|, the fees are $10$\verb|TKA|, and the risk factor has been set to $50$\%, the position will be \emph{liquidated}, i.e. closed by Ithil itself: Ithil will then retain $60$\verb|TKA| to restore entirely the initial amount plus fees, leaving the trader with $40$\verb|TKA|.
-\begin{itemize}
-    \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $1000$\verb|TKA|.
-    \item Trader's final balance: $40$\verb|TKA|, vault's final balance: $1010$\verb|TKA|.
-\end{itemize}
+\subsubsection{Short position}
 
-\subsection{Short position}
+Assume the trader believes that the value of the ratio $r = 10$ is about to \emph{decrease} in the future, and that his belief is strong enough that he is willing to post a $100$\verb|TKA| worth of margin and going into a \emph{short position} on \verb|TKB| with a leverage of $10$. At this point, the vault with native token \verb|TKB| checks if it has $1000$\verb|TKA| worth of \verb|TKB| in its pool as of today's market condition: i.e. the vault checks if it has $100$\verb|TKB|. If it does, it exchanges them to obtain $1000$\verb|TKA| from the dex and registers $100$\verb|TKB| net loans. Since the trader already posted $100$\verb|TKA| of margin, the allowance for this position will be $1100$\verb|TKA|. We assume a fee of 1\% on the vault relative to \verb|TKA|, and a risk factor of $50$\% for liquidation.
 
-Assume the trader believes that the value of the ratio $r = 10$ is about to \emph{decrease} in the future, and that his belief is strong enough that he is willing to post a $100$\verb|TKA| worth of margin and going into a \emph{short position} on \verb|TKB| with a leverage of $10$. At this point, the vault with native token \verb|TKB| checks if it has $1000$\verb|TKA| worth of \verb|TKB| in its pool as of today's market condition: i.e. the vault checks if it has $100$\verb|TKB|. If it does, it exchanges them to obtain $1000$\verb|TKA| from the dex. We assume a fee of 1\% on the vault relative to \verb|TKA|, and a risk factor of $50$\% for liquidation.
-
-\subsubsection{Scenario of decreasing $r$}
-Assume the day after we observe $r = 9$, i.e. a decrease of $10$\% with respect to the previous day. At this point, the trader can choose to close his position: the vault will sell back a quantity of \verb|TKA| necessary to obtain back the original $100$\verb|TKB|, plus $1$\verb|TKB| representing the fee. As of today, only $909$\verb|TKA| are necessary. The extra $91$\verb|TKA| will go to the trader together with the margin of $100$\verb|TKA|. Therefore the trader will go home with $191$\verb|TKA|, that is a gain of $91$\% of the original investment when the market has only shown a $10$\% decrease. 
+\textbf{Scenario of decreasing $r$}
+Assume the day after we observe $r = 9$, i.e. a decrease of $10$\% with respect to the previous day. At this point, the trader can choose to close his position selling back a quantity of \verb|TKA| necessary to repay the debt $100$\verb|TKB|, plus $1$\verb|TKB| representing the fee. As of today, only $909$\verb|TKA| are necessary. The extra $191$\verb|TKA| will go to the trader, that is a gain of $91$\% of the original investment when the market has only shown a $10$\% decrease. 
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $100$\verb|TKB|.
     \item Trader's final balance: $191$\verb|TKA|, vault's final balance: $101$\verb|TKB|.
 \end{itemize}
-(Notice that the trader has $1$\verb|TKA| more than the analogous scenario we discussed for a long position: this is linked with the fact that the margin posted is in a token, which is different from the one native to the vault. Since the fees are always in the vault's native token, the trader will profit or lose also on the fees for the exchange ratio movements).
+(Notice that the trader has $1$\verb|TKA| more than the analogous scenario we discussed for a long position: this is caused by the fact that the margin posted is in a token, which is different from the one borrowed from the vault. Since the fees are always in the vault's borrowed token, the trader will profit or lose also on the fees for the exchange ratio movements).
 
-\subsubsection{Scenario of increasing $r$: no liquidation}
-Assume the day after we observe $r = 10.2$, i.e. an increase of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back a quantity of \verb|TKA| necessary to obtain back $101$\verb|TKB| to restore the liquidity and get the fees, but now $1030.2$\verb|TKA| are necessary. The vault only has $1000$\verb|TKA|, thus it will \emph{pick} $30.2$\verb|TKA| from the trader's margin to obtain the desired amount of \verb|TKB|. The vault will then leave the rest of the margin to the trader, which will go home with $69.8$\verb|TKA|.
+\textbf{Scenario of increasing $r$: no liquidation}
+Assume the day after we observe $r = 10.2$, i.e. an increase of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back a quantity of \verb|TKA| necessary to obtain back $101$\verb|TKB| to restore the liquidity and get the fees, but now $1030.2$\verb|TKA| are necessary. The trader will then obtain $69.8$\verb|TKA| by closing this position:
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $100$\verb|TKB|.
     \item Trader's final balance: $69.8$\verb|TKA|, vault's final balance: $101$\verb|TKB|.
 \end{itemize}
 
-\subsubsection{Scenario of increasing $r$: liquidation}
-Assume the day after we observe $r = 10.5$, i.e. an increase of $5$\% with respect to the previous day.  At this point, the vault notices that $1060.5$\verb|TKA| are now necessary to obtain $101$\verb|TKB| to have back the liquidity plus fees. Since the margin is of $100$\verb|TKA|, and the risk factor is set to $50$\%, the position will be \emph{liquidated}. The vault will then withdraw $60.5$\verb|TKA| from the margin and will obtain $101$\verb|TKB| from the dex. The remaining $39.5$\verb|TKA| will go back to the trader.
+\textbf{Scenario of increasing $r$: liquidation}
+Assume the day after we observe $r = 10.5$, i.e. an increase of $5$\% with respect to the previous day.  At this point, the vault notices that $1060.5$\verb|TKA| are now necessary to obtain $101$\verb|TKB| to have back the liquidity plus fees. Since the margin is of $100$\verb|TKA|, and the risk factor is set to $50$\%, the position will be \emph{liquidated}. As in the long case, a liquidator will close the position and grab the remaining $39.5$\verb|TKA|.
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $100$\verb|TKB|.
-    \item Trader's final balance: $39.5$\verb|TKA|, vault's final balance: $101$\verb|TKB|.
+    \item Trader's final balance: $0$\verb|TKA|, vault's final balance: $101$\verb|TKB|.
 \end{itemize}
 
 \subsection{Other possibilities}
