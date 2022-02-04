@@ -45,22 +45,24 @@ The DeFi has recently seen an incredible growth and expansion in the user base, 
 
 \subsection{What is Ithil}
 
-At its core, Ithil is build around the concept of uncollateralised leveraged trading.
-Leveraged investments are an ancient and famous financial tool which allow traders to invest more than their available liquidity, thanks to a system called leverage. They make it possible for users to take advantage of foreseen profitable market opportunities even if they don't have immediate access to the funds required. On the other hand, it comes with the risk of the trader losing more than in the case of a classical, non-leveraged investment.
+At its core, Ithil is built around the concept of under-collateralised lending, allowing a leverage greater than 1.
+Leveraged investments are a concept that has been around for centuries, allowing traders to invest more than their available liquidity. Leverage makes it possible for users to take advantage of profitable market opportunities even if they don't have immediate access to the funds required. However, it comes with the risk of the trader losing multiples more than in the case of a classical, non-leveraged investment. As always, there is no free lunch.
 
-Ithil enables leveraged interactions with other DeFi protocols in a composable way, offering to its users a curated set of customisable investment strategies to choose from. Ithil uses a decentralised network of bots to liquidate underperforming positions and prevent impaired loans to become detrimental to the protocol itself, compensating liquidators on the run.
-It can be seen like a decentralised hedge fund, and it differs from standard lending protocols for the fact that borrowed funds never leave the protocol, yet keeping traders as ultimately responsible for their own profits or losses.
+Ithil enables leveraged interactions with other DeFi protocols in a composable way, offering to its users a curated set of customisable investment strategies to choose from. For example, margin trading using an external dex such as Uniswap or Kyber, or leveraged staking on Yearn, are possible on Ithil using the resident liquidity as principal. In every strategy, the trader pays a {\it collateral} to be able to use an amount of the protocol's liquidity higher than the collateral itself to open a {\it position}; such collateral is refunded together with the earnigns obtained when such position is closed.
 
-\subsection{Why is it different}
-There are many existing protocols trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users. Moreover, most protocols use stablecoins-backed loans, while using a value-agnostic vault Ithil can provide loans backed by virtually any ERC20 token, though community-based whitelisting prevents Ithil to support malignous tokens.
+In case a leveraged position is incurring a loss which would cause the protocol's liquidity to be at risk, Ithil uses a decentralised network of bots to liquidate it and prevent impaired loans from becoming detrimental to the protocol itself. Liquidators are compensated when a losing position is closed by them.
+
+Compared to other standard lending protocol s [CITAZIONE], the under-collateralization of loans forces borrowed funds and tokens obtained as a result of the investment to never leave the protocol. When a token is exchanged for another one through an external protocol, such as a dex or a staking one, the obtained tokens are transferred to the strategy contract: only at the closure of the position, the profit and loss is computed and the consequent transfers are performed.
+
+\subsection{Why is Ithil different}
+There are many existing protocols [CITAZIONE] trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users [CITAZIONE]. Moreover, unlike most protocols [CITAZIONE] which only use stablecoins-backed loans, Ithil uses {\it value-agnostic vaults}. This means that the ultimate goal of a vault with a given ERC20 token, is to increase its balance in {\it that token}; therefore, the vault's dollar value is an immaterial parameter. In this way, Ithil can provide loans backed by any ERC20 token, gaining in this way also the capacity of being a profitable staking protocols for tokens which are difficult to stake elsewhere [CITAZIONE/ESEMPIO]. The precise list of tokens supported by Ithil is community-based, and its rational is preventing malicious tokens to be injected into the protocol.
 
 \section{The Vault}
-The leveraged investment activities cannot happen without setting a protocol own liquidity, therefore liquidity providers (LPs) are of greatest importance for Ithil. Investors can provide their idle assets and earn profit from the trading fees.
-The vault is the core of the protocol; it consists of a non-upgradable contract where LPs lock their tokens to be offered for traders to perform various investment strategies.
+As mentioned, leverage is made possible by using the protocol's liquidity. The contract in which liquidity is stored and managed is the {\it vault}: liquidity providers (LPs) can stake their assets in the vault to provide the necessary liquidity, which will be then used by investors, who will pay fees that will be distributed back to LPs. At the eyes of LPs, Ithil is therefore a staking protocol, in which any asset can be staked to generate APY. This is more flexible than other protocols [CITAZIONE] in which only stablecoins or a restricted class of assets can generate income.
 
-The vault's non-view functions, except stake and unstake, are not callable by external addresses: only community whitelisted senders are recognised to use them. In this way, all possible attacks can only occur on strategy level (see below), which decreases the economic rationale for an attacker.
+On the technical side, the various investment strategies borrow funds from the vault through the \verb|borrow| function, and repay the loan when the position is closed calling the \verb|repay| function. Since these functions will move the vault's funds, they are not callable by anyone but the strategies themselves, whose addresses are stored in an array within the vault to implement whitelisting. Such array \verb|strategies| can be modified only by governance vote, to allow a new strategy (or disallow an old one) to use the vault's liquidity.
 
-When a strategy is called, the margin is transferred as a form of payment to the vault or to the strategy, depending on the particular strategy used. The strategy then borrows from the vault the amount of capital required to perform the desired strategy and calls the relevant external protocols. When a position is closed, the vault's loan and relative fees are repayed by the strategy. See the strategies dedicated section for more details.
+When a strategy is called, the margin is transferred as a form of payment to the vault or to the strategy, depending on the particular strategy used. [DIAGRAMMA]. The strategy then borrows from the vault the amount of capital required to perform the desired strategy and calls the relevant external protocols. When a position is closed, the vault's loan and relative fees are repayed by the strategy. See the strategies dedicated section for more details.
 
 Ithil's vault is \textit{value-agnostic}: once an amount of \verb|XYZ| tokens are staked, we do not track the relative value (in USD or an underlying peg) of such treasury; instead, we simply assure the generation of more \verb|XYZ| tokens.
 
@@ -76,7 +78,7 @@ The vault also contains a list of {\it whitelisted tokens} approved by the gover
 
 \subsection{Fee Redistribution}
 
-Ithil generates income in the form of fees paid by the traders. Such fees are then redistributed to the LPs proportionately on how much liquidity they provided by accruing value in the vault and increasing the backing of the yield-bearing \verb|iToken|: LPs will only get rewards in the specific token they provided. When the tokens are lent for a strategy, the vault calculates the fixed fees and the interest rate applied to the loan. The fixed fees are token-specific, community-based percentages of the amount which goes out of the vault, and are the direct compensation to LP for providing their liquidity to Ithil. 
+Ithil generates income in the form of fees paid by the traders. Such fees are then redistributed to the LPs proportionately on how much liquidity they provided by accruing value in the vault and increasing the backing of the yield-bearing \verb|iToken|: LPs will only get rewards in the specific token they provided [DIAGRAMMA]. When tokens are lent for a strategy, the vault calculates the fixed fees and the interest rate applied to the loan. The fixed fees are token-specific, community-based percentages of the amount which goes out of the vault, and are the direct compensation to LP for providing their liquidity to Ithil. 
 
 In all cases, fees are considered when deciding whether to liquidate a position, so that the payment is assured for any trader's profit or loss scenario. In particular, a \textit{liquidation factor} $r$ is set for every position, such that the position is liquidated if the trader's payback goes below $r$\% of the margin.
 
@@ -180,9 +182,13 @@ For instance, LPs can provide liquidity from Ethereum mainnet, Polygon, Avalanch
 In a first initial phase governance will be shared among the core team using a multiple key and a multisig contract. The admins will be able to harvest fees, vary the fee ratio and correct the risk factor but cannot alter in any way the current open positions nor interfere with the liquidity pools.
 Since contracts are immutable and their implementation cannot be changed, a governance token may be needed to push new functionalities and vote on key parts of the protocol itself, like the choice of the dex. The release of a governance token is left to a second phase in the protocol life when a critical mass of traders, LPs and community DAO members is reached.
 
-Ithil promotes a florid developer community, encouraging the creation of trading bots as well as the interaction with third party smart contracts to manage investments within the limits of the code itself.
+Ithil promotes a thriving developer community, encouraging the creation of trading bots as well as the interaction with third party smart contracts to manage investments within the limits of the code itself.
 
 In a further step, the aforementioned administrative powers of this contract will be further limited by putting the protocol into a “owner-less” mode, where the core team relinquish control over admin functions to a voting system, thus making Ithil a DAO. A lack of centralized power is essential to the trustlessness of the protocol.
+
+\section{Risks}
+
+\section{Competitors}
 
 \section{Acknowledgments}
 
