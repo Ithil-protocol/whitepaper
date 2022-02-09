@@ -43,7 +43,6 @@
 \section{Introduction}
 
 The DeFi has recently seen an incredible growth and expansion in the user base, seeing the first institutional players come in too. Built on the premises of being an open space where composability and cross-contamination of protocols sits at its core, access to DeFi is getting more difficult as protocols grow in complexity and require extensive research from their users to come up with truly earning strategies. It is commonly seen how LPs on yield aggregators like Beefy Finance need to often move their liquidity to the newest strategies when the previous ones reach a breakdown point where the APY dramatically falls to 0. Similarly, uneducated users who just want a {\it quick and dirty} solution may find themselves losing their capital even when using supposedly "safe" blue-chip protocols like Uniswap.
-
 \subsection{What is Ithil}
 
 At its core, Ithil is built around the concept of under-collateralised lending, allowing a leverage greater than 1.
@@ -53,17 +52,17 @@ Ithil enables leveraged interactions with other DeFi protocols in a composable w
 
 In case a leveraged position is incurring a loss which would cause the protocol's liquidity to be at risk, Ithil uses a decentralised network of bots to liquidate it and prevent impaired loans from becoming detrimental to the protocol itself. Liquidators are compensated when a losing position is closed by them.
 
-Compared to other standard lending protocols, the under-collateralization of loans forces borrowed funds and tokens obtained as a result of the investment to never leave the protocol. When a token is exchanged for another one through an external protocol, such as a dex or a staking one, the obtained tokens are transferred to the strategy contract: only at the closure of the position, the profit and loss is computed and the consequent transfers are performed.
+Compared to other standard lending protocols [CITAZIONE], the under-collateralization of loans forces borrowed funds and tokens obtained as a result of the investment to never leave the protocol. When a token is exchanged for another one through an external protocol, such as a dex or a staking one, the obtained tokens are transferred to the strategy contract: only at the closure of the position, the profit and loss is computed and the consequent transfers are performed.
 
 \subsection{Why is Ithil different}
-There are many existing protocols trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users. Moreover, unlike most protocols which only use stablecoins-backed loans, Ithil uses {\it value-agnostic vaults}. This means that the ultimate goal of a vault with a given ERC20 token, is to increase its balance in {\it that token}; therefore, the vault's dollar value is an immaterial parameter. In this way, Ithil can provide loans backed by any ERC20 token, gaining in this way also the capacity of being a profitable staking protocols for tokens which are difficult to stake elsewhere. The precise list of tokens supported by Ithil is community-based, and its rational is preventing malicious tokens to be injected into the protocol.
+There are many existing protocols [CITAZIONE] trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users [CITAZIONE]. Moreover, unlike most protocols [CITAZIONE] which only use stablecoins-backed loans, Ithil uses {\it value-agnostic vaults}. This means that the ultimate goal of a vault with a given ERC20 token, is to increase its balance in {\it that token}; therefore, the vault's dollar value is an immaterial parameter. In this way, Ithil can provide loans backed by any ERC20 token, gaining in this way also the capacity of being a profitable staking protocols for tokens which are difficult to stake elsewhere [CITAZIONE/ESEMPIO]. The precise list of tokens supported by Ithil is community-based, and its rational is preventing malicious tokens to be injected into the protocol.
 
 \section{The Vault}
-As mentioned, leverage is made possible by using the protocol's liquidity. The contract in which liquidity is stored and managed is the {\it vault}: liquidity providers (LPs) can stake their assets in the vault to provide the necessary liquidity, which will be then used by investors, who will pay fees that will be distributed back to LPs. At the eyes of LPs, Ithil is therefore a staking protocol, in which any asset can be staked to generate APY. This is more flexible than other protocols in which only stablecoins or a restricted class of assets can generate income.
+As mentioned, leverage is made possible by using the protocol's liquidity. The contract in which liquidity is stored and managed is the {\it vault}: liquidity providers (LPs) can stake their assets in the vault to provide the necessary liquidity, which will be then used by investors, who will pay fees that will be distributed back to LPs. At the eyes of LPs, Ithil is therefore a staking protocol, in which any asset can be staked to generate APY. This is more flexible than other protocols [CITAZIONE] in which only stablecoins or a restricted class of assets can generate income.
 
 On the technical side, the various investment strategies borrow funds from the vault through the \verb|borrow| function, and repay the loan when the position is closed calling the \verb|repay| function. Since these functions will move the vault's funds, they are not callable by anyone but the strategies themselves, whose addresses are stored in an array within the vault to implement whitelisting. Such array \verb|strategies| can be modified only by governance vote, to allow a new strategy (or disallow an old one) to use the vault's liquidity.
 
-When a strategy is called, the margin is transferred as a form of payment to the vault or to the strategy, depending on the particular strategy used. The strategy then borrows from the vault the amount of capital required to perform the desired strategy and calls the relevant external protocols. When a position is closed, the vault's loan and relative fees are repayed by the strategy. See the strategies dedicated section for more details.
+When a strategy is called, the margin is transferred as a form of payment to the vault or to the strategy, depending on the particular strategy used. [DIAGRAMMA]. The strategy then borrows from the vault the amount of capital required to perform the desired strategy and calls the relevant external protocols. When a position is closed, the vault's loan and relative fees are repayed by the strategy. See the strategies dedicated section for more details.
 
 Ithil's vault is \textit{value-agnostic}: once an amount of \verb|XYZ| tokens are staked, we do not track the relative value (in USD or an underlying peg) of such treasury; instead, we simply assure the generation of more \verb|XYZ| tokens.
 
@@ -79,12 +78,12 @@ The vault also contains a list of {\it whitelisted tokens} approved by the gover
 
 \subsection{Fee Redistribution}
 
-Ithil generates income in the form of fees paid by the traders. Such fees are then redistributed to the LPs proportionately on how much liquidity they provided by accruing value in the vault and increasing the backing of the yield-bearing \verb|iToken|: LPs will only get rewards in the specific token they provided. When tokens are lent for a strategy, the vault calculates the fixed fees and the interest rate applied to the loan. The fixed fees are token-specific, community-based percentages of the amount which goes out of the vault, and are the direct compensation to LP for providing their liquidity to Ithil. 
+Ithil generates income in the form of fees paid by the traders. Such fees are then redistributed to the LPs proportionately on how much liquidity they provided by accruing value in the vault and increasing the backing of the yield-bearing \verb|iToken|: LPs will only get rewards in the specific token they provided [DIAGRAMMA]. When tokens are lent for a strategy, the vault calculates the fixed fees and the interest rate applied to the loan. The fixed fees are token-specific, community-based percentages of the amount which goes out of the vault, and are the direct compensation to LP for providing their liquidity to Ithil. 
 
-In all cases, fees are considered when deciding whether to liquidate a position, so that the payment is assured for any trader's profit or loss scenario. In particular, a \textit{risk factor} $\beta$ is set for every position, such that the position is liquidated if the trader's payback goes below $\beta$\% of the margin. See a forthcoming Section for further details.
+In all cases, fees are considered when deciding whether to liquidate a position, so that the payment is assured for any trader's profit or loss scenario. In particular, a \textit{risk factor} $\beta$ is set for every position, such that the position is liquidated if the trader's payback goes below $\beta$\% of the margin. See Section [SECTION] for further details.
 
 \subsubsection{Ithil's LP tokens}
-When an investor deposits an amount $D_{\text{TKN}}$ of ERC20 tokens \verb|TKN| in Ithil's vault, an amount $M_{\text{iTKN}}$ of LP tokens \verb|iTKN| are minted and transferred to the investor. Letting $S_{\text{iTKN}}$ be the total supply of \verb|iTKN|, $B_{\text{TKN}}$, $L_{\text{TKN}}$, $T_{\text{TKN}}$ and $I_{\text{TKN}}$ the vault's \verb|TKN| balance, net loans, treasury balance and insurance reserve balance respectively, then the amount of tokens to be minted is calculated as follows:
+When an investor deposits an amount $D_{\text{TKN}}$ of ERC20 tokens \verb|TKN| in Ithil's vault, an amount $M_{\text{iTKN}}$ of LP tokens \verb|iTKN| are minted and transferred to the investor. Letting $S_{\text{iTKN}}$ be the total supply of \verb|iTKN|, $B_{\text{TKN}}$, $L_{\text{TKN}}$, $T_{\text{TKN}}$ and $I_{\text{TKN}}$ the vault's \verb|TKN| balance, net loans, treasury balance (see Section [SECTION]) and insurance reserve balance respectively, then the amount of tokens to be minted is calculated as follows:
 \begin{equation}\label{wrappedtokens}M_{\text{iTKN}} = \frac{S_{\text{iTKN}}}{B_{\text{TKN}} + L_{\text{TKN}} - T_{\text{TKN}} - I_{\text{TKN}}}D_{\text{TKN}}\end{equation}
 
 Similarly, an investor who owns a quantity $M_{\text{iTKN}}$ of LP tokens \verb|iTKN|, can redeem them any time to get $D_{\text{TKN}}$ \verb|TKN|, still calculated using Equation \eqref{wrappedtokens}; in this case, the vault will burn the investor's tokens. In the particular case in which the total balance and net loans of the vault is zero (vault's initialization for the particular token), then we mint wrapped tokens in a $1:1$ ratio.
@@ -99,7 +98,7 @@ which is exactly the amount of tokens the first investor could redeem before the
 \subsection{Interest Rate}
 
 The interest rate is investment-specific and represents the risk beyond the investment as seen from the lender's perspective.
-Both the interest rate and the fixed fee applied are returned as a parameter from the dedicate vault’s functions, while the repayment and the logic for the calculation of risk is included in the implementation of the investment strategies. The riskiness is captured in an integer called {\it risk factor} $\beta$ (see following section) which is passed to the vault's \verb|borrow| function as a parameter. The interest rate is then computed as
+Both the interest rate and the fixed fee applied are returned as a parameter from the dedicate vault’s functions, while the repayment and the logic for the calculation of risk is included in the implementation of the investment strategies. The riskiness is captured in an integer called {\it risk factor} $\beta$ (see following section) which is passed to the vault's \verb|borrow| function as a parameter. The yearly interest rate is then computed as
 
 \begin{equation}\label{interestrate}r =  \left(1+\frac{\max{(L-I;0)}}{B}\right)\frac{(r_{\text{base}} + \beta)}{\kappa}\end{equation}
 
@@ -112,7 +111,31 @@ In order to be able to open a position in any strategy, a trader has to post a c
 $$\kappa \ge  \left(1+\frac{\max{(L-I;0)}}{B}\right)\frac{(r_{\text{base}} + \beta)}{r_{\text{max}}}$$
  For example, in the scenario of a very risky investment (high risk factor), or when most of the vault is uncovered (insurance pool amount too low), the allowed leverage is lower.
 
-\subsection{Margin trading}
+\subsection{The base strategy}
+
+Although Ithil's strategies can greatly vary in type, they all must inherit by a {\it base strategy}, which is part of Ithil's core and cannot be listed or delisted. This, besides allowing for a better management of the infrastructure and fewer entry points for breaches, makes the implementation of the single strategies much easier, and enforces a "golden standard" for payout and interest calculations.
+
+The base strategy is made of three functions:
+\begin{itemize}
+\item \verb|openPosition|: this takes the margin payment from the trader, calls the \verb|borrow| function to take the necessary funds from the vault, calls the strategy-specific opening function, and register the data and outcome on-chain in a \verb|positions| array. Collaterals are allowed both in source and destination token.
+\item \verb|closePosition|: this deletes the position, computes the due fees, calls the strategy-specific closing function, and repays both the vault via the \verb|repay| function, and the trader with a direct transfer.
+\item \verb|editPosition|: this takes the margin modification (which can be either withdrawals or deposits) from the trader, repays or borrows the necessary funds from the vault, and modifies the on-chain position array to reflect the new setting.
+\end{itemize}
+
+Notice that both the fees calculations and the payout are agnostic of the particular strategy: each strategy must deliver the investment's risk factor, which is then used to compute the due fees.
+
+\subsection{Strategy-specific functions}
+
+The base strategy contains virtual internal functions which correspond to external contract calls effectively implementing the investment: adding a strategy amounts to implementing these functions. Such functions are \verb|_openPosition|, \verb|_closePosition| and \verb|_quote|. The particular implementation depends on the particular strategy, although the common concept boils down to calling an {\it external contract} and registering the outcome. In particular, \verb|_quote| is a view function used to monitor the status of the position on-chain: besides being useful for display reaason, it is fundamental for liquidators, which can liquidate positions which have too low a  (see Section [SEZIONE]).
+
+\subsection{Liquidation}
+The base strategy also come equipped with the \verb|liquidate| function, which ascertains whether a position's quoted value is below the minimum threshold. In practice, it calls the function \verb|computeLiquidationScore|, which returns a signed integer representing the "health" of the position: calling $\sigma$ the liquidation score, $c$ the collateral, $\beta$ the risk factor, and $p$ the payout of the position (which is in turn computed via a call to \verb|_quote|), then we have
+$$\sigma = \beta c - p.$$
+The position is {\it liquidatabe} if $\sigma > 0$. If a position is liquidatable, the liquidator can close it and get rewarded for this to compensate for the gas cost and service provided. Liquidators can also aggregate positions to liquidate in batch, to save in gas and overcome other liquidators in speed.
+
+\subsection{Examples of strategies}
+
+\subsubsection{Margin trading}
 
 The first strategy we consider and support is Margin Trading. This is a classical investment strategy in which a trader borrows some tokens in an undercollateralized way, and swaps them on a dex to speculate on a price change of a particular token pair. When such swap is performed, a {\it position} is opened, which is stored onchain on Ithil's contract. The amount of tokens borrowed is called the {\it principal} of the position, while the amount obtained from the swap is the {\it allowance}.
 
@@ -120,36 +143,32 @@ Since the loan is undercollateralized, the allowance does not actually goes into
 
 We define the {\it ratio} $r$ as the exchange value of \verb|TKB|/\verb|TKA| as published by the dex. This can be seen as the number of tokens \verb|TKA| one can obtain by exchanging one unit of \verb|TKB|. Notice that things in reality are much more complicated, since the very action of exchanging tokens in the dex will move this ratio; we will not discuss these subtleties now and simply assume that if we exchange $x$ \verb|TKB| on the dex, we will get $xr$ \verb|TKA|. Ithil has quoters implemented to get precise estimates of an amount obtained by the dex, which are used to perform liquidation calculations (see later).
 
-\subsubsection{Long position}
+\paragraph{Long position}
 
 Assume the trader believes that the value of the ratio $r = 10$ is about to \emph{increase} in the future, and that his belief is strong enough that he is willing to post a $100$\verb|TKA| worth of margin and going into a \emph{long position} on \verb|TKB| with a leverage of $10$. At this point, the vault checks if there are $1000$\verb|TKA| available. If it is the case, it will exchange them to buy $100$ \verb|TKB| from the dex. We assume a fee of 1\% on the vault relative to \verb|TKA|, and a risk factor of $50$\% for liquidation. The vault then registers $900$\verb|TKA| in the net loans: they must be repayed when the position is closed.
 
-\textbf{Scenario of increasing $r$}
 Assume the day after we observe $r = 11$, i.e. an increase of $10$\% with respect to the previous day. At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now $1100$\verb|TKA| will be obtained for this amount. The debt of $900$\verb|TKA| is repayed and the vault will refund the trader with the extra $200$\verb|TKA|, minus $10$\verb|TKA| representing $1$\% of the swapped amount, which represent the fee of the vault. Therefore the trader will go home with $190$\verb|TKA|, that is a gain of $90$\% of the original investment when the market has only shown a $10$\% increase. This happens because of the leverage of $10$ the trader has chosen to undertake. To summarize:
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $900$\verb|TKA|.
     \item Trader's final balance: $190$\verb|TKA|, vault's final balance: $910$\verb|TKA|.
 \end{itemize}
 
-\textbf{Scenario of decreasing $r$: no liquidation}
-Assume the day after we observe $r = 9.8$, i.e. a decrease of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now only $980$\verb|TKA| will be obtained for this amount. Similarly to what happened before, the vault's debt of $900$\verb|TKA| is repayed and the remaining amount of $80$\verb|TKA|, minus $10$\verb|TKA| of fees, are transferred to the trader, which will go home with $70$\verb|TKA|, realising a loss of $30$\% of the original investment.
+Assume instead the day after we observe $r = 9.8$, i.e. a decrease of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back the $100$\verb|TKB| to the dex, but now only $980$\verb|TKA| will be obtained for this amount. Similarly to what happened before, the vault's debt of $900$\verb|TKA| is repayed and the remaining amount of $80$\verb|TKA|, minus $10$\verb|TKA| of fees, are transferred to the trader, which will go home with $70$\verb|TKA|, realising a loss of $30$\% of the original investment.
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $900$\verb|TKA|.
     \item Trader's final balance: $70$\verb|TKA|, vault's final balance: $910$\verb|TKA|.
 \end{itemize}
 
-\textbf{Scenario of decreasing $r$: liquidation}
 Assume the day after we observe $r = 9.5$, i.e. a decrease of $5$\% with respect to the previous day.  At this point, we notice that selling back the $100$\verb|TKB| to the dex, one can only obtain $950$\verb|TKA|. Since the margin is of $100$\verb|TKA|, the fees are $10$\verb|TKA|, and the risk factor has been set to $50$\%, the position will be \emph{liquidated}, i.e. closed by a liquidator, who then repays $900$\verb|TKA| plus fees to the vault, and gets the remaining margin of $40$\verb|TKA|.
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $900$\verb|TKA|.
     \item Trader's final balance: $0$\verb|TKA|, vault's final balance: $910$\verb|TKA|.
 \end{itemize}
 
-\subsubsection{Short position}
+\paragraph{Short position}
 
 Assume the trader believes that the value of the ratio $r = 10$ is about to \emph{decrease} in the future, and that his belief is strong enough that he is willing to post a $100$\verb|TKA| worth of margin and going into a \emph{short position} on \verb|TKB| with a leverage of $10$. At this point, the vault with native token \verb|TKB| checks if it has $1000$\verb|TKA| worth of \verb|TKB| in its pool as of today's market condition: i.e. the vault checks if it has $100$\verb|TKB|. If it does, it exchanges them to obtain $1000$\verb|TKA| from the dex and registers $100$\verb|TKB| net loans. Since the trader already posted $100$\verb|TKA| of margin, the allowance for this position will be $1100$\verb|TKA|. We assume a fee of 1\% on the vault relative to \verb|TKA|, and a risk factor of $50$\% for liquidation.
 
-\textbf{Scenario of decreasing $r$}
 Assume the day after we observe $r = 9$, i.e. a decrease of $10$\% with respect to the previous day. At this point, the trader can choose to close his position selling back a quantity of \verb|TKA| necessary to repay the debt $100$\verb|TKB|, plus $1$\verb|TKB| representing the fee. As of today, only $909$\verb|TKA| are necessary. The extra $191$\verb|TKA| will go to the trader, that is a gain of $91$\% of the original investment when the market has only shown a $10$\% decrease. 
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $100$\verb|TKB|.
@@ -157,27 +176,30 @@ Assume the day after we observe $r = 9$, i.e. a decrease of $10$\% with respect 
 \end{itemize}
 (Notice that the trader has $1$\verb|TKA| more than the analogous scenario we discussed for a long position: this is caused by the fact that the margin posted is in a token, which is different from the one borrowed from the vault. Since the fees are always in the vault's borrowed token, the trader will profit or lose also on the fees for the exchange ratio movements).
 
-\textbf{Scenario of increasing $r$: no liquidation}
 Assume the day after we observe $r = 10.2$, i.e. an increase of $2$\% with respect to the previous day.  At this point, the trader can choose to close his position: the vault will sell back a quantity of \verb|TKA| necessary to obtain back $101$\verb|TKB| to restore the liquidity and get the fees, but now $1030.2$\verb|TKA| are necessary. The trader will then obtain $69.8$\verb|TKA| by closing this position:
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $100$\verb|TKB|.
     \item Trader's final balance: $69.8$\verb|TKA|, vault's final balance: $101$\verb|TKB|.
 \end{itemize}
 
-\textbf{Scenario of increasing $r$: liquidation}
 Assume the day after we observe $r = 10.5$, i.e. an increase of $5$\% with respect to the previous day.  At this point, the vault notices that $1060.5$\verb|TKA| are now necessary to obtain $101$\verb|TKB| to have back the liquidity plus fees. Since the margin is of $100$\verb|TKA|, and the risk factor is set to $50$\%, the position will be \emph{liquidated}. As in the long case, a liquidator will close the position and grab the remaining $39.5$\verb|TKA|.
 \begin{itemize}
     \item Trader's initial balance: $100$\verb|TKA|, vault's initial balance: $100$\verb|TKB|.
     \item Trader's final balance: $0$\verb|TKA|, vault's final balance: $101$\verb|TKB|.
 \end{itemize}
 
-\subsection{Other possibilities}
+\subsubsection{Leveraged staking}
 
-Similar systems allow long trading with non-native token margin, and short trading with native token margin. In any case, the vault's gain will be of $1$\%, while the trader will be more exposed to the exchange ratio if the margin posted is of a non-native type.
+Much less risky than margin trading, {\it leveraged staking} allows trading to stake the vault's liquidity on staking protocols such as Yearn or Aave, and get a boosted APY thanks to the leverage. Margin is needed to cover for occasional losses and to give an implicit deadline on the position: if the interest accrued is so high, that the external protocol's APY cannot cover it, the position could be liquidated.
+
+\subsubsection{Pool Together}
+
+The leveraged staking can be made more elaborate by calling external contracts with stochastic payouts, such as Pool Together. In this way, the quoter needs to always assure that the margin posted and the eventual payout can repay the loan and the accrued interest, and in case to liquidate the position.
 
 \section{Cross-chain support}
 Ithil will support provisioning liquidity from multiple evm-compatible chains as well as running strategies on other chains too.
-For instance, LPs can provide liquidity from Ethereum mainnet, Polygon, Avalanche, Harmony, BSC and strategies can be run on all those L2 and sidechains thanks to Composable finance \textit{Persona}s
+For instance, LPs can provide liquidity from Ethereum mainnet, Polygon, Avalanche, Harmony, BSC and strategies can be run on all those L2 and sidechains thanks to Composable finance \textit{Persona}s.
+
 
 \section{Tokenomics}
 Ithil's tokenomics is the study of the management and usage of the governance token \verb|ITH|, and it is conceived to reach some goals for the protocol:
@@ -188,24 +210,24 @@ Ithil's tokenomics is the study of the management and usage of the governance to
 \item Avoid detrimental arbitrage
 \end{enumerate}
 
-\section{Launch}\label{launch}
+\subsection{Launch}\label{launch}
 
 We start from the assumption that, when a protocol is launched, speculative views are more frequent than in the following period, and trust is not high. In particular, speculators will want to buy \verb|ITH| at launch, to profit from market enthusiasm, and \verb|ITH| price will probably show a typical "pump-and-dump" pattern few days after launch.
 
 After covering various expenses, necessary for the platform activation and to compensate the newborn Ithil community, the liquidity obtained should be used to bootstrap the protocol. Since we assume the buyers of \verb|ITH| to be rational, a launch strategy which attracts many funds and stakers will cause the value of the token to be higher.
 
-\subsection{First phase: partial decentralization}
+\subsubsection{First phase: partial decentralization}
 In a first phase, the governance will be concentrated in the developers group and few other chosen individuals, to avoid predatory governance to damage the protocol at an early stage.
 
 Recall that Ithil's vault is two-fold: the {\it liquidity} is the part of the vault's balance which is free to use, or already used, for investments, while the {\it reserve} cannot be used for risky investments and is intended to cover the liquidity from failed liquidations. The {\it reserve ratio} $\rho$ is the percentage of reserve with respect to the total:
 $$\rho := \frac{\text{reserve}}{\text{reserve} + \text{liquidity}}.$$
 Notice that since Ithil's vault is multi-token, such number is token-specific. To simplify the discussion, we will ignore this in what follows and we will fix one stablecoin, say \verb|DAI|, and refer always to that token's vault. Cross-token issues will be addressed in a separate discussion.
 
-\subsubsection{Bootstrap}\label{bootstrap}
+\paragraph{Bootstrap}\label{bootstrap}
 
 Assume we have raised an amount worth of $M$ \verb|DAI| through the token's launch. We choose an {\it optimal ratio} $\rho_0$ to distribute $M$ in the vault such that $M\rho_0$ goes to the reserve and $M(1-\rho_0)$ to liquidity. In this way, the protocol has some liquidity to start operating and generating fees (thus, it will have a positive APY), even if no staker has yet arrived: this should attract the first stakers. Since no wrapped token are minted to the governance (see next paragraph), the governance {\it must} have a way to sweep away this part of liquidity, otherwise nobody could claim these tokens and they would be lost forever.
 
-\subsubsection{Pumping APY}
+\paragraph{Pumping APY}
 When $M(1-\rho_0)$ is routed to the vault's liquidity, no wrapped token is minted to the governance. This means that the {\it stakers' APY}, meaning the amount of fees per year and per unit staked, is virtually infinite: if a single staker comes to stake $1$\verb|DAI|, he is entitled to the entire amount of fees generated by the liquidity in the vault. (Disclaimer: of course this is not infinite but it's very high. In this example if $\rho_0 = 0.25$ and $M = 1000000$, and assuming average fees of $0.1$\% per day, then the APY seen by that lonely staker would be approximately of 75000\% $\times 365 = 27375000$\% ignoring compounding effects: not a bad return for a stablecoin! If the staker comes to stake $0.01$\verb|DAI|, the previous amount is multiplied by $100$, and so on).
 This very high APY will attract stakers after this early stage; when staking, the APY will go down gradually eventually reaching an equilibrium depending on the protocol's usage. After that, people will not stake anymore and will look for more profitable staking opportunities.
 
@@ -217,7 +239,7 @@ We thus define, by solving Equation \eqref{deposit} with respect to $W$,
 \begin{equation}\label{wrappedTokens}W := \frac{S}{B+L-T-I}D.\end{equation}
 Notice that these are the same formulas as in the whitepaper but with $B-T$ instead of $B$: the proof of absence of arbitrage follows in the same way as in the whitepaper.
 
-\subsubsection{Consequences}
+\paragraph{Consequences}
 At inception, there is a part of fees which need to be assigned to future stakers. The system is such that early stakers take the biggest part of the governance fees, bearing a very high APY for small deposits. In order to overcome such early stakers and get the governance fees, subsequent stakers need to stake more funds, to cover the fees accumulated by the earlier ones.
 
 \begin{example}
@@ -229,40 +251,40 @@ Assuming now staker $B$ comes to stake, staking $1$ \verb|DAI| only entitles him
 
 The above example shows that it is convenient to come first (before fees have been generated) and to stake more than the others do, to obtain a larger portion of the governance fees. This ideally would cause a "run for stake" to get the greatest amount of the cake, with stakers fighting each other to stake more and before all the others.
 
-\subsection{Second phase: DAO}
+\subsubsection{Second phase: DAO}
 When the community is solid enough, we will gradually converge to full decentralization. With respect to the previous discussion, the APY pumping and sweep of the treasury must be re-discussed.
 
-\subsubsection{Redistribution of governance APY}
+\paragraph{Redistribution of governance APY}
 After some point, the amount staked will be much greater than the governance treasury (if it were not, the APY will be still very high and very attractive, thus bringing more stakers). Therefore, the governance fees will only account for a small portion of the protocol fees and will therefore be mostly neglected by the stakers. However, since we assume the governance treasury as {\it constant}, if many stakers withdraw their funds, the relative percentage of the governance fees will be significantly higher, thus bringing the APY back upwards and attracting funds: we foresee these two contrasting forces to balance each other, eventually bringing to a dynamic equilibrium. The initial parameters to get the best possible equilibrium are yet to be computed.
 
-\subsubsection{Sweep of the treasury}
+\paragraph{Sweep of the treasury}
 Via governance vote, the DAO could also decide to sweep away all or part of the treasury or, more aggressively, introduce more funds to raise the APY and produce a new "staking battle" for a new equilibrium.
 
-\section{Advantage for token holders}
+\subsection{Advantage for token holders}
 
 We plan to give value to our Ithil token \verb|ITH| through two main systems: liquidations, and insurance reserve. With the former, holders will have the possibility of grabbing the margin of deteriorated positions thus earning the respective tokens. With the latter, holders will be entitled to rebalance the insurance reserve by withdrawing the part above the optimal ratio $\rho_0$.
 
-\subsection{Liquidation}
+\subsubsection{Liquidation}
 
 As discussed in the whitepaper, liquidation is essential to cover the vault from losses caused by undercollateralized positions. We say that a liquidation is {\it good} if it closes a position and successfully repays the loan caused by that position, and {\it bad} if it closes a position but fails to repay the loan, thus attacking the vault's liquidity. A liquidator must stake \verb|ITH| into the protocol in order to be able to liquidate. The amount of loans he can repay through a single liquidation call will directly depend on how much he has staked.
 
-\subsubsection{Good liquidation}
+\paragraph{Good liquidation}
 If a liquidation call successfully repays the loan linked to one or more positions, then the remaining margin of the positions is transferred to the liquidator, which therefore earns risk-free. This has no effect on the \verb|ITH| he has staked, and gives a clear advantage of holders of Ithil: the more they have, the more they can liquidate, the more they can profit from this.
 
-\subsubsection{Bad liquidation}
+\paragraph{Bad liquidation}
 Let us assume that the reserve ratio at the moment the liquidation is called is $\rho$. Assuming token holders will always try to profit from excess of reserve (see following section), we can assume that the ratio is the optimal one $\rho=\rho_0$.  Liquidators should be compensated anyway, otherwise they could simply revert bad liquidations leaving us with dangerous open positions. Since if a liquidation fails to repay the loan, the liquidity amount and the liquidator's compensation will be covered by the insurance reserve, {\it a bad liquidation will decrease $\rho$} (assuming no withdrawals are made in the meantime). Therefore, some countermeasures should be taken in order to reduce the probability of such an event.
 
-\subsection{Insurance reserve}
+\subsubsection{Insurance reserve}
 
 The optimal ratio $\rho_0$ of Paragraph \ref{bootstrap} is used to determine if profit is generated by Ithil. When fees are generated, a fraction bigger than $\rho_0$ goes to the insurance reserve (the calculation of such portion is dynamic such that the lower the insurance reserve balance, the higher $\rho$. The precise calculation is illustrated in a dedicated section of the documentation). This means that, if few bad liquidations occur, the reserve ratio will grow with fees.
 
 After some time, the vault will be in a state such that $\rho > \rho_0$: after a certain threshold calculated to not waste gas, a bot will swap the extra amount to restore the optimal ratio $\rho_0$, obtaining stablecoins in the process. These stablecoins are transferred to the backing contract (see Section \ref{backing}) and will raise the bid price of \verb|ITH|.
 
-\section{Token backing}\label{backing}
+\subsection{Token backing}\label{backing}
 
 Dumps can be very detrimental to holders at early stage, therefore we will use a system of incremental backing, which never decrease its value with time. This assures that \verb|ITH| cannot ever go below a certain {\it backed price}, and that such price is always non-decreasing.
 
-\subsection{The bid price}
+\subsubsection{The bid price}
 
 This is a contract with one or more stablecoins in its balance. For simplicity, we assume there is only one kind of stablecoin, say \verb|USDC|, in the backing contract. The {\it bid price} of \verb|ITH| will then be
 \begin{equation}\label{bid price}
@@ -275,25 +297,24 @@ $$\beta' = \frac{B - n\pi}{S - n} = \frac{B - n\frac{B}{S}}{S-n} = \frac{B}{S} =
 
 The excess insurance reserve is swapped into stablecoin by a bot, and transferred to the backing contract, thus increasing $B$ and ultimately increasing $\beta$. Since there is no event which causes a decrease of $\beta$, we see that {\it the bid price is a non-decreasing function of time}, and it strictly increases every time fees are distributed to the governance.
 
-\subsection{Initial backing}
+\subsubsection{Initial backing}
 
 When the token is emitted and publicly sold the first time, we can transfer part of the funds obtained to the backing contract, so to guarantee the value of the token cannot go below it. Since no minting is allowed at the first place, there is no direct arbitrage possibility if the token is traded {\it above} the bid price, so the backing implemented is not a pegging. See the following section for further details.
 
-\section{Avoiding detrimental arbitrage}
+\subsection{Avoiding detrimental arbitrage}
 
 As already discussed, a market price below the bid price will open the way to an arbitrage opportunity (buy on market, sell on Ithil), thus bringing the \verb|ITH| market price up. If we also allowed people to {\it buy} \verb|ITH| on Ithil at the bid price, and if the market price is above the bid price, an arbitrage opportunity will arise from buying (mint from Ithil, sell on market). While the former arbitrage can be considered "good", in that increases the token market price, the latter is detrimental to token holders, since it decreases the token market price.
 
-\subsection{The ask price}
+\subsubsection{The ask price}
 We define the {\it ask price} $\alpha$ be the price such that \verb|ITH| can be bought on Ithil at $\alpha$. To avoid a trivial arbitrage on Ithil, we clearly must have $$\alpha \ge \beta.$$
 
 We then define the {\it spread} $\sigma$ as the percentage difference of the bid and the ask price: $$\sigma := \frac{\alpha-\beta}{\beta} \times 100\%.$$
 Notice that letting $\pi$ be the market price of \verb|ITH| on a separate dex, then no arbitrage opportunity arises as long as $\beta \le \pi \le \alpha$. In particular, a higher spread means more freedom on the market price, while a zero spread completely locks the price of \verb|ITH| to one single price (the bid/ask one).  From now on, we will always assume $\sigma > 0$.
 
-\subsubsection{Liquidity mining}
+\paragraph{Liquidity mining}
 Following our philosophy that \verb|ITH| should directly represent the protocol income, the stablecoins extra resulting from a nonzero spread are transfered to the vaults, in the form of treasury-owned liquidity (see Section \ref{launch}). This will have the result of pumping again the APY for that vault, increasing the insurance reserve, and ultimately constructing a positive feedback mechanism which is beneficial to the platform and, in turn, to the holders.
 
 The spread can be dynamically adjusted based on the vault's insurance reserve, so that investors and arbitrageurs can profit from providing liquidity to the right stablecoin vault. A higher insurance reserve means in turn lower interest rates, thus more trades and ultimately more fees and profit for the protocol.
-
 
 \section{Risks}
 
