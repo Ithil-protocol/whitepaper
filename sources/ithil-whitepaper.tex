@@ -52,13 +52,13 @@ Ithil enables leveraged interactions with other DeFi protocols in a composable w
 
 In case a leveraged position is incurring a loss which would cause the protocol's liquidity to be at risk, Ithil uses a decentralised network of bots to liquidate it and prevent impaired loans from becoming detrimental to the protocol itself. Liquidators are compensated when a losing position is closed by them.
 
-Compared to other standard lending protocols [1], the under-collateralization of loans forces borrowed funds and tokens obtained as a result of the investment to never leave the protocol. When a token is exchanged for another one through an external protocol, such as a dex or a staking one, the obtained tokens are transferred to the strategy contract: only at the closure of the position, the profit and loss is computed and the consequent transfers are performed.
+Compared to other standard lending protocols \cite{yahooLending}, the under-collateralization of loans forces borrowed funds and tokens obtained as a result of the investment to never leave the protocol. When a token is exchanged for another one through an external protocol, such as a dex or a staking one, the obtained tokens are transferred to the strategy contract: only at the closure of the position, the profit and loss is computed and the consequent transfers are performed.
 
 \subsection{Why is Ithil different}
-There are many existing protocols [2] trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users. Moreover, unlike most protocols which only use stablecoins-backed loans, Ithil uses {\it value-agnostic vaults}. This means that the ultimate goal of a vault with a given ERC20 token, is to increase its balance in {\it that token}; therefore, the vault's dollar value is an immaterial parameter. In this way, Ithil can provide loans backed by any ERC20 token, gaining in this way also the capacity of being a profitable staking protocols for tokens which are difficult to stake elsewhere [3]. The precise list of tokens supported by Ithil is community-based, and its rational is preventing malicious tokens to be injected into the protocol.
+There are many existing protocols \cite{mediumLending} trying to go beyond traditional overcollateralised lending but fail to offer a seamless user experience and remain limited to the realm of a few highly-educated and wealthy DeFi users. Moreover, unlike most protocols which only use stablecoins-backed loans, Ithil uses {\it value-agnostic vaults}. This means that the ultimate goal of a vault with a given ERC20 token, is to increase its balance in {\it that token}; therefore, the vault's dollar value is an immaterial parameter. In this way, Ithil can provide loans backed by any ERC20 token, gaining in this way also the capacity of being a profitable staking protocols for tokens which are difficult to stake elsewhere \cite{bscShiba}. The precise list of tokens supported by Ithil is community-based, and its rational is preventing malicious tokens to be injected into the protocol.
 
 \section{The Vault}
-As mentioned, leverage is made possible by using the protocol's liquidity. The contract in which liquidity is stored and managed is the {\it vault}: liquidity providers (LPs) can stake their assets in the vault to provide the necessary liquidity, which will be then used by investors, who will pay fees that will be distributed back to LPs. At the eyes of LPs, Ithil is therefore a staking protocol, in which any asset can be staked to generate APY. This is more flexible than other protocols [4] in which only stablecoins or a restricted class of assets can generate income.
+As mentioned, leverage is made possible by using the protocol's liquidity. The contract in which liquidity is stored and managed is the {\it vault}: liquidity providers (LPs) can stake their assets in the vault to provide the necessary liquidity, which will be then used by investors, who will pay fees that will be distributed back to LPs. At the eyes of LPs, Ithil is therefore a staking protocol, in which any asset can be staked to generate APY. This is more flexible than other protocols \cite{binanceYield} in which only stablecoins or a restricted class of assets can generate income.
 
 On the technical side, the various investment strategies borrow funds from the vault through the \verb|borrow| function, and repay the loan when the position is closed calling the \verb|repay| function. Since these functions will move the vault's funds, they are not callable by anyone but the strategies themselves, whose addresses are stored in an array within the vault to implement whitelisting. Such array \verb|strategies| can be modified only by governance vote, to allow a new strategy (or disallow an old one) to use the vault's liquidity.
 
@@ -129,7 +129,7 @@ Notice that both the fees calculations and the payout are agnostic of the partic
 The base strategy contains virtual internal functions which correspond to external contract calls effectively implementing the investment: adding a strategy amounts to implementing these functions. Such functions are \verb|_openPosition|, \verb|_closePosition| and \verb|_quote|. The particular implementation depends on the particular strategy, although the common concept boils down to calling an {\it external contract} and registering the outcome. In particular, \verb|_quote| is a view function used to monitor the status of the position on-chain: besides being useful for display reaason, it is fundamental for liquidators, which can liquidate positions which have too low a  (see Section [SEZIONE]).
 
 \subsection{Liquidation}
-Due to being an undercollateralised lending protocol, Ithil needs to ensure at any given time the traders' positions are covering the fees and the variation in the principal borrowed. If a position becomes insolvent, it goes into liquidation. [6]
+Due to being an undercollateralised lending protocol, Ithil needs to ensure at any given time the traders' positions are covering the fees and the variation in the principal borrowed. If a position becomes insolvent, it goes into liquidation. \cite{arxivLiquidation}
 The base strategy also come equipped with the \verb|liquidate| function, which ascertains whether a position's quoted value is below the minimum threshold. In practice, it calls the function \verb|computeLiquidationScore|, which returns a signed integer representing the "health" of the position: calling $\sigma$ the liquidation score, $c$ the collateral, $\beta$ the risk factor, and $p$ the payout of the position (which is in turn computed via a call to \verb|_quote|), then we have
 $$\sigma = \beta c - p.$$
 The position is {\it liquidatabe} if $\sigma > 0$. If a position is liquidatable, the liquidator can close it and get rewarded for this to compensate for the gas cost and service provided. Liquidators can also aggregate positions to liquidate in batch, to save in gas and overcome other liquidators in speed.
@@ -153,7 +153,7 @@ Much less risky than margin trading, {\it leveraged staking} allows trading to s
 The leveraged staking can be made more elaborate by calling external contracts with stochastic payouts, such as Pool Together. In this way, the quoter needs to always assure that the margin posted and the eventual payout can repay the loan and the accrued interest, and in case to liquidate the position.
 
 \section{Cross-chain support}
-With the explosion of the layer-two solutions as a remedy to the inner limitations of Ethereum mainnet, it seems the future is moving towards interoperability and multi-chain protocols [5].
+With the explosion of the layer-two solutions as a remedy to the inner limitations of Ethereum mainnet, it seems the future is moving towards interoperability and multi-chain protocols \cite{stakedaoInterop}.
 Ithil will support provisioning liquidity from multiple evm-compatible chains as well as running strategies on other chains too.
 For instance, LPs can provide liquidity from Ethereum mainnet, Polygon, Avalanche, Harmony, BSC and strategies can be run on all those L2 and sidechains thanks to Composable finance \textit{Persona}s.
 
@@ -274,24 +274,27 @@ Following our philosophy that \verb|ITH| should directly represent the protocol 
 The spread can be dynamically adjusted based on the vault's insurance reserve, so that investors and arbitrageurs can profit from providing liquidity to the right stablecoin vault. A higher insurance reserve means in turn lower interest rates, thus more trades and ultimately more fees and profit for the protocol.
 
 \section{Risks}
-As DeFi gives more powers to the user, contrary to CeFi [7] it  opens up to a new type of risk scenarios [8] totally different from the ones we are used to from the web2 world. As smart contracts are open source and directly in charge of users' funds, a bug or an exploit in the code can lead to token syphoning, financial manipulation and all sort of attacks that undermine the correct execution of the protocol. 
+As DeFi gives more powers to the user, contrary to CeFi \cite{arxivCeFi} it  opens up to a new type of risk scenarios \cite{arxivIntermediation} totally different from the ones we are used to from the web2 world. As smart contracts are open source and directly in charge of users' funds, a bug or an exploit in the code can lead to token syphoning, financial manipulation and all sort of attacks that undermine the correct execution of the protocol. 
 
 \section{Competitors}
-To testify the need for a truly uncollateralised leverage DeFi primitive, the competition is growing bigger and encompassing newly formed protocols like Gearbox [9]. By reusing NFTs as accounts and building on top of composability, they were able to successfully offer the first glimpse on how leverage can be a ver powerful tool in DeFi to multiply the range of investment opportunities available to the average trader.
+To testify the need for a truly uncollateralised leverage DeFi primitive, the competition is growing bigger and encompassing newly formed protocols \cite{mediumGearbox}. By reusing NFTs as accounts and building on top of composability, they were able to successfully offer the first glimpse on how leverage can be a ver powerful tool in DeFi to multiply the range of investment opportunities available to the average trader.
 
 \section{Acknowledgments}
 
 We would like to thank the incredible Ethereum community for its support and welcoming atmosphere as well as ETHGlobal for running hackathons and on boarding new developers while creating connections with key projects in the DeFi space like Uniswap or Yearn finance.
 
-\section{Bibliography}
-1. https://finance.yahoo.com/news/lending-protocols-rise-defi-lending-191340220.html
-2. https://medium.com/coinmonks/the-current-state-of-undercollateralized-defi-lending-2021-1f84e14527b5
-3. https://www.bsc.news/post/shibaswap-adds-multiple-yield-farms-and-completes-50-000-burn-for-leash-and-shib
-4. https://academy.binance.com/en/articles/what-is-yield-farming-in-decentralized-finance-defi
-5. https://academy.stakedao.org/blockchain-interoperability/
-6. https://arxiv.org/pdf/2106.06389.pdf
-7. https://arxiv.org/pdf/2106.08157.pdf
-8. https://arxiv.org/pdf/2107.14678.pdf
-9. https://medium.com/gearbox-protocol/hello-world-this-is-gearbox-generalized-leverage-protocol-cbec5f34bb98
+\begin{thebibliography}{}
+	
+\bibitem{yahooLending} https://finance.yahoo.com/news/lending-protocols-rise-defi-lending-191340220.html
+\bibitem{mediumLending} https://medium.com/coinmonks/the-current-state-of-undercollateralized-defi-lending-2021-1f84e14527b5
+\bibitem{bscShiba} https://www.bsc.news/post/shibaswap-adds-multiple-yield-farms-and-completes-50-000-burn-for-leash-and-shib
+\bibitem{binanceYield} https://academy.binance.com/en/articles/what-is-yield-farming-in-decentralized-finance-defi
+\bibitem{stakedaoInterop} https://academy.stakedao.org/blockchain-interoperability/
+\bibitem{arxivLiquidation} https://arxiv.org/pdf/2106.06389.pdf
+\bibitem{arxivCeFi} https://arxiv.org/pdf/2106.08157.pdf
+\bibitem{arxivIntermediation} https://arxiv.org/pdf/2107.14678.pdf
+\bibitem{mediumGearbox} https://medium.com/gearbox-protocol/hello-world-this-is-gearbox-generalized-leverage-protocol-cbec5f34bb98
+
+\end{thebibliography}
 
 \end{document}
