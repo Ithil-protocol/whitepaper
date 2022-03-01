@@ -126,7 +126,7 @@ Notice that both the fees calculations and the payout are agnostic of the partic
 
 \subsection{Strategy-specific functions}
 
-The base strategy contains virtual internal functions which correspond to external contract calls effectively implementing the investment: adding a strategy amounts to implementing these functions. Such functions are \verb|_openPosition|, \verb|_closePosition| and \verb|_quote|. The particular implementation depends on the particular strategy, although the common concept boils down to calling an {\it external contract} and registering the outcome. In particular, \verb|_quote| is a view function used to monitor the status of the position on-chain: besides being useful for display reaason, it is fundamental for liquidators, which can liquidate positions which have too low a  (see Section [SEZIONE]).
+The base strategy contains virtual internal functions which correspond to external contract calls effectively implementing the investment: adding a strategy amounts to implementing these functions. Such functions are \verb|_openPosition|, \verb|_closePosition| and \verb|_quote|. The particular implementation depends on the particular strategy, although the common concept boils down to calling an {\it external contract} and registering the outcome. In particular, \verb|_quote| is a view function used to monitor the status of the position on-chain: besides being useful for display reaason, it is fundamental for liquidators, which can liquidate positions which have too low a (see Section [SEZIONE]).
 
 \subsection{Liquidation}
 Due to being an undercollateralised lending protocol, Ithil needs to ensure at any given time the traders' positions are covering the fees and the variation in the principal borrowed. If a position becomes insolvent, it goes into liquidation. \cite{arxivLiquidation}
@@ -140,7 +140,7 @@ The position is {\it liquidatabe} if $\sigma > 0$. If a position is liquidatable
 
 The first strategy we consider and support is Margin Trading. This is a classical investment strategy in which a trader borrows some tokens in an undercollateralized way, and swaps them on a dex to speculate on a price change of a particular token pair. When such swap is performed, a {\it position} is opened, which is stored onchain on Ithil's contract. The amount of tokens borrowed is called the {\it principal} of the position, while the amount obtained from the swap is the {\it allowance}.
 
-Since the loan is undercollateralized, the allowance does not actually goes into the trader's hand. It is more convenient to say that the trader has bought the "right" to move the balance from the dealer's account to and from an external dex (which we will consider fixed).
+Since the loan is undercollateralized, the allowance does not actually go into the trader's hand. It is more convenient to say that the trader has bought the "right" to move the balance from the dealer's account to and from an external dex (which we will consider fixed).
 
 We define the {\it ratio} $r$ as the exchange value of \verb|TKB|/\verb|TKA| as published by the dex. This can be seen as the number of tokens \verb|TKA| one can obtain by exchanging one unit of \verb|TKB|. Notice that things in reality are much more complicated, since the very action of exchanging tokens in the dex will move this ratio; we will not discuss these subtleties now and simply assume that if we exchange $x$ \verb|TKB| on the dex, we will get $xr$ \verb|TKA|. Ithil has quoters implemented to get precise estimates of an amount obtained by the dex, which are used to perform liquidation calculations (see later).
 
@@ -197,7 +197,7 @@ We thus define, by solving Equation \eqref{deposit} with respect to $W$,
 Notice that these are the same formulas as in the whitepaper but with $B-T$ instead of $B$: the proof of absence of arbitrage follows in the same way as in the whitepaper.
 
 \paragraph{Consequences}
-At inception, there is a part of fees which need to be assigned to future stakers. The system is such that early stakers take the biggest part of the governance fees, bearing a very high APY for small deposits. In order to overcome such early stakers and get the governance fees, subsequent stakers need to stake more funds, to cover the fees accumulated by the earlier ones.
+At inception, there is a part of fees which need to be assigned to future stakers. The system is such that early stakers take the biggest part of the governance fees, bearing a very high APY for small deposits. In order to overcome such early stakers and get the governance fees, subsequent stakers need to stake more funds, to safeguard the fees accumulated by the earlier ones.
 
 \begin{example}
 Assume we have accumulated $1000000$ \verb|DAI| at inception (from now on, all amounts will be in \verb|DAI| unless otherwise specified) and that we choose the optimal ratio to be $\rho_0 = 0.25$, so that we have $T = 750000$ and $I = 250000$, and a total balance of $B = 1000000$. We assume also no open loans, so $L = 0$, and no stakers, so $S = 0$.
@@ -223,13 +223,13 @@ We plan to give value to our Ithil token \verb|ITH| through two main systems: li
 
 \subsubsection{Liquidation}
 
-As discussed in the whitepaper, liquidation is essential to cover the vault from losses caused by undercollateralized positions. We say that a liquidation is {\it good} if it closes a position and successfully repays the loan caused by that position, and {\it bad} if it closes a position but fails to repay the loan, thus attacking the vault's liquidity. A liquidator must stake \verb|ITH| into the protocol in order to be able to liquidate. The amount of loans he can repay through a single liquidation call will directly depend on how much he has staked.
+As discussed in the whitepaper, liquidation is essential to secure the vault from losses caused by undercollateralized positions. We say that a liquidation is {\it good} if it closes a position and successfully repays the loan caused by that position, and {\it bad} if it closes a position but fails to repay the loan, thus attacking the vault's liquidity. A liquidator must stake \verb|ITH| into the protocol in order to be able to liquidate. The amount of loans he can repay through a single liquidation call will directly depend on how much he has staked.
 
 \paragraph{Good liquidation}
 If a liquidation call successfully repays the loan linked to one or more positions, then the remaining margin of the positions is transferred to the liquidator, which therefore earns risk-free. This has no effect on the \verb|ITH| he has staked, and gives a clear advantage of holders of Ithil: the more they have, the more they can liquidate, the more they can profit from this.
 
 \paragraph{Bad liquidation}
-Let us assume that the reserve ratio at the moment the liquidation is called is $\rho$. Assuming token holders will always try to profit from excess of reserve (see following section), we can assume that the ratio is the optimal one $\rho=\rho_0$.  Liquidators should be compensated anyway, otherwise they could simply revert bad liquidations leaving us with dangerous open positions. Since if a liquidation fails to repay the loan, the liquidity amount and the liquidator's compensation will be covered by the insurance reserve, {\it a bad liquidation will decrease $\rho$} (assuming no withdrawals are made in the meantime). Therefore, some countermeasures should be taken in order to reduce the probability of such an event.
+Let us assume that the reserve ratio at the moment the liquidation is called is $\rho$. Assuming token holders will always try to profit from excess of reserve (see following section), we can assume that the ratio is the optimal one $\rho=\rho_0$.  Liquidators should be compensated anyway, otherwise they could simply revert bad liquidations leaving us with dangerous open positions. Since if a liquidation fails to repay the loan, the liquidity amount and the liquidator's compensation will be repaid by the insurance reserve, {\it a bad liquidation will decrease $\rho$} (assuming no withdrawals are made in the meantime). Therefore, some countermeasures should be taken in order to reduce the probability of such an event.
 
 \subsubsection{Insurance reserve}
 
@@ -249,7 +249,7 @@ This is a contract with one or more stablecoins in its balance. For simplicity, 
 \end{equation} 
 where $B$ is the \verb|USDC| balance of the backing contract, and $S$ is the total \verb|ITH| circulating supply (that is, excluding the supply locked in the backing contract).
 
-Ithil always guarantees that any \verb|ITH| can be redeemed on the platform at the bid price, therefore the market cannot price \verb|ITH| less than $\beta$, otherwise this will lead to arbitrage (and subsequent increase of the market price). Notice that redeeming does not  keeping the bid price constant: redeeming $n$ \verb|ITH| we will have
+Ithil always guarantees that any \verb|ITH| can be redeemed on the platform at the bid price, therefore the market cannot price \verb|ITH| less than $\beta$, otherwise this will lead to arbitrage (and subsequent increase of the market price). Notice that redeeming does not keep the bid price constant: redeeming $n$ \verb|ITH| we will have
 $$\beta' = \frac{B - n\pi}{S - n} = \frac{B - n\frac{B}{S}}{S-n} = \frac{B}{S} = \beta.$$
 
 The excess insurance reserve is swapped into stablecoin by a bot, and transferred to the backing contract, thus increasing $B$ and ultimately increasing $\beta$. Since there is no event which causes a decrease of $\beta$, we see that {\it the bid price is a non-decreasing function of time}, and it strictly increases every time fees are distributed to the governance.
@@ -266,7 +266,7 @@ As already discussed, a market price below the bid price will open the way to an
 We define the {\it ask price} $\alpha$ be the price such that \verb|ITH| can be bought on Ithil at $\alpha$. To avoid a trivial arbitrage on Ithil, we clearly must have $$\alpha \ge \beta.$$
 
 We then define the {\it spread} $\sigma$ as the percentage difference of the bid and the ask price: $$\sigma := \frac{\alpha-\beta}{\beta} \times 100\%.$$
-Notice that letting $\pi$ be the market price of \verb|ITH| on a separate dex, then no arbitrage opportunity arises as long as $\beta \le \pi \le \alpha$. In particular, a higher spread means more freedom on the market price, while a zero spread completely locks the price of \verb|ITH| to one single price (the bid/ask one).  From now on, we will always assume $\sigma > 0$.
+Notice that letting $\pi$ be the market price of \verb|ITH| on a separate dex, then no arbitrage opportunity arises as long as $\beta \le \pi \le \alpha$. In particular, a higher spread means more freedom on the market price, while a zero spread completely locks the price of \verb|ITH| to one single price (the bid/ask one). From now on, we will always assume $\sigma > 0$.
 
 \paragraph{Liquidity mining}
 Following our philosophy that \verb|ITH| should directly represent the protocol income, the stablecoins extra resulting from a nonzero spread are transfered to the vaults, in the form of treasury-owned liquidity (see Section \ref{launch}). This will have the result of pumping again the APY for that vault, increasing the insurance reserve, and ultimately constructing a positive feedback mechanism which is beneficial to the platform and, in turn, to the holders.
@@ -274,10 +274,10 @@ Following our philosophy that \verb|ITH| should directly represent the protocol 
 The spread can be dynamically adjusted based on the vault's insurance reserve, so that investors and arbitrageurs can profit from providing liquidity to the right stablecoin vault. A higher insurance reserve means in turn lower interest rates, thus more trades and ultimately more fees and profit for the protocol.
 
 \section{Risks}
-As DeFi gives more powers to the user, contrary to CeFi \cite{arxivCeFi} it  opens up to a new type of risk scenarios \cite{arxivIntermediation} totally different from the ones we are used to from the web2 world. As smart contracts are open source and directly in charge of users' funds, a bug or an exploit in the code can lead to token syphoning, financial manipulation and all sort of attacks that undermine the correct execution of the protocol. 
+As DeFi gives more powers to the user, contrary to CeFi \cite{arxivCeFi} it opens up to a new type of risk scenarios \cite{arxivIntermediation} totally different from the ones we are used to from the web2 world. As smart contracts are open source and directly in charge of users' funds, a bug or an exploit in the code can lead to token syphoning, financial manipulation and all sort of attacks that undermine the correct execution of the protocol. 
 
 \section{Competitors}
-To testify the need for a truly uncollateralised leverage DeFi primitive, the competition is growing bigger and encompassing newly formed protocols \cite{mediumGearbox}. By reusing NFTs as accounts and building on top of composability, they were able to successfully offer the first glimpse on how leverage can be a ver powerful tool in DeFi to multiply the range of investment opportunities available to the average trader.
+To testify the need for a truly uncollateralised leverage DeFi primitive, the competition is growing bigger and encompassing newly formed protocols \cite{mediumGearbox}. By reusing NFTs as accounts and building on top of composability, they were able to successfully offer the first glimpse on how leverage can be a very powerful tool in DeFi to multiply the range of investment opportunities available to the average trader.
 
 \section{Acknowledgments}
 
