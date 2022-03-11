@@ -403,7 +403,7 @@ The Base Strategy does not deal with the actual implementation of any particular
 
 Ithil's modularity allows to list or de-list Strategies at any time, through a governance decision. The fact that much of the logic is contained in the Base Strategy significantly reduces the effort necessary to code a particular implementation.
 
-The Base Strategy has three \verb|virtual| functions, \verb|_openPosition|, \verb|_closePosition| and \verb|quote|. The Strategy's implementation just needs to inherit the Base Strategy and implement these functions.
+The Base Strategy has three \verb|virtual| functions: two \verb|internal| ones named \verb|_openPosition| and \verb|_closePosition|, and a \verb|public| one named \verb|quote|. The Strategy's implementation just needs to inherit the Base Strategy and implement these functions.
 
 \begin{itemize}
 \item \verb|_openPosition| accepts an \verb|Order| data structure, which has \verb|spentToken| and \verb|obtainedToken| as address members. The goal of \verb|_openPosition| is to spend \verb|spentTokens| on some external DeFi protocol, and obtain some quantity of \verb|obtainedToken|. Also, the amount spent should not be above the \verb|maxSpent| field of the Order, and the amount obtained not below the \verb|minObtained| field of the order. Except for that, the function will attempt to obtain as many tokens as possible, or spending as few as possible depending on the particular cases. This is an \verb|internal| function.
@@ -421,7 +421,50 @@ However, since they are rather different in nature, riskiness, and implementatio
  
 \subsubsection{Leveraged yield farming}\label{lyfSubSub}
 
+In {\bf Leveraged Yield Farming} (LYF), a token of the Vault's can be staked in an external protocol, to obtain the APY provided by that protocol and eventually some other tokens associated to liquidity mining programs. Since there are numerous protocols in the DeFi space offering this service, this Strategy is, in reality, a {\it class of strategies}: Strategies using different protocols must be implemented separately.
+
+Typically, these kind of strategies are of relatively low risk. However, the possibility of negative APY on the external protocol, aplified by the eventual leverage requested by the user, make it necessary to provide a non-zero risk factor (see \ref{rflsSub}) to these strategies as well. Among other things, elements such as the external protocol's reliability, its TVL, the nature of the staked tokens and the presence of liquidity mining programs are taken into consideration when assessing the riskiness of a staking strategy.
+
+In what follows, consider a scenario in which \verb|TKA| can be staked into some external {\bf staking protocol} which we call SP. For simplicity, assume there is no liquidity mining program, and that SP gives back wrapped tokens \verb|spTKA| to represent the staked liquidity. As a disclaimer, notice that the numbers listed in the following example are ficticious.
+
+\begin{itemize}
+\item A user posts a margin of 100 \verb|TKA| to the LYF Strategy contract, and decides to go with a 10x leverage.
+\item The Strategy will borrow 900 \verb|TKA| from the Vault and stake the 1000 \verb|TKA| on SP, obtaining say 1000 \verb|spTKA|.
+\item Assume that, after one month, the rolling APR of SP has been 60\%, thus giving a monthly gain of 5\%. Assume also that the monthly interest rate applied by Ithil's Vault has been 3\%.
+\item If the user closes its position, the Strategy will redeem 1000 \verb|spTKA| on SP, to obtain 1050 \verb|TKA|. The Strategy then repays the Vault with 927 \verb|TKA| (900 \verb|TKA| borrowed, plus 3\%). 
+\item The remaining 123 \verb|TKA| are given back to the user.
+\end{itemize}
+Notice that the user has seen a 23\% gain in one month, using a staking protocol which has only given 5\% of yield. This is the effect of the leverage, damped by Ithil's interest rate.
+
+Notice also, that if in the previous scenario the monthly gain obtained by SP were {\it below} Ithil's interest rate of $3\%$, then by closing the user would incur a {\it loss} or, if the loss is too heavy, the user could be liquidated (see Section \ref{liqSec}).
+
+The margin, together with the liquidation process, ensures that the $900$ \verb|TKA| lent by the Vault to Strategy, will be repaid in any case to the Vault (except BLE's, see \ref{liqSub0}, in which the repayment is guaranteed by the IRL).
+
 \subsubsection{Margin trading}\label{mtSubSub}
+
+The {\bf Margin Trading Strategy} (MTS) consists of exchanging directly some amount of \verb|TKA| into some other amount of \verb|TKB| using an external Decentralized Exchange ({\it dex}) or Automatic Market Maker ({\it AMM}). \footnote{Many times, the terms are used quite interchangeably, and some protocols have aspects of both a dex and an AMM, therefore the distinction is often not so important.}  As in \ref{lyfSubSub}, since there are many protocols offering these services, this Strategy is actually a class of Strategies: Strategies using different protocols must be implemented separately.
+
+Depending on the tokens exchanged, these Strategies can be highly risky: if the price of \verb|TKB| moves in a way, which is different from the one foreseen by the user at the moment the position is opened, the user can incur into high losses, amplified by the leverage requested. Conversely, if the price moves favorably for the user, the potential gains are extremely high, thanks to the leverage. The risk factors (see \ref{rflsSub}) of these strategies are specific to the pair of tokens traded, and elements like historic volatility of the tokens' price and the external dex's pool liquidity are taken into account to assess the riskiness of a token pair.
+
+Let us make a numerical example of a {\bf long position} of \verb|TKA| against \verb|TKB| (the user foresees that the exchange rate \verb|TKA|/\verb|TKB| will {\it increase}) on an external dex that we call DEX:
+
+\begin{itemize}
+\item A user posts a margin of 100 \verb|TKA| to the MTS contract and decides to go long with a x10 leverage on \verb|TKB|.
+\item Assuming an exchange rate of 50 \verb|TKA|/\verb|TKB|, the MTS will then borrow 900 \verb|TKA| from the Vault, say at a daily interest rate of 0.4\% and exchange 1000 \verb|TKA| to obtain 20 \verb|TKB| from DEX. 
+\item If the user closes the position after 10 days, and the exchange rate provided by DEX has increased by 20\% to 60 \verb|TKA|/\verb|TKB|, then exchanging 20 \verb|TKB| back will provide 1200 \verb|TKA| to the MTS.
+\item The MTS will repay the 936 \verb|TKA| to the vault (900 borrowed plus 4\% interest) and deliver the remaining 264 \verb|TKA| to the user.
+\end{itemize}
+
+Notice that, with a market movement of only 20\%, the user has realised a 164\% gain thanks to the 10x leverage.
+In the case of a {\bf short position} of \verb|TKA| against \verb|TKB| (the user foresees that the exchange rate \verb|TKA|/\verb|TKB| will {\it decrease}) the situation is similar:
+
+\begin{itemize}
+\item A user posts a margin of 100 \verb|TKA| to the MTS contract and decides to go short with a x10 leverage on \verb|TKB|.
+\item Assuming an exchange rate of 50 \verb|TKA|/\verb|TKB|, the MTS will then borrow 20 \verb|TKB| from the vault, say at a daily interest rate of 0.4\% and exchange them on DEX to obtain 1000 \verb|TKA|. At this point, 1100 \verb|TKA| are locked in the MTS as allowance.
+\item If the user closes the position after 10 days, when the exchange rate has decreased by 20\% to 40 \verb|TKA|/\verb|TKB|, then only 832 \verb|TKA| are necessary to obtain the 20.8 \verb|TKB| back to repay the vault (20 borrowed plus 4\% interest).
+\item The Strategy performs the swap of 832 \verb|TKA| to repay the Vault, and delivers the remaining 268 \verb|TKA| to the user. 
+\end{itemize}
+Again, a market movement of only 20\% has made the trader earn 168\% thanks to the 10x leverage.
 
 \section{Liquidations}\label{liqSec}
 \subsection{Liquidators}\label{liqSub}
