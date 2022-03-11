@@ -399,9 +399,29 @@ The two Vault functions to deal with this process are \verb|borrow| and \verb|re
 \end{itemize}
 
 \subsection{Strategy implementation}\label{siSub}
+The Base Strategy does not deal with the actual implementation of any particular investment. By "implementation" we mean all the necessary external contract calls \footnote{Of course, even internal transfers are {\it a priori} possible.} which have the final effect of having an {\it exposure} to some external market movement. Such movement can be, in principle of any type: from the increase of the share price of an LP token (for instance when staking into a yield-providing protocol \ref{lyfSubSub}), to the appreciation of one token with respect to the other (for instance in margin trading, see \ref{mtSubSub}), to an exposure to real-world assets like in synthetics-related strategies, to raffles, etc...
+
+Ithil's modularity allows to list or de-list Strategies at any time, through a governance decision. The fact that much of the logic is contained in the Base Strategy significantly reduces the effort necessary to code a particular implementation.
+
+The Base Strategy has three \verb|virtual| functions, \verb|_openPosition|, \verb|_closePosition| and \verb|quote|. The Strategy's implementation just needs to inherit the Base Strategy and implement these functions.
+
+\begin{itemize}
+\item \verb|_openPosition| accepts an \verb|Order| data structure, which has \verb|spentToken| and \verb|obtainedToken| as address members. The goal of \verb|_openPosition| is to spend \verb|spentTokens| on some external DeFi protocol, and obtain some quantity of \verb|obtainedToken|. Also, the amount spent should not be above the \verb|maxSpent| field of the Order, and the amount obtained not below the \verb|minObtained| field of the order. Except for that, the function will attempt to obtain as many tokens as possible, or spending as few as possible depending on the particular cases. This is an \verb|internal| function.
+\item \verb|_closePosition| accepts a \verb|Position| data structure, which has \verb|owedToken| and \verb|heldToken| as address members, and an \verb|allowance| member representing the quantity of \verb|heldToken| entitled to the position. The goal of \verb|_closePosition| is to spend \verb|heldToken| on some external DeFi protocols, to obtain some \verb|owedToken|. The maximum amount of \verb|heldToken| to spend is always the position's \verb|allowance|. \footnote{Except for tokens with a reflection: in this case the reflected tokens can also be spent.} Depending on the cases, the function will try to spend as little as possible to obtain a fixed amount, or to spend the maximum amount to obtain as much as possible. This is an \verb|internal| function.
+\item \verb|quote| accepts two tokens \verb|source| and \verb|destination|, and an \verb|amount| as parameters. The goal of this function is to tell how many \verb|destination| tokens one would obtain by exchanging an \verb|amount| of \verb|source| tokens with the same methods as the one implemented in \verb|_closePosition|. This is a \verb|public view| function.
+\end{itemize}
+
+Once these three functions are implemented, the Strategy contract is not \verb|abstract| anymore, and it can be deployed and, eventually, whitelisted by the governance to be used on Ithil. If a Strategy is implemented, deployed but not whitelisted, it will not be able to call the \verb|borrow| and \verb|repay| functions of the Vault, thus resulting in a revert. Notice that since \verb|_openPosition| and \verb|_closePosition| are \verb|internal|, they cannot be accessed directly: there is no way to exchange tokens within a Strategy except calling a function in the Base Strategy contract.
+
 \subsection{Example of strategies}\label{exstrSub}
-\subsubsection{Margin trading}\label{mtSubSub}
+
+In what follows, two examples of strategies are given. It is important to understand that these two are just examples, and they are inserted here {\it for illustration purposes only}: they are by no means the "most important" or "most used", or "most anything" ones. Moreover, giving a comprehensive treatment of these strategies, or of others, is out of the scope of this whitepaper. 
+
+However, since they are rather different in nature, riskiness, and implementation, they illustrate well the flexibility of Ithil's architecture.
+ 
 \subsubsection{Leveraged yield farming}\label{lyfSubSub}
+
+\subsubsection{Margin trading}\label{mtSubSub}
 
 \section{Liquidations}\label{liqSec}
 \subsection{Liquidators}\label{liqSub}
