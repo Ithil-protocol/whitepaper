@@ -524,19 +524,31 @@ In this method, the position is closed by launching a \verb|_closePosition|. Thi
 
 This is the liquidation system with the lowest risk for the liquidator, since no amount needs to be paid to perform it. However, it is more complex (and thus expensive) in terms of gas.
 
-(EXAMPLE)
+\begin{example}\label{mtLiqEx1}
+Let us take the example of the Margin Trading Strategy as in \ref{mtSubSub}. Assume the risk factor of the position is $\beta = 0.5$, that the position is long \verb|TKB| versus \verb|TKA| with 100 \verb|TKA| as collateral, the exchange rate is $50$ \verb|TKA|/\verb|TKB|, and assume the user has requested x10 leverage so that 1000 \verb|TKA| are exchanged to get 20 \verb|TKB| from an external DEX. If the exchange rate goes down until 48 \verb|TKA|/\verb|TKB|, and the fees accumulated so far are of 15\verb|TKA| the quoter would calculate $$\text{P\&L} =  48\ \verb|TKA|/\verb|TKB| \times 20  \verb|TKB| -  900 \verb|TKA| - 15\verb|TKA|= 45  \verb|TKA| $$ therefore the liquidation score would be $$\lambda = 0.5 \times 100\verb|TKA| - 45 \verb|TKA| = 5  \verb|TKA| > 0 $$
+
+Therefore, the position can be liquidated by swapping back the allowance of 20\verb|TKB|, obtaining 960\verb|TKA| from the DEX which will be used to pay the 915\verb|TKA| due to repay the Vault's loan and fees, and the remaining part is split between the treasury, the liquidator, and the original position owner following the scheme of Section \ref{liqrewSub}.
+\end{example}
 
 \subsubsection{Position purchase}\label{ppSubSub}
 The liquidator can also choose to purchase the position's held tokens by repaying the Vault. To do this, the liquidator transfers the principal amount and the fees to the Vault, and the Strategy transfers the tokens locked in the position to the liquidator's address. The position is then deleted, and the liquidator can choose what to do with the assets obtained.
 
 This is the quickiest and most gas-efficient way to liquidate, but it requires a high down payment from the liquidator (the principal and due fees to the Vault), moreover the assets obtained are value at risk for the liquidator, who must manage them well afterwards to obtain a good gain.
 
-(EXAMPLE)
+\begin{example}\label{mtLiqEx2}
+In the same situation as Example \ref{mtLiqEx1}, a liquidator can directly transfer 915\verb|TKA| to the Vault to close the liquidable position, and have the allowance of 20\verb|TKB| be transferred to the address used to call the liquidation function. At this point, the liquidator is free to use these 20\verb|TKB| as preferred. Swapping them back to DEX as in \ref{mtLiqEx1} (if the price hasn't changed in the meantime) would yield $960$\verb|TKA| to the liquidator, thus realizing a gain of $960-915 = 45$ \verb|TKA| for the full procedure. However, the liquidator might want to keep them for other reasons, or use them in separate investments. 
+\end{example}
 
 \subsubsection{Margin call}\label{mcSubSub}
 Not technically a "liquidation", since the effect of the margin call is not the closure of a position, a liquidator can choose to insert more margin into the position to make the liquidation score back negative (see \ref{rflsSub}). If this is the case, the position {\it stays open} and the liquidator becomes its owner, thus leaving to the liquidator the decision of what to do with it.
 
 It requires a small down payment and is not too expensive in terms of gas, but keeping the position open the liquidator stays exposed to the position's risk, and must be careful not to be in turn liquidated if the market keeps on moving unfavorably.
+
+\begin{example}\label{mtLiqEx3}
+In the situation of \ref{mtLiqEx1}, the liquidator can choose to perform a margin call by transferring $20$\verb|TKA| to the vault. In this way, the position's principal becomes $880$ \verb|TKA|, thus the new payoff will be $$\text{P\&L} =  48\ \verb|TKA|/\verb|TKB| \times 20  \verb|TKB| -  880 \verb|TKA| - 15\verb|TKA|= 65  \verb|TKA| $$
+and the new collateral is $100 + 20 = 120 \verb|TKA|$. Therefore, the liquidation score becomes $$\lambda = 0.5\times 120\verb|TKA| - 65\verb|TKA| = -5\verb|TKA| < 0 $$
+and the position is not liquidable anymore. The liquidator becomes now the owner of this open position, and can choose what to do with it. Closing it immediately would deliver a payoff of 65\verb|TKA| to the liquidator, which will then realize a gain of $65-20 = 45$\verb|TKA| for the full procedure. Notice that in all cases, the liquidator gets 45\verb|TKA| in the situation considered: all methods give the same payoff opportunity to the liquidator.
+\end{example}
 
 \subsection{Liquidator's rewards}\label{liqrewSub}
 \subsection{Staking governance tokens}\label{sgtSub}
