@@ -466,10 +466,78 @@ In the case of a {\bf short position} of \verb|TKA| against \verb|TKB| (the user
 \end{itemize}
 Again, a market movement of only 20\% has made the trader earn 168\% thanks to the 10x leverage.
 
-\section{Liquidations}\label{liqSec}
+\section{Risk and liquidations}\label{liqSec}
+Since Ithil's loans to a given Strategy can be undercollateralized, if the market moves in an unfavorable direction, the liquidity borrowed from the Vault during the opening of a given position can become at risk. If this happens, the position can be {\bf liquidated}, i.e. forcefully closed in some of the available ways (see \ref{tolSub}), in order to complete the repayment of the loan taken from the Vault.
+
+Ithil's liquidation system is totally {\it decentralized}: anyone can liquidate open positions by launching the functions of the \verb|Liquidator| smart contract. The check for liquidability of a given position is totally {\it on chain} and it is based on the usage of the \verb|quote| function of the particular Strategy (see \ref{siSub}): this assesses the value of a given position in the moment the function is called, and together with the {\bf risk factor} contributes to the calculation of the {\bf liquidation score} (see \ref{rflsSub}). If the liquidation score of a given position is positive, the position is {\bf liquidable}, and can be closed by the liquidator, who gets rewards doing this (see \ref{liqrewSub}).
+
+Liquidation is done at the level of the Base Strategy (see \ref{asSub}), in particular it does not depend on the particular strategy implementation: the liquidator is free to choose the most convenient liquidation system for the particular strategy.
+
 \subsection{Liquidators}\label{liqSub}
+In what follows, a {\bf liquidator} is any address attempting to liquidate one or more positions, using any of the available liquidation systems (see \ref{tolSub}). In order to liquidate, the liquidator must give
+\begin{itemize}
+\item The {\bf Strategy's address}: the particular Strategy in which the liquidated position resides.
+\item The {\bf position's id} of the liquidated position: recall that the positions are stored onchain, and the id is required to identify them.
+\item Further parameters, depending on the particular liquidation system.
+\end{itemize}
+
+Once the position is liquidated, it is deleted and it will not be visible anymore onchain. Since liquidating a position can come with high rewards (see \ref{liqrewSub}), a fast liquidation is crucial for the liquidator, in order not to be front-run by other liquidators.
+
+When one of the available liquidation systems is used, the contract checks the liquidability of the position on-chain. If the position is found to be not liquidable (with a negative liquidation score: see \ref{rflsSub}), the call is reverted. In particular, an off-chain check, although not necessary, would be beneficial to any liquidator to avoid the gas costs associated with a reverted call. The key function \verb|computeLiquidationScore| (see \ref{rflsSub}) is \verb|public view| and can therefore be called without any gas cost, thus assuring complete alignment of on-chain and off-chain checks.
+
+Ithil's {\bf treasury} (see \ref{ItSub}) participates in the liquidation process just like any other liquidator: no particular advantage is given to the treasury with respect to any other address. The rewards eventually accumulated by the treasury are totally redistributed to Ithil's community via the backing contract (see \ref{bpaSub}), thus contributing to the increase of Ithil's value.
+
 \subsection{Risk factor and liquidation score}\label{rflsSub}
+
+The {\bf risk factor} is a parameter already discussed upon in Section \ref{fgSub}: it is a number $0 < \beta < 1$ assessing the riskiness of the particular investment taken. The risk factor is calculated as
+\begin{equation}\label{riskfactor}
+\beta = \frac{L_{\text{strategy}}}{L_{\text{tot}}}\beta_0
+\end{equation}
+where $L_{\text{strategy}}$ is the loan taken for that particular strategy and token pair, $L_{\text{tot}}$ is the total loans for the particular token borrowed, and $\beta_0$ is a base parameter decided by the governance: from \eqref{riskfactor}, it is clear that $\beta_0$ corresponds to the risk factor the Vault would have, if all its loans were concentrated in that single investment.
+
+Notice that, following \ref{irSubSub}, the higher the risk factor, the higher the interest rate necessary to open a position. In particular, Equation \eqref{riskfactor} favors {\it diversification}: it is not convenient to open a new position if the Vault is already too exposed in a given investment.
+
+The risk factor enters directly into the calculation of the {\bf liquidation score} $\lambda$, which is the parameter used to assess the liquidability of a given position. The liquidation score is computed via \verb|computeLiquidationScore|, which is a \verb|public view| function. Such function computes the {\bf profit-and-loss} P\&L of a given position using the \verb|quote| function. Precisely,
+\begin{equation}\label{profitandloss}
+\text{P\&L} = \begin{cases}
+\text{obtained} - \text{principal} - \text{fees}, & \text{ if collateral } = \text{ owed } \\
+\text{allowance} - \text{cost}, & \text{ if collateral } = \text{ held }.
+\end{cases}
+\end{equation}
+
+In \eqref{profitandloss}, "obtained" is the amount of owed tokens obtained by exchanging the allowance, and "cost" is the cost of repaying the quantity principal + fees; both are calculated by \verb|quote|, thus they are as if the position had to be closed in the moment the P\&L is calculated. In short, the P\&L is the amount of tokens the user would obtain if the position were closed in that moment: see Section \ref{stratSec} for more details on these concepts.
+
+The liquidation score is finally computed as
+\begin{equation}\label{liquidationscore}
+\lambda = \beta \times \text{collateral} - \text{P\&L}.
+\end{equation}
+
+The position is said to be {\bf liquidable} if $\lambda > 0$: as mentioned, if a liquidation call results in $\lambda \le 0$, the call is reverted and liquidation does not occur.
+
+Notice that, if $\lambda = 0$, we have $\text{P\&L} = \beta\times\text{collateral}$, therefore $\beta$ can be seen as the {\it loss} the collateral can experience before a position gets liquidated. In particular, a positive collateral amount is still left at the moment liquidation occurs, thus making the Vault's repayment more robust and allowing to reward the liquidator (see \ref{liqrewSub}).
+
 \subsection{Types of liquidations}\label{tolSub}
+There are three types of possible liquidation procedures, all of them have the main goal of either repay the Vault's loan, or to make the position's liquidation score \eqref{liquidationscore} negative by increasing the collateral.
+
+\subsubsection{Forced closure}\label{fcSubSub}
+In this method, the position is closed by launching a \verb|_closePosition|. This has the same effect, on the Vault's side, as the user directly closes the position, except that the payoff given to the user will be significantly smaller due to the liquidator's reward. As in \ref{cpSubSub}, the owed tokens obtained by the closure are transferred to the Vault in order to repay the loan, and the remaining collateral is split between the liquidator, the position's original owner, and the treasury (see \ref{sgtSub}).
+
+This is the liquidation system with the lowest risk for the liquidator, since no amount needs to be paid to perform it. However, it is more complex (and thus expensive) in terms of gas.
+
+(EXAMPLE)
+
+\subsubsection{Position purchase}\label{ppSubSub}
+The liquidator can also choose to purchase the position's held tokens by repaying the Vault. To do this, the liquidator transfers the principal amount and the fees to the Vault, and the Strategy transfers the tokens locked in the position to the liquidator's address. The position is then deleted, and the liquidator can choose what to do with the assets obtained.
+
+This is the quickiest and most gas-efficient way to liquidate, but it requires a high down payment from the liquidator (the principal and due fees to the Vault), moreover the assets obtained are value at risk for the liquidator, who must manage them well afterwards to obtain a good gain.
+
+(EXAMPLE)
+
+\subsubsection{Margin call}\label{mcSubSub}
+Not technically a "liquidation", since the effect of the margin call is not the closure of a position, a liquidator can choose to insert more margin into the position to make the liquidation score back negative (see \ref{rflsSub}). If this is the case, the position {\it stays open} and the liquidator becomes its owner, thus leaving to the liquidator the decision of what to do with it.
+
+It requires a small down payment and is not too expensive in terms of gas, but keeping the position open the liquidator stays exposed to the position's risk, and must be careful not to be in turn liquidated if the market keeps on moving unfavorably.
+
 \subsection{Liquidator's rewards}\label{liqrewSub}
 \subsection{Staking governance tokens}\label{sgtSub}
 
