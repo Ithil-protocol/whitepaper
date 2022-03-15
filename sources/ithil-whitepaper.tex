@@ -520,7 +520,7 @@ Notice that, if $\lambda = 0$, we have $\text{P\&L} = \beta\times\text{collatera
 There are three types of possible liquidation procedures, all of them have the main goal of either repay the Vault's loan, or to make the position's liquidation score \eqref{liquidationscore} negative by increasing the collateral.
 
 \subsubsection{Forced closure}\label{fcSubSub}
-In this method, the position is closed by launching a \verb|_closePosition|. This has the same effect, on the Vault's side, as the user directly closes the position, except that the payoff given to the user will be significantly smaller due to the liquidator's reward. As in \ref{cpSubSub}, the owed tokens obtained by the closure are transferred to the Vault in order to repay the loan, and the remaining collateral is split between the liquidator, the position's original owner, and the treasury (see \ref{sgtSub}).
+In this method, the position is closed by launching a \verb|_closePosition|. This has the same effect, on the Vault's side, as the user directly closes the position, except that the payoff given to the user will be significantly smaller due to the liquidator's reward. As in \ref{cpSubSub}, the owed tokens obtained by the closure are transferred to the Vault in order to repay the loan, and the remaining collateral is split between the liquidator and the treasury (see \ref{sgtSub}).
 
 This is the liquidation system with the lowest risk for the liquidator, since no amount needs to be paid to perform it. However, it is more complex (and thus expensive) in terms of gas.
 
@@ -545,12 +545,51 @@ Not technically a "liquidation", since the effect of the margin call is not the 
 It requires a small down payment and is not too expensive in terms of gas, but keeping the position open the liquidator stays exposed to the position's risk, and must be careful not to be in turn liquidated if the market keeps on moving unfavorably.
 
 \begin{example}\label{mtLiqEx3}
-In the situation of \ref{mtLiqEx1}, the liquidator can choose to perform a margin call by transferring $20$\verb|TKA| to the vault. In this way, the position's principal becomes $880$ \verb|TKA|, thus the new payoff will be $$\text{P\&L} =  48\ \verb|TKA|/\verb|TKB| \times 20  \verb|TKB| -  880 \verb|TKA| - 15\verb|TKA|= 65  \verb|TKA| $$
+In the situation of Example \ref{mtLiqEx1}, the liquidator can choose to perform a margin call by transferring $20$\verb|TKA| to the vault. In this way, the position's principal becomes $880$ \verb|TKA|, thus the new payoff will be $$\text{P\&L} =  48\ \verb|TKA|/\verb|TKB| \times 20  \verb|TKB| -  880 \verb|TKA| - 15\verb|TKA|= 65  \verb|TKA| $$
 and the new collateral is $100 + 20 = 120 \verb|TKA|$. Therefore, the liquidation score becomes $$\lambda = 0.5\times 120\verb|TKA| - 65\verb|TKA| = -5\verb|TKA| < 0 $$
 and the position is not liquidable anymore. The liquidator becomes now the owner of this open position, and can choose what to do with it. Closing it immediately would deliver a payoff of 65\verb|TKA| to the liquidator, which will then realize a gain of $65-20 = 45$\verb|TKA| for the full procedure. Notice that in all cases, the liquidator gets 45\verb|TKA| in the situation considered: all methods give the same payoff opportunity to the liquidator.
 \end{example}
 
 \subsection{Liquidator's rewards}\label{liqrewSub}
+
+In the previous examples, we assumed the liquidator gets all the reward to simplify the treatment. In reality, the reward given to the liquidator is split between the Insurance Reserve (see \ref{insResSub}) and the liquidator. The liquidator can increase the amount of reward obtained by staking governance tokens (see \ref{sgtSub}).
+
+Mathematically, there is a decomposition $$R = R_L + R_I.$$
+of the reward, between the liquidator and the Insurance Reserve.
+
+The reward system is conceived to advantage fast, effective liquidations, yet keeping on rewarding the liquidator even in the case of a {\bf bad liquidation event} (BLE). 
+For this reason, the liquidator is always entitled to at least the {\bf minimum reward} $R_{\text{min}}$, regardless on whether the liquidation was good or bad. However, in the case of a good liquidation, the reward increases. Therefore, the total reward $R$ is not necessarily equal to the profit-and-loss P\&L of the position, but rather 
+$$R = \max(\text{P\&L}, R_{\text{min}}) $$
+
+\subsubsection{The minimum reward}\label{minrewSubSub}
+
+Recalling Paragraph \ref{lisSubSub}, the total fees $f$ ar split between the IRL and LPL. In the case a bad liquidation occurs, the IRL gives up its part of fees to reward the liquidator: the minimum amount the liquidator can have is therefore 
+\begin{equation}\label{minreward}
+R_{\text{min}} = \iota f
+\end{equation}
+where notations are as in Paragraph \ref{lisSubSub}. In particular, if $\iota$ is bigger (for instance, for riskier investments or Vaults with a smaller insurance reserve balance) the minimum amount is larger, thus increasing the minimum reward a liquidator can obtain and encouraging better liquidations.
+
+\subsubsection{The final reward}\label{finrewSubSub}
+
+After the liquidator has staked governance tokens (see \ref{sgtSub}), it is assigned a coefficient $0 < \gamma < 1$ which determines the ratio of reward going to the liquidator. Then, the liquidator's reward is 
+\begin{equation}\label{liquidatorreward}
+R_L = \gamma\cdot \max(\text{P\&L},R_{\text{min}}) = \gamma  R
+\end{equation}
+
+and, of course, $R_I = R - R_L$. \footnote{Not to be confused with the insurance {\it fee}, $\iota f$: even if this is zero or if a BLE occurred, the insurance reward could be high if the liquidator has not staked enough governance tokens.}
+
+\subsubsection{Bad liquidation events}\label{bleSubSub}
+A {\bf bad liquidation} is a liquidation in which  $\text{P\&L} < 0$, with notation as in \eqref{profitandloss} or, looking at the definition of the liquidation score in \eqref{liquidationscore}, 
+$$\lambda > \beta \cdot \text{collateral}.$$ In this situation, the amount obtained by closing the position is not sufficient to repay the principal and interest of the position (or the cost to repay the loan is higher than the allowance in the case of a held collateral).
+
+Due to a BLE, part of the Vault's liquidity is lost, and this is the only case in which this happens. From \eqref{liquidatorreward}, we see that in this case the liquidator's reward is minimum, thus liquidating quickly, when the liquidation score is low, is encouraged through a higher reward.
+
+In the case of a BLE, the IRL covers for the liquidity loss (see \ref{insResSub}), including the funds necessary to reward the liquidator.
+
+\begin{remark}\label{nopunishments}
+Notice that the minimum reward to give to a liquidator is necessary, even in the case of a BLE. Indeed, the gas cost related to a liquidation could bring the liquidator to wrap the call into an \verb|if| statement, which does not perform the call if the reward is too low. In this case, a position which is losing too much could stay open and keep on losing virtually until the entire allowance is worthless, thus making the Vault lose a big amount of funds. With the minimum reward, it is insured that it is always convenient to liquidate a position, and with formula \eqref{liquidatorreward}, the sooner it is liquidated, the better.
+\end{remark} 
+
 \subsection{Staking governance tokens}\label{sgtSub}
 
 \section{Tokenomics}\label{tokSec}
