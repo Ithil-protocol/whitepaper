@@ -584,7 +584,7 @@ $$\lambda > \beta \cdot \text{collateral}.$$ In this situation, the amount obtai
 
 Due to a BLE, part of the Vault's liquidity is lost, and this is the only case in which this happens. From \eqref{liquidatorreward}, we see that in this case the liquidator's reward is minimum, thus liquidating quickly, when the liquidation score is low, is encouraged through a higher reward.
 
-In the case of a BLE, the IRL covers for the liquidity loss (see \ref{insResSub}), including the funds necessary to reward the liquidator.
+In the case of a BLE, the IRL covers for the liquidity loss (see \ref{insResSub}), including the funds necessary to reward the liquidator. In this way, the LPs do not see their APY go negative even if there is a BLE, as far as there is enough IRL. If a BLE occurs {\it and} the IRL is not enough, then the LPL decreases.
 
 \begin{remark}\label{nopunishments}
 Notice that the minimum reward to give to a liquidator is necessary, even in the case of a BLE. Indeed, the gas cost related to a liquidation could bring the liquidator to wrap the call into an \verb|if| statement, which does not perform the call if the reward is too low. In this case, a position which is losing too much could stay open and keep on losing virtually until the entire allowance is worthless, thus making the Vault lose a big amount of funds. With the minimum reward, it is insured that it is always convenient to liquidate a position, and with formula \eqref{liquidatorreward}, the sooner it is liquidated, the better.
@@ -592,14 +592,62 @@ Notice that the minimum reward to give to a liquidator is necessary, even in the
 
 \subsection{Staking governance tokens}\label{sgtSub}
 
+In order for the liquidator to claim part of the liquidation reward, governance tokens must be staked into the Liquidation contract. The more a liquidator has staked, the higher the coefficient $\gamma$ (see \ref{sgtSub}) will be.
+
+The precise determination of $\gamma$ is governance based: factors as the quantity of active liquidators, the Vault's current value at risk, and the price of the governance tokens can be considered when making such decision.
+
 \section{Tokenomics}\label{tokSec}
+
+Ithil's tokenomics is conceived to maximize the protocol's attractiveness by raising its APY, consolidate the earnings of the LPs, and to reward community in a solid and sustainable way.
+
 \subsection{The governance token}\label{govSub}
+The governance token ITHIL represents a unit portion of the protocol: any owner of ITHIL can be considered a member of Ithil's community. ITHIL token has the following characteristic.
+\begin{itemize}
+\item It is {\it deflationary}: the total supply of ITHIL is minted at the launch, and no other tokens are minted after that moment.
+\item It is a {\it utility token}: it can be used in various ways on the protocol in exchange of services.
+\item It is {\it backed}: it can always be exchanged on Ithil's backing system (see \ref{bpaSub}) at a never decreasing floor price.
+\end{itemize}
+
+The total supply of the governance tokens is approximately allocated as follows  \footnote{The precise allocation will be displayed in a dedicated website}:
+\begin{itemize}
+\item 20\% to the core team
+\item 10\% to early investors, advisors and VC's
+\item 30\% to Ithil's treasury (see \ref{ItSub}), 
+\item 40\% to the market, starting from the backing contract (see \ref{bpaSub})
+\end{itemize}
+
 \subsection{IRL adjustments}\label{irladjSub}
+
+The passage from Ithil's core protocol and its tokenomics is done through the IRL. As seen in \ref{iotaSubSub}, a given vault's IRL can be adjusted by the governance. If the current ratio is lower than the optimal one, the governance can decide to use part of the treasury's funds to increase it up to the optimal ratio, while if it is larger, the governance can decrease it, still until the optimal ratio is restored.
+
+In the second case, the funds obtained are {\it algorithmically} transferred to the backing contract (see \ref{bpaSub}), thus increasing the backed price. In particular, no governance decision is involved in this process: the treasury has no way to incamerate such funds. The effect of this is beneficial to all ITHIL holders, and indirectly to the treasury, which is the main holder at inception: the treasury is entitled to the funds obtained only in the sense that it is a ITHIL holder, just like all the others.
+
 \subsection{Backing and perpetual auction}\label{bpaSub}
+
+ITHIL is the native token of one or more asymmetric AMM pools whose numeraire are stablecoins. Although a precise treatment of this system would go far beyond the scope of this whitepaper, we can mention here that the {\bf bid price} (or {\bf backed price}) of such pool is calculated as follows. Letting $B$ be the balance of the pool in stablecoins, $S$ the balance of the pool in ITHIL coins, and $S_T$ the total ITHIL supply, then
+\begin{equation}\label{backedprice}
+P_\text{backed} = \frac{B}{S_T-S}.
+\end{equation}
+In the backing pool, any quantity of ITHIL can be exchanged to get the backing stablecoins at the backed price. Conversely, the pool also has a {\bf ask price} $P_{\text{ask}} \ge P_{\text{bid}}$ at which ITHIL tokens can be bought.
+
+It can be shown that with this system, all circulating ITHIL can potentially be redeemed on the backing pool at the backed price, redemptions do not change the backed price, and purchases of ITHIL tokens increase the backed price. In particular, {\it mathematically, there exists no event which can decrease the backed price.} It can also be shown that any market price outside the pool (for instance, how much ITHIL is exchanged on an external dex) must lie between $P_\text{backed}$ and $P_\text{ask}$. In particular, since it must be higher than $P_{\text{backed}}$, which is always increasing in time, this result represents a guarantee for ITHIL holders that their tokens' value cannot go below such floor.
+
+When IRL adjustments occur (see \ref{irladjSub}), the funds obtained are swapped for stablecoins or ITHIL in the market (depending on which of the two systems brings a greater backed price increase) and injected in the backing pool: in this way, the backed price $P_{\text{backed}}$ increases, at the benefit of all ITHIL holders.
+
+The difference function between the bid and ask price is called a {\bf spread model} for the backing pool. At inception, the spread model follows a {\bf perpetual backed auction}: the ask price cosntantly decreases to be, at the limit as time goes to infinite, equal to the bid price. Every time a purchase or a sale occurs, the time is re-set and the auction goes on. Since there is in principle no constraint on the duration of the auction, this auction is {\bf perpetual}, and since the backed price is guaranteed if one wants to sell on the pool, this auction is {\bf backed}.
+
 \subsection{Ithil's treasury}\label{ItSub}
+Ithil's treasury is made exclusively by ITHIL tokens. This treasury is used to feed the TOL of a given Vault (for bootstrap and boosts, see \ref{glSub}), to pay for community mining initiatives and airdrops (see \ref{acmSub}), and to participate to eventual external investments, managed by Ithil's governance in the form of DAO (see \ref{daoSub}).
+
 \subsection{Airdrops and community mining}\label{acmSub}
+
+At launch, early users are rewarded with NFTs, stablecoins and a small quantity of ITHIL taken from the treasury. Afterwards, active contributors such as developers, marketers or others, can get their share of ITHIL tokens as a reward. 
+
 \subsection{Ithil's DAO}\label{daoSub}
 
-\section{Glossary}\label{glossSec}
+Ithil's DAO is the legal framework for Ithil's treasury and team to operate. Everybody holding a ITHIL token is considered member of the DAO, without any distinction. Notably, the core team is not more entitled, nor more liable, than anybody else on governance decisions.
+
+Anyone holding a ITHIL token can participate in the DAO by voting. The voting system is the one common to all DAO's: a proposal can be launched, and voted on-chain by ITHIL holders. If it reaches enough votes, it is implemented.
+
 
 \end{document}
