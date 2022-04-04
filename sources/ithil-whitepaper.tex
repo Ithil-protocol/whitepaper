@@ -6,7 +6,6 @@
 
 % This is how I (Maciej) will make comments 
 \usepackage[dvipsnames]{xcolor}
-\newcommand{\mz}[1]{\noindent \textcolor{NavyBlue}{\textbf{Maciej:}  #1}}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[section]
@@ -53,7 +52,7 @@
 
 \section{Introduction}
 
-In the current DeFi world, a large variety of investment opportunities is available, with a new one being presented almost every day. \mz{Maybe: In the current DeFi world, many investment opportunities are available, with a new one being presented almost every day.} Any user has\mz{,} therefore\mz{,} a wide landscape to choose from, depending on his or her risk appetite and personal ideas. \mz{Or: Therefore, any user has a wide landscape to choose from, depending on his or her risk appetite and personal ideas.} The typical parameters investors look for are the APY (such as in staking-like strategies), the market exposure (such as by holding volatile tokens), the protocol's reliability and security, the liquidity available, personal taste and many other factors difficult to predict or model.
+In the current DeFi world, many investment opportunities are available, with a new one being presented almost every day. Therefore, any user has a wide landscape to choose from, depending on his or her risk appetite and personal ideas. The typical parameters investors look for are the APY (such as in staking-like strategies), the market exposure (such as by holding volatile tokens), the protocol's reliability and security, the liquidity available, personal taste and many other factors difficult to predict or model.
 
 \subsection{What is Ithil}
 Ithil is a protocol that makes the liquidity provider's tokens available to the users, who can then invest much more than their initial capital (that is, with a {\it leverage}) on a wide choice of DeFi protocols. In this way, Ithil can be considered as a {\it trait-d'union} between the many protocols, traders and liquidity providers.
@@ -359,7 +358,7 @@ Ithil's modularity allows for many possible strategies, with new ones being list
 
 In order to provide a standard for all strategies to be implemented, Ithil provides a {\bf Base Strategy} (BS) contract. All Strategies must inherit from this contract in order to be listed. The BS is an \verb|abstract| Solidity smart contract, which only implements the generic Strategy logic with respect to loans, repayments, and collateral management. In particular, it does not implement the interaction with external protocols, but leaves the relevant functions as \verb|virtual|. The only thing specific Strategies must do is implement the BS's \verb|virtual| functions, thus simplifying a lot the developers' task of building new strategies.
 
- In this section, we consider a Strategy which \mz{that} exchanges \verb|TKA| for \verb|TKB| on some external protocol in {\it some way} (recall that the Base Strategy abstracts the actual implementation: we will discuss this in \ref{siSub}). In Ithil's terminology, \verb|TKA| is the {\bf owed token}, in that the Strategy {\it owes} it to the Vault after borrowing it, and \verb|TKB| is the {\bf held token}, since it is held (locked) within the Strategy.
+ In this section, we consider a Strategy that exchanges \verb|TKA| for \verb|TKB| on some external protocol in {\it some way} (recall that the Base Strategy abstracts the actual implementation: we will discuss this in \ref{siSub}). In Ithil's terminology, \verb|TKA| is the {\bf owed token}, in that the Strategy {\it owes} it to the Vault after borrowing it, and \verb|TKB| is the {\bf held token}, since it is held (locked) within the Strategy.
 
 \subsubsection{Opening a position}\label{opSubSub}
 We describe here in detail the workflow of the BS, i.e. the sequence of calls and methods used by the BS to open a position.
