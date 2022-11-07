@@ -41,7 +41,7 @@
         \vspace{1.0cm}
 
         \begin{abstract}        
-        Ithil aims to bring decentralised services to the web3 space via a well-thought system of undercollateralized loans - a game-changer for traders, liquidity providers, and other protocols who can now rely on various capital-efficient products to address their needs. 
+        Ithil aims to bring decentralised services to the web3 space via a well-thought system of undercollateralised loans - a game-changer for traders, liquidity providers, and other protocols who can now rely on various capital-efficient products to address their needs. 
         
         Modular and easily upgradable, Ithil offers users and other protocols easy interactions with the web3 space as a whole, enabling an entirely new range of financial opportunities. Liquidity is taken from liquidity providers (or Lenders), who can stake any whitelisted ERC20 token and get a high APY on that same token getting exposure to the ecosytem with a reduced risk. In fact, their capital is spread over several protocols and it is protected by an efficient liquidation system.
         \end{abstract}
@@ -64,7 +64,7 @@ At its core, Ithil is a protocol that combines the liquidity providers' deposits
 With Ithil, anyone can
 \begin{enumerate}
 \item Become {\bf liquidity provider} (LP) by staking their tokens to get a solid APY. A extensive choice of whitelisted tokens can be staked in Ithil, and the APY generated is in the same token: DAI stakers will get DAI tokens, SHIB stakers will get SHIB tokens, and so on. In this way, Ithil offers an attractive staking opportunity, also for holders of volatile tokens.
-\item Optimise their investments by placing some collateral in Ithil and then using the LP liquidity to optimise the capital allocation. Thanks to an internal system of undercollateralized loans ({\bf the Internal Lending Engine}), the total capital invested can be much higher than the collateral placed: by placing only 100 DAI worth of collateral, a user can perform an investment worth 1000 DAI or more.
+\item Optimise their investments by placing some collateral in Ithil and then using the LP liquidity to optimise the capital allocation. Thanks to an internal system of undercollateralised loans ({\bf the Internal Lending Engine}), the total capital invested can be much higher than the collateral placed: by placing only 100 DAI worth of collateral, a user can perform an investment worth 1000 DAI or more.
 \item Be a {\bf liquidator} by constantly checking the losing positions and liquidating them in a fully on-chain way, thus getting high rewards.
 \item Similarly to the liquidators, a user can become a {\bf harvester} by automating the strategies that require a farming process, getting a part of the harvest.
 \item Join the {\bf community} by buying and holding Ithil's governance token, using it in the liquidation process or participating in governance voting. Ithil's innovative backing system ensures that Ithil's value mathematically increases in time, thus encouraging holders to commit to the community for a long time.
@@ -117,7 +117,7 @@ The workflow is summarised as follows:
 \item The user transfers some ERC20 tokens as {\bf margin} to the desired Service contract and chooses the amount of liquidity to be taken from the Vault (usually the frontend precomputes the best amount automatically).
 \item If the amount is within the established limits (see \ref{irSub}), the Service takes the necessary liquidity from the Vault of the chosen token.
 \item The Service calls the relevant external protocols, collects the assets received from them and registers the open position on-chain. Notice that {\it these assets do not go to the original user}: they stay locked in the Service contract. Without this system, it would be impossible to grant an undercollateralised loan (see \ref{ulSub}).
-\item The position is part of the Service's state and it is visible on-chain as a NFT. It can be traded by the user or by Ithil (see {\ref{securitisationSec}). The \verb|quote| public function of the Service allows checking the value of the held tokens with respect to the owed tokens. If a position's value decreases below a specific {\bf risk factor} of the margin, the position is {\bf liquidable} and can be closed by liquidators (see \ref{liqSub0}).
+\item The position is part of the Service's state and it is visible on-chain as a NFT. It can be traded by the user or by Ithil (see {securitisation). The \verb|quote| public function of the Service allows checking the value of the held tokens with respect to the owed tokens. If a position's value decreases below a specific {\bf risk factor} of the margin, the position is {\bf liquidable} and can be closed by liquidators (see \ref{liqSub0}).
 \item At any time, the user can close the position. In this way, the Service will call the relevant external protocols to exchange its held assets into owed tokens, then transfer them to the Vault to repay the loan. The difference between the obtained amount and the repayment due to the Vault represents the user's profit.
 \end{itemize} 
 
@@ -165,9 +165,9 @@ When a BLE occurs (see \ref{liqSub0}), the liquidity of the insurance reserve is
 \subsection{Liquidation}\label{liqSub0}
 Since the Vault's liquidity is used to perform investments, an unfavorable market movement could put the loan taken at risk. This is why {\bf liquidations} are crucial for the health of the protocol.
 
-Liquidations are managed on-chain and in a decentralized way: anyone can liquidate a given position, as far as the position is {\bf liquidable}, i.e. has a value that is too close to the original loan to be kept open.
+Liquidations are managed on-chain and in a decentralised way: anyone can liquidate a given position, as far as the position is {\bf liquidable}, i.e. has a value that is too close to the original loan to be kept open.
 
-The typical liquidation process is summarized as follows.
+The typical liquidation process is summarised as follows.
 \begin{itemize}
 \item A liquidator checks whether a position's quoted value (given by the Strategy-specific \verb|quote| function) has gone below the minimum value given by the risk factor (see \ref{rflsSub}).
 \item If it is the case, the liquidator can liquidate the position using one of the available liquidation methods (see \ref{tolSub}): if Ithil's on-chain check confirms the liquidability of the position, the position is closed.
@@ -397,7 +397,7 @@ We describe here in detail the workflow of the BS, i.e. the sequence of calls an
 \item All the relevant data are registered, and a \verb|Position| data structure is saved on-chain in the Strategy's state.
 \end{enumerate}
 
-In this way, the position is open onchain, as it is part of the Strategy's state, and can be read by anyone. The assets received, i.e. the \verb|TKB| obtained from the external protocols and eventually from the user's margin, are locked in the Strategy. Notice that this allows for an under-collateralized loan from the Vault in a secure way (the user cannot run away with the assets). 
+In this way, the position is open onchain, as it is part of the Strategy's state, and can be read by anyone. The assets received, i.e. the \verb|TKB| obtained from the external protocols and eventually from the user's margin, are locked in the Strategy. Notice that this allows for an under-collateralised loan from the Vault in a secure way (the user cannot run away with the assets). 
 
 \subsubsection{Closing a position}\label{cpSubSub}
 
@@ -474,7 +474,7 @@ The margin, together with the liquidation process, ensures that the $900$ \verb|
 
 \subsubsection{Margin trading}\label{mtSubSub}
 
-The {\bf Margin Trading Strategy} (MTS) consists of exchanging directly some amount of \verb|TKA| into some other amount of \verb|TKB| using an external Decentralized Exchange ({\it dex}) or Automatic Market Maker ({\it AMM}). \footnote{Many times, the terms are used quite interchangeably, and some protocols have aspects of both a dex and an AMM, therefore the distinction is often not so important.}  As in \ref{lyfSubSub}, since many protocols are offering these services, this Strategy is a class of Strategies: Strategies using different protocols must be implemented separately.
+The {\bf Margin Trading Strategy} (MTS) consists of exchanging directly some amount of \verb|TKA| into some other amount of \verb|TKB| using an external Decentralised Exchange ({\it dex}) or Automatic Market Maker ({\it AMM}). \footnote{Many times, the terms are used quite interchangeably, and some protocols have aspects of both a dex and an AMM, therefore the distinction is often not so important.}  As in \ref{lyfSubSub}, since many protocols are offering these services, this Strategy is a class of Strategies: Strategies using different protocols must be implemented separately.
 
 Depending on the tokens exchanged, these Strategies can be highly hazardous: if the price of \verb|TKB| moves in a way, which is different from the one foreseen by the user at the moment the position is opened, the user can incur high losses, amplified by the leverage requested. Conversely, the potential gains are incredibly high if the price moves favourably for the user, thanks to the leverage. The risk factors (see \ref{rflsSub}) of these strategies are specific to the pair of tokens traded, and elements like historic volatility of the tokens' price and the external dex's pool liquidity are taken into account to assess the riskiness of a token pair.
 
@@ -499,9 +499,9 @@ In the case of a {\bf short position} of \verb|TKA| against \verb|TKB| (the user
 Again, a market movement of only 20\% has made the trader earn 168\% from the 10x leverage.
 
 \section{Risk and liquidations}\label{liqSec}
-Since Ithil's loans to a given Strategy can be under-collateralized, if the market moves in an unfavourable direction, the liquidity borrowed from the Vault during a given position can become at risk. If this happens, the position can be {\bf liquidated}, i.e. forcefully closed in some of the available ways (see \ref{tolSub}), in order to complete the repayment of the loan taken from the Vault.
+Since Ithil's loans to a given Strategy can be under-collateralised, if the market moves in an unfavourable direction, the liquidity borrowed from the Vault during a given position can become at risk. If this happens, the position can be {\bf liquidated}, i.e. forcefully closed in some of the available ways (see \ref{tolSub}), in order to complete the repayment of the loan taken from the Vault.
 
-Ithil's liquidation system is totally {\it decentralized}: anyone can liquidate open positions by launching the functions of the \verb|Liquidator| smart contract. The check for liquidability of a given position is totally {\it on-chain}. It is based on the usage of the \verb|quote| function of the particular Strategy (see \ref{siSub}): this assesses the value of a given position in the moment the function is called, and together with the {\bf risk factor} contributes to the calculation of the {\bf liquidation score} (see \ref{rflsSub}). If the liquidation score of a given position is positive, the position is {\bf liquidable}, and can be closed by the liquidator, who gets rewards doing this (see \ref{liqrewSub}).
+Ithil's liquidation system is totally {\it decentralised}: anyone can liquidate open positions by launching the functions of the \verb|Liquidator| smart contract. The check for liquidability of a given position is totally {\it on-chain}. It is based on the usage of the \verb|quote| function of the particular Strategy (see \ref{siSub}): this assesses the value of a given position in the moment the function is called, and together with the {\bf risk factor} contributes to the calculation of the {\bf liquidation score} (see \ref{rflsSub}). If the liquidation score of a given position is positive, the position is {\bf liquidable}, and can be closed by the liquidator, who gets rewards doing this (see \ref{liqrewSub}).
 
 Liquidation is done at the level of the Base Strategy (see \ref{asSub}), in particular, it does not depend on the particular strategy implementation: the liquidator is free to choose the most convenient liquidation system for the particular strategy.
 
