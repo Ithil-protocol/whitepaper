@@ -30,20 +30,20 @@
 
         \vspace{0.5cm}
         \Large
-        {\bf The DeFi Wizard}
+        {\bf The Web3 Wizard}
 
         \vspace{1cm}
         \Large
-        {\it A generalised investment strategies protocol}
+        {\it Ithil is a financial interoperability layer that connects the whole web3 space facilitating new value creation via crowdlending.}
 
         \vspace{1.5cm}
         {\normalsize V1.0.1 - \today}
         \vspace{1.0cm}
 
         \begin{abstract}        
-        Ithil aims to achieve decentralization in portfolio management through a well-thought system of undercollateralized loans - a game-changer for traders, liquidity providers, and other protocols who can now rely on various investment products to address their needs. 
+        Ithil aims to bring decentralised services to the web3 space via a well-thought system of undercollateralized loans - a game-changer for traders, liquidity providers, and other protocols who can now rely on various capital-efficient products to address their needs. 
         
-        Modular and easily upgradable, Ithil offers users and other protocols leveraged interactions with the DeFi space, enabling an entirely new range of investment opportunities. Liquidity is taken from liquidity providers, who can stake any whitelisted ERC20 token and get a high APY on that same token, and is protected by an efficient and onchain system of liquidations. An innovative backing system mathematically ensures the governance token always increases in its intrinsic value, thus making Ithil's community committed on a long period.
+        Modular and easily upgradable, Ithil offers users and other protocols easy interactions with the web3 space as a whole, enabling an entirely new range of financial opportunities. Liquidity is taken from liquidity providers (or Lenders), who can stake any whitelisted ERC20 token and get a high APY on that same token getting exposure to the ecosytem with a reduced risk. In fact, their capital is spread over several protocols and it is protected by an efficient liquidation system.
         \end{abstract}
             
     \end{center}
@@ -52,97 +52,103 @@
 
 \section{Introduction}
 
-In the current DeFi world, many investment opportunities are available, with a new one being presented almost every day. Therefore, any user has a wide landscape to choose from, depending on his or her risk appetite and personal ideas. The typical parameters investors look for are the APY (such as in staking-like strategies), the market exposure (such as by holding volatile tokens), the protocol's reliability and security, the liquidity available, personal taste and many other factors difficult to predict or model.
+In the current Web3 space there are several opportunities, from DeFi high yields to NFTs and gaming, with new ones coming up almost every day. Users are shown a wide landscape to interact with, depending on their risk appetite and personal ideas. However, all the subspaces are set apart one another, and end up being self-contained bubbles that don't interact with each other: DeFi, NFTs, gaming and metaverse are all separate from each other and the composability of one another is still uncharted territory.
+
+While for the lenders, the typical parameters LPs look for are a good APY, the market exposure (such as by holding volatile tokens), the underlying protocol's reliability and security, the liquidity available or TVL, their personal preferences and several other factors difficult to predict or model.
+With Ithil they are presented a novel opportunity to get exposed to the high yields on the whole Web3 space in a combined way, reducing the overall risk as well as increasing the return rates on their deposits.
 
 \subsection{What is Ithil}
-Ithil is a protocol that makes the liquidity provider's tokens available to the users, who can then invest them on a wide choice of DeFi protocols. In this way, Ithil can be considered as a {\it trait-d'union} between the many protocols, traders and liquidity providers.
+At its core, Ithil is a protocol that combines the liquidity providers' deposits to other protocols to create novel financial services for its users. In this way, Ithil can be considered as a {\it trait-d'union} between the many protocols existing in the space, users and liquidity providers.
 
 \subsection{What can be done on Ithil}
 With Ithil, anyone can
 \begin{enumerate}
 \item Become {\bf liquidity provider} (LP) by staking their tokens to get a solid APY. A extensive choice of whitelisted tokens can be staked in Ithil, and the APY generated is in the same token: DAI stakers will get DAI tokens, SHIB stakers will get SHIB tokens, and so on. In this way, Ithil offers an attractive staking opportunity, also for holders of volatile tokens.
-\item Become {\bf investor} by placing some collateral in Ithil and then using the LPs' liquidity to perform investments. Thanks to an internal system of under-collateralized loans, the capital invested can be higher than the collateral placed: by placing only 100 DAI worth of collateral, a user can perform an investment worth 1000 DAI or more.
-\item Become {\bf liquidator} by constantly checking the losing positions and liquidating them in a fully onchain way, thus getting rich rewards.
-\item Become part of the {\bf community} by buying and holding Ithil's governance token, using it in the liquidation process or participating in governance voting. Ithil's innovative backing system ensures that Ithil's value mathematically increases in time, thus encouraging holders to commit to the community for a long time.
+\item Optimise their investments by placing some collateral in Ithil and then using the LP liquidity to optimise the capital allocation. Thanks to an internal system of undercollateralized loans ({\bf the Internal Lending Engine}), the total capital invested can be much higher than the collateral placed: by placing only 100 DAI worth of collateral, a user can perform an investment worth 1000 DAI or more.
+\item Be a {\bf liquidator} by constantly checking the losing positions and liquidating them in a fully on-chain way, thus getting high rewards.
+\item Similarly to the liquidators, a user can become a {\bf harvester} by automating the strategies that require a farming process, getting a part of the harvest.
+\item Join the {\bf community} by buying and holding Ithil's governance token, using it in the liquidation process or participating in governance voting. Ithil's innovative backing system ensures that Ithil's value mathematically increases in time, thus encouraging holders to commit to the community for a long time.
 \end{enumerate}
 
-
 \subsection{Ithil's unique features}
-Many of Ithil's features are rarely found in the current DeFi landscapes. Some of the differences are the following:
+Many of Ithil's features are rarely found in the current web3 landscape. Some of the differences are the following:
 \begin{itemize}
-\item {\bf Modularity} allows Ithil to list or de-list virtually any strategy with a governance vote, hence, allowing Ithil to continuously be updated with the most recent DeFi protocols, always offering the best strategies to the users.
-\item {\bf High leverage} over-collateralization has always been an essential aspect in DeFi loans, which reduces the possibility for users to leverage their funds.\footnote{Or makes this process very costly, mainly through the so-called {\it loops}.} Thanks to a system in which the assets never leave the protocol, Ithil makes {\it under-collateralized} loans possible, thus allowing users to get high leverages and high gains.
-\item {\bf Possibility of staking any token}: few protocols offer an interesting APY on volatile tokens and allow only to stake stablecoins or Ethers. Ithil's vaults are instead token-agnostic: any whitelisted token can be staked, and it generates APY in the same token.
-\item {\bf Sustainable high APY} even on stablecoins' vaults, thanks to sustainable treasury management and a system of internal compensations. When the APY decreases, the governance {\it algorithmically} increases it, while when the APY increases, the governance is re-charged by decreasing the APY, again algorithmically (no governance vote is ever involved in this process).
-\item {\bf High capital protection} for liquidity providers: three liquidation layers and an algorithmically maintained insurance reserve protect the liquidity, thus assuring long-lasting earnings to LPs.
-\item {\bf Solid tokenomics} which mathematically assures Ithil's governance token value to constantly increase in time, or more precisely, to never go below an always increasing floor, thus rewarding holders committing to the protocol for a long time. See \ref{bpaSub} for details. 
+\item {\bf Modularity} allows Ithil to list or de-list virtually any service with a governance vote, hence, allowing Ithil to continuously be updated with the most recent protocols, always offering what is best and trending to the users, be it DeFi, Metaverse, Play to Earn or anything.
+\item {\bf High capital efficiency} over-collateralisation has always been an essential aspect in DeFi loans, which reduces the possibility for users to boost their available funds.\footnote{Or makes this process very costly, mainly through the so-called {\it folding strategies} on money markets like Aave.} Thanks to a novel lending model, Ithil makes {\it under-collateralised} loans possible, thus allowing a completely new set of on-chain financial services.
+\item {\bf Opportunity to stake virtually any token}: few protocols offer a single-sided APY on ideally any token, usually being restricted to stablecoins, big cap tokens like WBTC and WETH or the protocol native token. Ithil's lending vaults are instead token-agnostic: any ERC20 token can be whitelisted and staked and it generates APY in the same token.
+\item {\bf Real-yield sustainable APY} even on stablecoins' vaults, thanks to sustainable treasury management and a non-dilutive boosting system.
+\item {\bf Capital protection} for liquidity providers: an efficient liquidation model and an algorithmically-maintained insurance reserve protect the LPs' liquidity, thus assuring long-lasting earnings with limited risk exposure.
+\item {\bf Solid tokenomics} which mathematically assures Ithil's governance token minimum exchange value to constantly increase over time, or more precisely, to never go below an always increasing floor, thus rewarding holders committing to the protocol for a long time. See \ref{bpaSub} for details. 
 \end{itemize}
 
 \subsection{Ithil's mission}
-Commitment to offering an easy and sustainable way to interact with the DeFi investment opportunities and get the best out of them is the main focus of Ithil's core team. Ithil presents itself as a benchmark for DeFi strategies, where expert strategists implement easy and secure ways to connect to external protocols and get the most out of them, while anybody can navigate across these strategies to invest Ithil's liquidity and earn rich rewards.
+Commitment to offering an easy and sustainable set of financial products and help users get the best out of them is the main focus of Ithil.
 
-Instead of wandering around the vast and complex DeFi world, users can land on Ithil and safely invest in their favourite strategy. Through leverage, Ithil wants to mitigate the intrinsic advantage of wealthy individuals, allowing small users to multiply their exposure.
+By interconnecting the several protocols existing in the subareas of web3, Ithil can create innovative investing opportunities (DeFi strategies), help users get what they want (on-chain mortgages) or simply enjoy the space better (access gated communities by renting NFTs).
 
-Building trust is of primary importance, especially in a DeFi world where scammers, pyramid schemes, and governance-based backing systems are unfortunately too popular. Ithil commits to giving real value to the protocol: every surplus earned by the protocol is algoritmically injected into the backing contract, thus increasing the value of its token and the power of its treasury in a clear and sustainable way.
+Through capital boosting, Ithil wants to mitigate the intrinsic advantage of wealthy individuals, allowing small users to fully embrace the opportunities web3 has to offer.
+
+Building trust is of primary importance, especially in an ecosystem where scammers, ponzi schemes, and ill-modelled backing systems are unfortunately too popular. Ithil commits to giving real value to the community: every surplus earned by the protocol is algoritmically injected into the backing contract, thus increasing the value of its token and the financial power of its treasury in a clear and sustainable way.
 
 \newpage
 \section{Core concepts}\label{coreSec}
-This section summarizes the main concepts of Ithil's workflow, which will be treated more in-depth in the following sections. 
-\subsection{The Vault}\label{vaultSub}
-The {\bf Vault} is a smart contract that collects the liquidity to be used to perform the leveraged investments required by the users. The liquidity contained in the Vault is made of {\bf whitelisted tokens}, which can be in principle any tokens, from stablecoins to meme and rebasing tokens. The entire liquidity is conceptually split into three parts:
+This section summarises the inner workings of the protocol, which will be treated more in-depth in the following sections. 
+\subsection{The Vaults}\label{vaultSub}
+The {\bf Vaults} are an ERC4626 smart contracts that collects liquidity to be used in services required by the users. The liquidity contained in each Vault is made of a {\bf whitelisted ERC20 token}, which can be in principle any tokens, from stablecoins to meme and rebasing tokens. The entire liquidity is conceptually split into three parts:
 \begin{enumerate}
-\item {\bf Liquidity Providers' Liquidity} (LPL). Anyone staking ERC20 tokens inside the Vault is considered an LP. Such liquidity can be lent to the Strategies; it collects fees, can be redeemed any time \footnote{Assuming it is not lent in that particular moment, although it collects high fees if it is. See Section \ref{redSub} for more details.} by unstaking it, and is protected by the IRL and by liquidators (it has a positive APY).
-\item {\bf Insurance Reserve Liquidity} (IRL). This is a part of the liquidity bootstrapped by fees and maintained by the governance. It cannot be lent to the Strategies. It collects fees, it cannot be redeemed by anyone \footnote{But if it is too high, the governance can withdraw it to rebalance it. See Section \ref{ItSub} for more details.} and is not protected: it is used to protect the LPL in case a Bad Liquidation Event (see Section \ref{liqSub0}) occurs.
-\item {\bf Boosting Liquidity} (BL). This is injected into the Vault by {\it boosters} to bootstrap the protocol and increase LPL's APY. In principle, anybody can be a booster, but the typical use cases are Ithil's treasury, Ithil's backing contract, and external DAOs. It can be lent to the Strategies. It does not collect fees (they are delivered to the LPL), is protected by IRL and liquidators, and can be redeemed only by the Treasury after a governance decision.
+\item {\bf Liquidity Providers' Liquidity} (LPL). Anyone staking ERC20 tokens inside a Vault is considered an LP. Such liquidity can be lent to any of the Services contracts; it collects fees, can be redeemed any time \footnote{Assuming it is not lent in that particular moment, although it collects high fees if it is. See Section \ref{redSub} for more details.} by unstaking it, and is protected by the IRL and by liquidators (it has a positive APY).
+\item {\bf Insurance Reserve Liquidity} (IRL). This is a part of the liquidity bootstrapped by fees and maintained by the governance. It cannot be lent to the Services. It collects fees, it cannot be redeemed by anyone \footnote{But if it is too high, the governance can withdraw it to rebalance it. See Section \ref{ItSub} for more details.} and is not protected: it is used to protect the LPL in case a Bad Liquidation Event (see Section \ref{liqSub0}) occurs.
+\item {\bf Boosting Liquidity} (BL). A lump sum injected into a Vault by a {\it booster} to bootstrap the TVL and increase LPL's APY. In principle, anybody can be a booster, but the typical use cases are Ithil treasury (eventuall coming from the backing contract) and external DAOs. As all liquidity inside a Vault, it can be lent to the Services but it does not collect fees (they are redistributed to the LPL), is protected by IRL and liquidators and can be redeemed only by the booster itself.
 \end{enumerate}
 
-The liquidity is used by lending it to the Strategies (see \ref{stratSub}) in the form of undercollateralized loans (see \ref{ulSub}). Only Strategies can take loans from the Vault and repay them: in the Vault's Smart Contract, the \verb|borrow| and \verb|repay| functions are not callable by external addresses. This ensures the assets never leave the protocol and makes under-collateralized loans possible.
+The liquidity is used by lending it to the Services (see \ref{stratSub}) in the form of direct non-collateralised loans (see \ref{ulSub}). Only Services can take loans from a specific Vault and repay them: in a Vault's smart contract, the \verb|borrow| and \verb|repay| functions are only callable by specific whitelisted addresses. This is made to ensure the assets never go to a random address and makes safe internal loans possible.
 
-Besides managing staking and unstaking LP's tokens, the Vault is also responsible for registering onchain the total loans, whitelisting tokens and Strategies, computing the interest rate (see \ref{irSub}) of each loan, and calculating the payoff to give to the user who performed the particular investment.
+Besides managing staking and unstaking of LP tokens, a Vault is also responsible for registering the total issued loans, whitelisting Services, computing the interest rate (see \ref{irSub}) of each loan and calculating the payoff to give to the borrower.
 
-\subsection{Strategies}\label{stratSub}
+\subsection{Services}\label{stratSub}
 
-The {\bf Strategies} are the implementation of the various actions to take to perform a particular DeFi investment. These actions include taking a margin from a user, a loan from the Vault, and calling an external DeFi protocol to obtain some assets.
+The {\bf Services} are smart contracts that fully use the inner composability of web3 to offer a specific service on-chain. Possibilities include DeFi investments, NFT purchases, mortgages and fx forwards on commodities.
+The contract usualy takes a margin from the user, a loan from the desired token Vault and calls an external protocol to obtain some asset(s).
 
-Ithil implements a modular structure for the Strategies, in which a {\bf Base Strategy} contains all the necessary methods to enforce loan taking and repaying. In contrast, the {\bf Strategy Implementation} implements the interactions with the relevant external DeFi protocols. When the external protocol is called, the Strategy swaps Ithil's liquidity, eventually together with the user's margin (see \ref{ulSub}) to obtain some {\bf assets}, which are then locked into the Strategy and become {\bf held tokens}. The original tokens taken from Ithil to obtain the desired assets are {\bf owed tokens}, in that the Strategy {\it owes} them to Ithil's Vault in order to repay the loan.
+Ithil implements a modular structure for the Services, which are totally different one-another and just need to implement an \verb|open| and \verb|close| functions. When the external protocol is called, the Service uses Ithil LPs liquidity, eventually together with the user margin (see \ref{ulSub}) to obtain some {\bf assets}, which are then locked into the Service contract itself and become {\bf held tokens}. The original tokens taken from Ithil to obtain the desired assets are referred as {\bf owed tokens}, in that the Service {\it owes} them to Ithil in order to repay the loan.
 
-The strategy's workflow is summarized as follows:
+The workflow is summarised as follows:
 \begin{itemize}
-\item The user transfers some tokens as {\bf margin} to the desired Strategy, and chooses the amount of liquidity to be taken from the Vault to increase the investment amount.
-\item If the amount is not excessive (see \ref{irSub}), the Strategy takes the necessary liquidity from the Vault.
-\item The Strategy calls the relevant external DeFi protocols, collects the assets received from them, and registers the open position on-chain. Notice that {\it these assets do not go to the original user}: they stay locked in the Strategy. Without this system, it would be impossible to grant an under-collateralized loan (see \ref{ulSub}).
-\item The position is part of the Strategy's state and is visible on-chain. The \verb|quote| public function of the Strategy allows to checking the value of the held tokens with respect to the owed tokens. If a position's value decreases below a specific {\bf risk factor} of the margin, the position is {\bf liquidable} and can be closed by liquidators (see \ref{liqSub0}).
-\item At any time, the user can close the position. In this way, the Strategy will call the relevant external DeFi protocols to exchange its held tokens into owed tokens, then transfer them to the Vault to repay the loan. The difference between the obtained amount and the repayment due to the Vault represents the user's profit.
+\item The user transfers some ERC20 tokens as {\bf margin} to the desired Service contract and chooses the amount of liquidity to be taken from the Vault (usually the frontend precomputes the best amount automatically).
+\item If the amount is within the established limits (see \ref{irSub}), the Service takes the necessary liquidity from the Vault of the chosen token.
+\item The Service calls the relevant external protocols, collects the assets received from them and registers the open position on-chain. Notice that {\it these assets do not go to the original user}: they stay locked in the Service contract. Without this system, it would be impossible to grant an undercollateralised loan (see \ref{ulSub}).
+\item The position is part of the Service's state and it is visible on-chain as a NFT. It can be traded by the user or by Ithil (see {\ref{securitisationSec}). The \verb|quote| public function of the Service allows checking the value of the held tokens with respect to the owed tokens. If a position's value decreases below a specific {\bf risk factor} of the margin, the position is {\bf liquidable} and can be closed by liquidators (see \ref{liqSub0}).
+\item At any time, the user can close the position. In this way, the Service will call the relevant external protocols to exchange its held assets into owed tokens, then transfer them to the Vault to repay the loan. The difference between the obtained amount and the repayment due to the Vault represents the user's profit.
 \end{itemize} 
 
-This workflow is totally abstract and can be applied to a wide variety of Strategies. Each time a new strategy is implemented, it must be {\bf whitelisted} by the governance to be able to take loans from the Vault.
-Only whitelisted addresses can call the borrow and repay functions of the Vault, and ensure the loan is repaid at the end of the investment.
+This workflow is totally abstract and can be applied to a wide variety of Services. Each time a new feature is implemented, it must be {\bf whitelisted} by the governance to be able to take loans from the Vaults.
+Only whitelisted addresses can call the borrow and repay functions of the Vaults and ensure the loan is repaid at the end.
 
-\subsection{Undercollateralized loans}\label{ulSub}
+\subsection{Undercollateralised loans}\label{ulSub}
 
-One of the most critical parts of the Strategies is borrowing liquidity from the Vault and using it to perform investments. Since the liquidity taken may be higher than the margin posted by the user, this has the same effect of a {\bf loan} issued to implement some investment strategy with the Vault's liquidity.
+One of the most critical parts of the system is borrowing liquidity from the Vaults and using it to offer a service. Since the liquidity taken may be higher than the margin given by the user, this has the same effect of a {\bf loan} issued to implement something directly with the Vaults' liquidity.
 
-An important takeaway is the fact that {\it this is not a loan to the user}: Ithil does not transfer any liquidity to the user's wallet until the position is fully closed and the loan repaid. Instead, it is a loan ``from Ithil to Ithil", though the profits are transferred to the user.
+An important takeaway is the fact that {\it this does not lend directly to the user}: Ithil does not transfer any liquidity or asset to the user wallet until the position is fully closed and the loan repaid. Instead, it is an internal loan, ``from Ithil to Ithil", though any eventual profit is transferred to the user at the loan repayment time.
 
-In order to perform an investment, the user has to transfer some {\bf margin} to the Strategy. This margin covers the position from eventual losses caused by unfavorable market movements. The margin, just like the assets coming from a given investment, is locked in the Strategy until the position is closed or liquidated. It can be seen as a "payment" (which is fully refunded if the position is closed profitably) necessary to use some of the Vault's liquidity to perform an investment.
+In order to access a service, the user has to transfer some {\bf margin} to Ithil. This margin covers the position from eventual losses caused by unfavorable market movements. The margin, just like the assets coming from a given protocol, is locked in the Service contract until the position is closed or liquidated. It can be seen as a "payment" (which is fully refunded if the position is closed profitably) necessary to use some of the Vault liquidity.
 
-Once the position is opened, and the assets are inside the Strategy, the part of assets coming from the user's margin is called the {\bf collateral} placed for the loan. The ratio between the collateral \footnote{Or the part of the assets coming from the collateral: see \ref{lrSub} for more details.} and the loan taken is called the {\bf collateralization} of the loan: in the limit of zero liquidity borrowed from the Vault (no leverage), the collateralization is infinite. It decreases as the loan increases with respect to the margin amount. The loan is called {\bf over-collateralized} if its collateralization is higher than $1$: the loan taken is lower than the margin placed, so the position is virtually riskless. \footnote{Although, in a cross-margin situation, impermanent loss can negatively affect the Vault's liquidity in this case as well, thus liquidators are still necessary. See \ref{lrSub} for more details.} If the collateralization is lower than $1$, we say the loan is {\bf undercollateralized}. 
+Once the position is opened, and the assets are inside the Service, the part of assets coming from the user's margin is called the {\bf collateral} placed for the loan. The ratio between the collateral \footnote{Or the part of the assets coming from the collateral: see \ref{lrSub} for more details.} and the loan taken is called the {\bf collateralization} of the loan: in the limit of zero liquidity borrowed from the Vault (no leverage), the collateralisation is infinite. It decreases as the loan increases with respect to the margin amount. The loan is called {\bf over-collateralised} if its collateralisation is higher than $1$: the loan taken is lower than the margin placed, so the position is virtually riskless. \footnote{Although, in a cross-margin situation, impermanent loss can negatively affect the Vault's liquidity in this case as well, thus liquidators are still necessary. See \ref{lrSub} for more details.} If the collateralization is lower than $1$, we say the loan is {\bf undercollateralised}. 
 
-Thanks to the system described, there is no need to distinguish between the two types of loans: Ithil allows in principle any value of collateralization. However, maximum leverage is placed to put a cap on the riskiness of a single position (see \ref{irSub}).
+Thanks to the system described, there is no need to distinguish between the two types of loans: Ithil allows in principle any value of collateralisation. However, maximum loan value is placed to put a cap on the riskiness of a single position (see \ref{irSub}).
 
 \subsection{Interest rate}\label{irSub}
-When the Strategy borrows some liquidity, the Vault registers the loan in an on-chain state and applies a tailored {\bf interest rate} to that particular loan. The details on the calculation are given in \ref{lrSub}. The interest rate is an essential part of the fees generated by Ithil, which contribute to the Vault's APY, and represent the compensation given to the LPs for having their liquidity locked in a Strategy.
+When the Service borrows some liquidity, the target Vault registers the loan in an on-chain state and applies a tailored {\bf interest rate} to that particular loan. The details on the calculation are given in \ref{lrSub}. The interest rate is an essential part of the fees generated by Ithil, which contribute to the Vault's APY, and represent the compensation given to the LPs for having their liquidity locked in a Service.
 
 The interest rate is {\bf dynamically computed}. More precisely, the interest rate is
 \begin{enumerate} 
 \item directly proportional to the {\bf leverage}, 
 \item directly proportional to the {\bf vault usage} (how many loans are open at the moment), 
-\item directly proportional to the {\bf risk factor} of the investment (see \ref{liqSub0}),
+\item directly proportional to the {\bf risk factor} of the chosen service (see \ref{liqSub0}),
 \item inversely proportional to the {\bf insurance reserve} available (see \ref{insResSub}).
 \end{enumerate}
 When a position is open, the interest rate is attached to that position onchain: when the position is closed or edited, the interest rate is used to calculate the due amount to the Vault.
 
-The interest rate cannot exceed a {\bf maximum interest rate}, decided by the governance: this is Ithil's way to control the riskiness of the investments. Instead of maximum leverage or maximum usage, all the risk data are collected together, thus leading to dynamic limits for all such data. In particular, the {\bf maximum leverage} allowed depends on the particular Strategy (risk factor) used, on the usage, and on the insurance reserve available at that moment. 
+The interest rate cannot exceed a {\bf maximum interest rate}, decided by the governance: this is Ithil's way to control the riskiness of the investments. Instead of maximum leverage or maximum usage, all the risk data are collected together, thus leading to dynamic limits for all such data. In particular, the {\bf maximum leverage} allowed depends on the particular Service (risk factor) used, on the usage, and on the insurance reserve available at that moment. 
 
 The dynamic interest rate also automatically allows the Vault to adjust its parameters based on the usage. If the liquidity is mostly idle, the interest rate will be very low, thus encouraging users to enter into an investment. Conversely, if the vault is heavily used, or if many LPs have redeemed their liquidity (see \ref{redSub}), users will be discouraged to take further loans due to a high-interest rate. As the positions are closed, more liquidity will become available and entering into new positions will be interesting again. More examples and remarks are given in Section \ref{liquidityProvSec}.
 
