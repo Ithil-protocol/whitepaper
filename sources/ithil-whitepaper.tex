@@ -4,7 +4,6 @@
 \usepackage[english]{}
 \usepackage{amsmath, amssymb, amsthm}
 
-% This is how I (Maciej) will make comments 
 \usepackage[dvipsnames]{xcolor}
 
 \newtheorem{theorem}{Theorem}[section]
@@ -34,16 +33,16 @@
 
         \vspace{1cm}
         \Large
-        {\it Ithil is a financial interoperability layer that connects the whole web3 space facilitating new value creation via crowdlending.}
+        {\it Ithil is a speculation primitive and core building layer that facilitates the creation of novel financial services.}
 
         \vspace{1.5cm}
-        {\normalsize V1.0.1 - \today}
+        {\normalsize V2.0.1 - \today}
         \vspace{1.0cm}
 
         \begin{abstract}        
-        Ithil aims to bring decentralised services to the web3 space via a well-thought system of undercollateralised loans - a game-changer for traders, liquidity providers, and other protocols who can now rely on various capital-efficient products to address their needs. 
+        Ithil aims to become the base layer for decentralised financial services via a well-thought system of composable smart contracts, paired with liquidity vaults to issue debit or credit to.
         
-        Modular and easily upgradable, Ithil offers users and other protocols easy interactions with the web3 space as a whole, enabling an entirely new range of financial opportunities. Liquidity is taken from liquidity providers (or Lenders), who can stake any whitelisted ERC20 token and get a high APY on that same token getting exposure to the ecosytem with a reduced risk. In fact, their capital is spread over several protocols and it is protected by an efficient liquidation system.
+        Modular and easily upgradable, Ithil offers users and other protocols composable audited lego blocks, enabling an entirely new range of financial opportunities to be created. Developers can speed up the go-to-market by having an existing infrastructure and access to liquidity from day 1, investors can find novel solutions to speculate on and lenders can get hedged exposure to the whole web3 space from a single platform.
         \end{abstract}
             
     \end{center}
@@ -52,606 +51,246 @@
 
 \section{Introduction}
 
-In the current Web3 space there are several opportunities, from DeFi high yields to NFTs and gaming, with new ones coming up almost every day. Users are shown a wide landscape to interact with, depending on their risk appetite and personal ideas. However, all the subspaces are set apart one another, and end up being self-contained bubbles that don't interact with each other: DeFi, NFTs, gaming and metaverse are all separate from each other and the composability of one another is still uncharted territory.
+In the current Web3 space there are several opportunities, from DeFi high yields to NFTs and Real World Assets (RWA), with new ones coming up almost every day. Users are shown a wide landscape to interact with, depending on their risk appetite and personal ideas. However, all the subspaces are set apart one another, and end up being self-contained bubbles that don't interact with each other: DeFi, NFTs, RWA and metaverse are all separate from each other and the composability of one another is still uncharted territory.
 
 While for the lenders, the typical parameters LPs look for are a good APY, the market exposure (such as by holding volatile tokens), the underlying protocol's reliability and security, the liquidity available or TVL, their personal preferences and several other factors difficult to predict or model.
 With Ithil they are presented a novel opportunity to get exposed to the high yields on the whole Web3 space in a combined way, reducing the overall risk as well as increasing the return rates on their deposits.
 
 \subsection{What is Ithil}
-At its core, Ithil is a protocol that combines the liquidity providers' deposits to other protocols to create novel financial services for its users. In this way, Ithil can be considered as a {\it trait-d'union} between the many protocols existing in the space, users and liquidity providers.
+%At its core, Ithil is a protocol that combines the liquidity providers' deposits to other protocols to create novel financial services for its users. In this way, Ithil can be considered as a {\it trait-d'union} between the many protocols existing in the space, users and liquidity providers.
+
+At its core, Ithil is a protocol allowing {\it liquidity providers} to deposit their assets, and {\it users} to deploy such assets into external protocols within the Web3 world. Users need to protect the LPs' assets by placing some {\it collateral} and by paying {\it interests} on the deployed liquidity. 
+In this way, LPs benefit of a very low risk and a solid return thanks to a high diversification and capital protection, while users are entitled to all earnings and services coming from the deployed assets.
 
 \subsection{What can be done on Ithil}
 With Ithil, anyone can
 \begin{enumerate}
-\item Become {\bf liquidity provider} (LP) by staking their tokens to get a solid APY. A extensive choice of whitelisted tokens can be staked in Ithil, and the APY generated is in the same token: DAI stakers will get DAI tokens, SHIB stakers will get SHIB tokens, and so on. In this way, Ithil offers an attractive staking opportunity, also for holders of volatile tokens.
-\item Optimise their investments by placing some collateral in Ithil and then using the LP liquidity to optimise the capital allocation. Thanks to an internal system of undercollateralised loans ({\bf the Internal Lending Engine}), the total capital invested can be much higher than the collateral placed: by placing only 100 DAI worth of collateral, a user can perform an investment worth 1000 DAI or more.
-\item Be a {\bf liquidator} by constantly checking the losing positions and liquidating them in a fully on-chain way, thus getting high rewards.
-\item Similarly to the liquidators, a user can become a {\bf harvester} by automating the strategies that require a farming process, getting a part of the harvest.
-\item Join the {\bf community} by buying and holding Ithil's governance token, using it in the liquidation process or participating in governance voting. Ithil's innovative backing system ensures that Ithil's value mathematically increases in time, thus encouraging holders to commit to the community for a long time.
+\item Become {\bf liquidity provider} (LP) by depositing their assets to get a solid APY. A extensive choice of whitelisted tokens can be staked in Ithil, and the APY generated is in the same token as the provided one. In this way, Ithil offers an attractive staking opportunity, also for holders of volatile tokens.
+\item Boost their investments by placing some collateral and then using the LP liquidity on one of Ithil's whitelisted protocols (Aave, Uniswap, Balancer, OpenSea etc...). Thanks to an internal system of undercollateralised loans (the {\bf Internal Lending Engine}), the total capital deployed can be much higher than the collateral placed: by placing only 100 DAI worth of collateral, a user can deploy 1000 DAI worth of liquidity or more.
+\item Be a {\bf liquidator} by constantly checking open positions and liquidating thoe at loss in a fully decentralised way.
+\item Become an {\bf automator} by performing farming or other maintenance duties on the services which require them and getting a reward for that.
+\item Join the {\bf community} by holding and staking Ithil governance token, to take part in the protocol governance, earn part of the fees or trade.
 \end{enumerate}
 
 \subsection{Ithil's unique features}
-Many of Ithil's features are rarely found in the current web3 landscape. Some of the differences are the following:
+Many of Ithil features are scattered around the current web3 landscape and need users to combine multiple protocols to achieve the same result. Some of the differences are the following:
 \begin{itemize}
-\item {\bf Modularity} allows Ithil to list or de-list virtually any service with a governance vote, hence, allowing Ithil to continuously be updated with the most recent protocols, always offering what is best and trending to the users, be it DeFi, Metaverse, Play to Earn or anything.
-\item {\bf High capital efficiency} over-collateralisation has always been an essential aspect in DeFi loans, which reduces the possibility for users to boost their available funds.\footnote{Or makes this process very costly, mainly through the so-called {\it folding strategies} on money markets like Aave.} Thanks to a novel lending model, Ithil makes {\it under-collateralised} loans possible, thus allowing a completely new set of on-chain financial services.
-\item {\bf Opportunity to stake virtually any token}: few protocols offer a single-sided APY on ideally any token, usually being restricted to stablecoins, big cap tokens like WBTC and WETH or the protocol native token. Ithil's lending vaults are instead token-agnostic: any ERC20 token can be whitelisted and staked and it generates APY in the same token.
-\item {\bf Real-yield sustainable APY} even on stablecoins' vaults, thanks to sustainable treasury management and a non-dilutive boosting system.
-\item {\bf Capital protection} for liquidity providers: an efficient liquidation model and an algorithmically-maintained insurance reserve protect the LPs' liquidity, thus assuring long-lasting earnings with limited risk exposure.
-\item {\bf Solid tokenomics} which mathematically assures Ithil's governance token minimum exchange value to constantly increase over time, or more precisely, to never go below an always increasing floor, thus rewarding holders committing to the protocol for a long time. See \ref{bpaSub} for details. 
+\item {\bf Modularity} allows Ithil to list or de-list virtually any service with a governance vote, hence continuously updating the services offered integrating the most recent protocols, always featuring what is best and trending, be it DeFi, Metaverse, Play to Earn or anything.
+\item {\bf High capital efficiency} over-collateralisation has always been an essential aspect in DeFi loans, which reduces the possibility for users to leverage their available funds.\footnote{Or makes this process very costly, mainly through the so-called {\it folding strategies} on money markets like Aave.} Thanks to a novel lending model, Ithil makes it possible to protect the loans with just the right amount of capital, thus allowing a completely new set of speculative financial services.
+\item {\bf Opportunity to earn from virtually any token}: few protocols offer a single-sided APY on ideally any token, usually being restricted to stablecoins, high market cap tokens like WBTC and WETH or the protocol native token. Ithil lending vaults are instead token-agnostic: any ERC20 token can be whitelisted and lent, collecting fees in that same token.
+\item {\bf Real-yield sustainable fee redistribution} thanks to a sustainable treasury management and a non-dilutive TVL boosting system.
+\item {\bf Capital protection} for liquidity providers: an efficient liquidation model and proper risk tranching protect LPs' liquidity, thus assuring hedged earnings with limited risk exposure.
+\item {\bf Solid tokenomics} thanks to Protocol Owned Liquidity (POL), call and put options on the token and fee accrual for buybacks, a positive feedback mechanism constantly bringing value to the protocol and to the token holders in a sustainable way. See Section \ref{tokenomicsSec} for details. 
 \end{itemize}
 
-\subsection{Ithil's mission}
-Commitment to offering an easy and sustainable set of financial products and help users get the best out of them is the main focus of Ithil.
+\subsection{The Vision}
+Ithil main aim is to offer the broadest range of decentralised financial services for the web3 users and help get the most out of them.
 
-By interconnecting the several protocols existing in the subareas of web3, Ithil can create innovative investing opportunities (DeFi strategies), help users get what they want (on-chain mortgages) or simply enjoy the space better (access gated communities by renting NFTs).
+By interconnecting the several protocols existing in the different niches of web3, Ithil can create innovative speculation opportunities (DeFi strategies), help users obtain what they want (on-chain mortgages) or simply have fun.
 
-Through capital boosting, Ithil wants to mitigate the intrinsic advantage of wealthy individuals, allowing small users to fully embrace the opportunities web3 has to offer.
+Through leverage, Ithil wants to mitigate the intrinsic advantage of wealthy individuals, allowing everyday people to fully embrace any opportunity web3 has to offer.
 
-Building trust is of primary importance, especially in an ecosystem where scammers, ponzi schemes, and ill-modelled backing systems are unfortunately too popular. Ithil commits to giving real value to the community: every surplus earned by the protocol is algoritmically injected into the backing contract, thus increasing the value of its token and the financial power of its treasury in a clear and sustainable way.
+Building trust is a primary goal, especially in an ecosystem where scammers, Ponzi schemes, and ill-modelled speculative systems are unfortunately very popular. Ithil commits to giving real value to the community: every surplus earned by the protocol is algoritmically distributed to the token holders, thus increasing the value of the governance token and the financial power of its treasury in a simple and sustainable way.
 
 \newpage
-\section{Core concepts}\label{coreSec}
+
+\section{Core concepts}
 This section summarises the inner workings of the protocol, which will be treated more in-depth in the following sections. 
 \subsection{The Vaults}\label{vaultSub}
-The {\bf Vaults} are an ERC4626 smart contracts that collects liquidity to be used in services required by the users. The liquidity contained in each Vault is made of a {\bf whitelisted ERC20 token}, which can be in principle any tokens, from stablecoins to meme and rebasing tokens. The entire liquidity is conceptually split into three parts:
-\begin{enumerate}
-\item {\bf Liquidity Providers' Liquidity} (LPL). Anyone staking ERC20 tokens inside a Vault is considered an LP. Such liquidity can be lent to any of the Services contracts; it collects fees, can be redeemed any time \footnote{Assuming it is not lent in that particular moment, although it collects high fees if it is. See Section \ref{redSub} for more details.} by unstaking it, and is protected by the IRL and by liquidators (it has a positive APY).
-\item {\bf Insurance Reserve Liquidity} (IRL). This is a part of the liquidity bootstrapped by fees and maintained by the governance. It cannot be lent to the Services. It collects fees, it cannot be redeemed by anyone \footnote{But if it is too high, the governance can withdraw it to rebalance it. See Section \ref{ItSub} for more details.} and is not protected: it is used to protect the LPL in case a Bad Liquidation Event (see Section \ref{liqSub0}) occurs.
-\item {\bf Boosting Liquidity} (BL). A lump sum injected into a Vault by a {\it booster} to bootstrap the TVL and increase LPL's APY. In principle, anybody can be a booster, but the typical use cases are Ithil treasury (eventuall coming from the backing contract) and external DAOs. As all liquidity inside a Vault, it can be lent to the Services but it does not collect fees (they are redistributed to the LPL), is protected by IRL and liquidators and can be redeemed only by the booster itself.
-\end{enumerate}
+The {\bf Vaults} are ERC4626 smart contracts that collect liquidity to be used in services required by the users. The liquidity contained in each Vault is made of a {\bf whitelisted ERC20 token}, which can be in principle any token, from stablecoin to meme and rebasing tokens. The whitelisting process belongs to the governance.
 
-The liquidity is used by lending it to the Services (see \ref{stratSub}) in the form of direct non-collateralised loans (see \ref{ulSub}). Only Services can take loans from a specific Vault and repay them: in a Vault's smart contract, the \verb|borrow| and \verb|repay| functions are only callable by specific whitelisted addresses. This is made to ensure the assets never go to a random address and makes safe internal loans possible.
+{\bf Liquidity Providers (LPs)} can freely {\bf deposit} into the Vaults and {\bf withdraw} from them at any time. The Vault contract collects the fees generated by the Services, which increase the share price of the Vault's ERC4626 token thus yielding an APY to the LPs.
 
-Besides managing staking and unstaking of LP tokens, a Vault is also responsible for registering the total issued loans, whitelisting Services, computing the interest rate (see \ref{irSub}) of each loan and calculating the payoff to give to the borrower.
+The Vaults {\bf lend} liquidity to the Debit Services (see \ref{debitSubSub}) and {\bf borrow} liquidity from the Credit Services (see \ref{creditSubSub}) via internal uncollateralised loans. Just the Manager contract (see \ref{managerSub}) can execute borrowing and lending on behalf of a specific Vault.
 
-\subsection{Services}\label{stratSub}
+\subsection{The Manager}\label{managerSub}
 
-The {\bf Services} are smart contracts that fully use the inner composability of web3 to offer a specific service on-chain. Possibilities include DeFi investments, NFT purchases, mortgages and fx forwards on commodities.
-The contract usualy takes a margin from the user, a loan from the desired token Vault and calls an external protocol to obtain some asset(s).
+The {\bf Manager} is responsible for the general accounting and coordination between the Vaults and the Services. {\bf Users} can access the Services through the Manager, which in turn transfers the Vaults' liquidity from or to the {\bf whitelisted Services} contracts. The whitelisting process takes place via governance votes.
 
-Ithil implements a modular structure for the Services, which are totally different one-another and just need to implement an \verb|open| and \verb|close| functions. When the external protocol is called, the Service uses Ithil LPs liquidity, eventually together with the user margin (see \ref{ulSub}) to obtain some {\bf assets}, which are then locked into the Service contract itself and become {\bf held tokens}. The original tokens taken from Ithil to obtain the desired assets are referred as {\bf owed tokens}, in that the Service {\it owes} them to Ithil in order to repay the loan.
+When a user accesses a Service, it is said that the user is {\bf entering an Agreement}. Similarly, by {\bf exiting an Agreement} the user restores the initial state of the Vaults plus fees.
 
-The workflow is summarised as follows:
+In order to be able to access a Service, users may need to deposit a {\bf collateral} to cover for potential losses incurred by LPs, whose liquidity is borrowed from or lent to the Service.
+
+When liquidity is lent or borrowed, the Manager calculates the {\bf interest rate} of the loan, based on parameters coming from the global state of Ithil core (free liquidity, displaced liquidity in loans, tranched reserves,  collateral amount, token risk factors, etc...).
+
+\subsection{Services}\label{servicesSub}
+
+By {\bf Services} we define a smart contract that offers a specific financial resource by interacting with the Vaults' liquidity to perform a certain action. The services are broadly divided into {\bf Debit Services (DS)} and {\bf Credit Services (CS)} depending on respectively whether the service itself needs to borrow from or lend liquidity to the Vault.
+
+When {\bf entering an Agreement}, the user gets an {\bf agreement NFT} which represents the user's entitlement to a certain asset held in the service and the liquidity taken from, or given to, the Vaults. {\it The Manager (see \ref{managerSub}) maintains the ownership of such asset until the loan is repaid.} See \ref{posNftSubSub} for further details about agreement NFTs.
+
+When {\bf exiting an agreement}, all the loans are extinguished, the due fees are paid to the Vault(s) and the agreement NFT is burned. The user gets any other assets remaining after the closure as profit.
+
+See \ref{servicesSec} for real examples of supported Services and Targets.
+
+\subsubsection{Debit Services}\label{debitSubSub}
+A {\bf Debit Service} is a contract which triggers one or more loans {\it from a Vault} and deploys the obtained liquidity to an combination of other contracts called {\bf Targets} (see \ref{targetsSub}). These targets are typically, but not necessarily, outside of Ithil: examples are OpenSea, Balancer, Aura, Curve, Aave, etc...
+
+\subsubsection{Credit Services}\label{creditSubSub}
+A {\bf Credit Service} is a contract that lends liquidity {\it to a Vault} and deploys the obtained ERC4626 LP token to another contract called {\bf Target} (see \ref{targetsSub}). These targets are typically, but not necessarily, within Ithil: examples are tranches, Insurance Reserves, \$ITHIL Call and Put Options, etc...
+
+\subsubsection{Agreement NFT}\label{posNftSubSub}
+
+Every time a user interacts with a Service, an {\bf agreement NFT} representing the specific User-Service interaction is minted to the user wallet. The data contained depends on the particular service it refers to, but all services share some common parameters:
 \begin{itemize}
-\item The user transfers some ERC20 tokens as {\bf margin} to the desired Service contract and chooses the amount of liquidity to be taken from the Vault (usually the frontend precomputes the best amount automatically).
-\item If the amount is within the established limits (see \ref{irSub}), the Service takes the necessary liquidity from the Vault of the chosen token.
-\item The Service calls the relevant external protocols, collects the assets received from them and registers the open position on-chain. Notice that {\it these assets do not go to the original user}: they stay locked in the Service contract. Without this system, it would be impossible to grant an undercollateralised loan (see \ref{ulSub}).
-\item The position is part of the Service's state and it is visible on-chain as a NFT. It can be traded by the user or by Ithil (see \ref{securitisation}. The \verb|quote| public function of the Service allows checking the value of the held tokens with respect to the owed tokens. If a position's value decreases below a specific {\bf risk factor} of the margin, the position is {\bf liquidable} and can be closed by liquidators (see \ref{liqSub0}).
-\item At any time, the user can close the position. In this way, the Service will call the relevant external protocols to exchange its held assets into owed tokens, then transfer them to the Vault to repay the loan. The difference between the obtained amount and the repayment due to the Vault represents the user's profit.
-\end{itemize} 
-
-This workflow is totally abstract and can be applied to a wide variety of Services. Each time a new feature is implemented, it must be {\bf whitelisted} by the governance to be able to take loans from the Vaults.
-Only whitelisted addresses can call the borrow and repay functions of the Vaults and ensure the loan is repaid at the end.
-
-\subsection{Undercollateralised loans}\label{ulSub}
-
-One of the most critical parts of the system is borrowing liquidity from the Vaults and using it to offer a service. Since the liquidity taken may be higher than the margin given by the user, this has the same effect of a {\bf loan} issued to implement something directly with the Vaults' liquidity.
-
-An important takeaway is the fact that {\it this does not lend directly to the user}: Ithil does not transfer any liquidity or asset to the user wallet until the position is fully closed and the loan repaid. Instead, it is an internal loan, ``from Ithil to Ithil", though any eventual profit is transferred to the user at the loan repayment time.
-
-In order to access a service, the user has to transfer some {\bf margin} to Ithil. This margin covers the position from eventual losses caused by unfavorable market movements. The margin, just like the assets coming from a given protocol, is locked in the Service contract until the position is closed or liquidated. It can be seen as a "payment" (which is fully refunded if the position is closed profitably) necessary to use some of the Vault liquidity.
-
-Once the position is opened, and the assets are inside the Service, the part of assets coming from the user's margin is called the {\bf collateral} placed for the loan. The ratio between the collateral \footnote{Or the part of the assets coming from the collateral: see \ref{lrSub} for more details.} and the loan taken is called the {\bf collateralization} of the loan: in the limit of zero liquidity borrowed from the Vault (no leverage), the collateralisation is infinite. It decreases as the loan increases with respect to the margin amount. The loan is called {\bf over-collateralised} if its collateralisation is higher than $1$: the loan taken is lower than the margin placed, so the position is virtually riskless. \footnote{Although, in a cross-margin situation, impermanent loss can negatively affect the Vault's liquidity in this case as well, thus liquidators are still necessary. See \ref{lrSub} for more details.} If the collateralization is lower than $1$, we say the loan is {\bf undercollateralised}. 
-
-Thanks to the system described, there is no need to distinguish between the two types of loans: Ithil allows in principle any value of collateralisation. However, maximum loan value is placed to put a cap on the riskiness of a single position (see \ref{irSub}).
-
-\subsection{Interest rate}\label{irSub}
-When the Service borrows some liquidity, the target Vault registers the loan in an on-chain state and applies a tailored {\bf interest rate} to that particular loan. The details on the calculation are given in \ref{lrSub}. The interest rate is an essential part of the fees generated by Ithil, which contribute to the Vault's APY, and represent the compensation given to the LPs for having their liquidity locked in a Service.
-
-The interest rate is {\bf dynamically computed}. More precisely, the interest rate is
-\begin{enumerate} 
-\item directly proportional to the {\bf leverage}, 
-\item directly proportional to the {\bf vault usage} (how many loans are open at the moment), 
-\item directly proportional to the {\bf risk factor} of the chosen service (see \ref{liqSub0}),
-\item inversely proportional to the {\bf insurance reserve} available (see \ref{insResSub}).
-\end{enumerate}
-When a position is open, the interest rate is attached to that position onchain: when the position is closed or edited, the interest rate is used to calculate the due amount to the Vault.
-
-The interest rate cannot exceed a {\bf maximum interest rate}, decided by the governance: this is Ithil's way to control the riskiness of the investments. Instead of maximum leverage or maximum usage, all the risk data are collected together, thus leading to dynamic limits for all such data. In particular, the {\bf maximum leverage} allowed depends on the particular Service (risk factor) used, on the usage, and on the insurance reserve available at that moment. 
-
-The dynamic interest rate also automatically allows the Vault to adjust its parameters based on the usage. If the liquidity is mostly idle, the interest rate will be very low, thus encouraging users to enter into an investment. Conversely, if the vault is heavily used, or if many LPs have redeemed their liquidity (see \ref{redSub}), users will be discouraged to take further loans due to a high-interest rate. As the positions are closed, more liquidity will become available and entering into new positions will be interesting again. More examples and remarks are given in Section \ref{liquidityProvSec}.
-
-\subsection{The insurance reserve}\label{insResSub}
-
-Part of the Vault's balance cannot be borrowed and is used as a guarantee for possible losses caused by BLE (see \ref{liqSub0}): this is the {\bf insurance reserve}, a fundamental part of Ithil's Vault.
-
-An algorithmically computed part is given to the insurance reserve when fees are generated. The precise calculation is done in \ref{fgSub}, but in general, the smaller the insurance reserve balance, the higher the portion of fees goes to the insurance reserve. The minimum is attained when the ratio between the insurance reserve and the total balance (loans included) reaches an {\bf optimal ratio}. This is a token-specific percentage that prescribes the "best" portion of liquidity to be allocated as insurance: more balance would mean too low an interest rate, thus affecting the APY negatively, while less balance would mean too high an interest rate, thus affecting usage negatively.
-
-When the actual ratio is higher than the optimal ratio, the governance can choose to rebalance it by withdrawing some or all of the difference. Notice that this can only be done to make the ratio closer to the optimal one: the governance {\it cannot} withdraw on a ratio smaller than optimal.
-
-When a BLE occurs (see \ref{liqSub0}), the liquidity of the insurance reserve is used to compensate the liquidator and to cover the eventual Vault's losses caused by the BLE.
-
-\subsection{Liquidation}\label{liqSub0}
-Since the Vault's liquidity is used to perform investments, an unfavorable market movement could put the loan taken at risk. This is why {\bf liquidations} are crucial for the health of the protocol.
-
-Liquidations are managed on-chain and in a decentralised way: anyone can liquidate a given position, as far as the position is {\bf liquidable}, i.e. has a value that is too close to the original loan to be kept open.
-
-The typical liquidation process is summarised as follows.
-\begin{itemize}
-\item A liquidator checks whether a position's quoted value (given by the Strategy-specific \verb|quote| function) has gone below the minimum value given by the risk factor (see \ref{rflsSub}).
-\item If it is the case, the liquidator can liquidate the position using one of the available liquidation methods (see \ref{tolSub}): if Ithil's on-chain check confirms the liquidability of the position, the position is closed.
-\item The closure proceeds are transferred to the Vault to repay the loan and relative fees. At the same time, the remaining part is split between the Vault and the liquidator as compensation for having liquidated the position (see \ref{liqrewSub} for more details on this distribution).
-\item In the case the proceeds are insufficient to repay the loan, we call it a {\bf Bad Liquidation Event (BLE)}. In this case, the Insurance Reserve (see \ref{insResSub}) is used to repay the missing part of the loan and to compensate the liquidator.
+\item The {\bf owner}, i.e. the address of the user entering the service.
+\item The service {\bf name}.
+\item The {\bf loan} amounts.
+\item The type and number of assets hold in the service as {\bf collateral}.
+\item The {\bf interest rate} of the loan taken or given.
+\item The {\bf timestamp} of when the agreement was subscribed.
+\item Some {\bf extra parameters} depending on the particular service.
 \end{itemize}
 
-Since liquidating a position gives the liquidator a riskless gain, this creates ``liquidation battles" in which liquidators compete for the fastest liquidation.
+\subsubsection{Quoter}\label{quoterSubSub}
+Every service must have its own {\bf quoter}, an on-chain function in charge of evaluating the capital health of each agreement. It is developed and part of the Service smart contract, so that each service has one and only one quoter.
 
-In order to obtain their rewards, liquidators have to stake governance tokens: the more one has staked, the larger the rewards will be (see \ref{sgtSub}).
+By {\it evaluation} we mean the amount of Vault's tokens the user can obtain when exiting the agreement in that particular moment; this number is called the {\bf value} of the agreement NFT. This includes the Target's payoff in that moment and the  The value is used to compute the {\bf liquidation score} of an agreement NFT: if the liquidation score becomes positive, any {\bf liquidator} user (see \ref{liquidatorSub}) can trigger a special function of the Manager to forcefully close the position and repay the loan before it becomes insolvent. An extra fee is then applied to the user margin in order to compensate the liquidator.
 
-\subsection{Tokenomics}\label{tokSub}
-
-Ithil's {\bf governance token} ITHIL has the primary function of helping the protocol grow and improve the services it provides to its users. ITHIL token holders are rewarded in many ways, depending on their usage of the token. Moreover, a simple and innovative backing system ensures its value never fall below a continuously increasing floor.
+\subsection{Fees}\label{feeSub}
 
-There are three main utilities in ITHIL token:
-\begin{itemize}
-\item {\bf Liquidations}. ITHIL holders can stake their token into Ithil's liquidation contract to get higher rewards.
-\item {\bf Voting}. Each ITHIL staked in the governance contract represents one vote: staking many ITHIL makes one's vote to count more.
-\item {\bf Redeem}. ITHIL can be redeemed on the protocol any time at the {\bf backed price}. See \ref{bpaSub} for more details. 
-\end{itemize}
-The protocol's proceeds above the ones necessary to keep a sound APY are transferred by the governance into a {\bf backing contract}, thus increasing the backed price, protecting the holders from market fluctuations and indirectly rewarding holders for committing to the protocol for a long time.
+Agreements may or may not have {\bf fees} attached. The fees are always deposited to a Vault and contribute to the appreciation of the ERC4626 token-shares representing the Vault deposits. Fees are paid when an agreement is {\it exited} but unlocked over time to prevent frontrunning attacks.
 
-\newpage 
-
-\section{Liquidity provisioning}\label{liquidityProvSec}
-As mentioned in \ref{vaultSub}, Ithil's liquidity is obtained from liquidity providers, who stake their tokens, making them available to Ithil's Strategies, and by governance injections, used to boost the APY for LP's and protect their capital.
+The fee structure of an agreement depend on the Service it refers to, in general we can identify three types of fees.
 
-In order to deposit an ERC20 token on the Vault, such token must be {\bf whitelisted} by the governance. This system avoids malicious tokens, such as the ones with blocked transfers, to be injected into Ithil. The governance can also decide to {\it remove} a given token from the whitelist: in this way, unstaking of the token is always possible, as well as closing positions on that token, but staking and opening new positions will not be possible.
+\subsubsection{Interest rate}\label{interestRateSubSub}
+When liquidity is borrowed from a Vault, an {\bf interest rate} is applied to the loan. The calculation of the interest rate is performed by a separate {\bf interest rate library} and the result depends on the global state of Ithil. As a rule of thumb, the interest rate increases proportionally to the Vault liquidity usage and to the overall amount of liquidity already locked in that Service, while it decreases with the amount of user's collateral and with elapsed time from latest interaction (as in a Dutch auction scheme). The proportionality coefficients are decided by the governance and vary for each token and each Service, therefore the actual determination of the interest rate depends on a mixed algorithmic + governance-provided set of parameters.
 
-\subsection{The role of LPs}\label{lpSub}
-{\bf Liquidity providers} (LP) are the owners of what has been called LPL, standing for Liquidity Providers' Liquidity. This is distinguished from the other two types of liquidity: Insurance Reserve Liquidity or IRL, and Boosting Liquidity or BL. Except for boosters, anyone staking their ERC20 tokens on Ithil's Vault is considered a LP, and is entitled to the fees generated by the protocol on the deposited token (see \ref{fgSub}).
+\subsubsection{Fixed fees}\label{fixedFeesSubSub}
+When a Service is used, a {\bf fixed fee} might be charged to enter the Agreement. This fee may or may not depend on the amount of collateral posted or liquidity borrowed. The fixed fees are set by the governance.
 
-\begin{example}
-If an LP has staked $1000$ DAI on the Vault, and afterwards a position that generates fees in DAI (for example, a DAI leveraged staking, see \ref{lyfSubSub}) is closed, part of the fees generated will be claimable by the LP, who will be able to withdraw more than $1000$ DAI. If fees are generated in any other token, they are not delivered to the LP mentioned above, but will go to the other token's respective LPs.
-\end{example}
+\subsubsection{Performance fees}\label{fixedFeesSubSub}
+Some Services (typically externally-created ones) may have a {\bf performance fee}, where percentage of the accrued profits goes to the Vault.
 
-\begin{example}
-If an LP has staked $1000000$ SHIB, and afterwards a position which generates fees in SHIB (for example, a short trade on SHIB, see \ref{mtSubSub}) is closed, part of the fees generated will be claimable by the LP, who will be able to withdraw more than $1000000$ SHIB. If fees are generated in any other token, they are not delivered to the aforementioned LP. 
-\end{example}
-
-LPs are essential to Ithil, since the protocol usage would be much less interesting without their liquidity. Two opposite forces control the eventual APY observed by the LPs.
-\begin{enumerate}
-\item If a small amount of LPL is in the Vault, the relative portion of BL is higher. Thus a small usage is compensated by a high boosted APY, which attracts new LPs (see \ref{glSub} for more details).
-\item If a large amount of LPL is in the Vault, the cost of making riskier investments is lower (see \ref{fgSub}). Thus a lower BL portion is compensated by a higher APY generated by fees.
-\end{enumerate}
-
-Eventually, the amount of LPL staked in the Vault will reach a dynamic equilibrium, based on the usage and market conditions: below that equilibrium, BL-generated APY will attract new LPs; above that equilibrium, LPs may look for other investment opportunities.
-
-\subsection{Wrapped tokens}\label{wtSub}
-
-In order to register the liquidity staked, and the amount to be given back to traders, the Vault transfers {\bf wrapped tokens} to LPs at the moment of the staking.
-Their names are obtained by prepending an \verb|i| in front of the native token's symbol: the wrapped token for \verb|TKN| is \verb|iTKN|.
+\subsection{Targets}\label{targetsSub}
 
-The wrapped tokens are minted when an LP stakes, and burned when unstakes native tokens. In order to calculate the number of tokens to be minted and transferred to the LP, we use the following formula:
+By {\bf Target} we mean any contract to which borrowed or lent liquidity is deployed to. Targets, which can be either external or internal to Ithil ecosystem, represent the way anyone can use Ithil to access external services with more liquidity than their original (leverage), or internal services to get extra benefits from lending their liquidity to Ithil. See \ref{servicesSec} for real examples of supported Services and Targets.
 
-\begin{equation}\label{wrappedtokens}
-M_{\text{iTKN}} = \frac{S_{\text{iTKN}}}{LPL_{\text{TKN}}}D_{\text{TKN}},
-\end{equation}
-where $M_{\text{iTKN}}$ is the quantity of wrapped tokens \verb|iTKN| to be minted, $S_{\text{iTKN}}$ is the total supply of \verb|iTKN|, $LPL_{\text{TKN}}$ is the LPL denominated in \verb|TKN|, and  and $D_\text{TKN}$ is the quantity of \verb|TKN| the LP has deposited. 
+\subsection{Automators}\label{automatorsSub}
 
-In order to compute $LPL_{\text{TKN}}$ in Solidity, we can use the following equation, which reflects the conceptual division of the Vault's liquidity made in \ref{vaultSub}.
-\begin{equation}\label{LPL}
-LPL_\text{TKN} + IRL_{\text{TKN}} + BL_{\text{TKN}} = B_{\text{TKN}} - Lock_{\text{TKN}} + L_{\text{TKN}} .
-\end{equation}
-Here $B_{\text{TKN}}$ is the available balance of $\verb|TKN|$ inside the vault, $L_{\text{TKN}}$ is the quantity of \verb|TKN| taken as loans (see \ref{lrSub}), and $Lock_{\text{TKN}}$ is the fees still locked in the Vault (see \ref{lockSub}). Since the balance is obtainable by the ERC20 method \verb|balanceOf|, we see that the amount of data to be registered on-chain is four, with the fifth one obtainable by Equation \eqref{LPL}.
+{\bf Automators} are external players which perform various tasks in order to optimise the outcome of each Service, and get rewards by doing this. Everybody can be an automator and there is no entry cost nor staking requirement, since Ithil considers the automators' actions as beneficial to the ecosystem. 
 
-\begin{remark}
-In the particular situation, of inception, where $LPL_{\text{TKN}} = 0$ and $S_{\text{iTKN}} = 0$, we define the backing as $1$-to-$1$: for 1 $\verb|TKN|$, the Vault transfers 1 $\verb|iTKN|$.
-\end{remark}
+As an example of automators we will talk about liquidators and harvesters.
 
-The quantity 
-\begin{equation}\label{shareprice}
-P_{\text{iTKN}} = \frac{LPL_{\text{TKN}}}{S_{\text{iTKN}}},
-\end{equation} 
-is called the {\bf share price} of the wrapped token \verb|iTKN|, and it can be considered as the amount of \verb|TKN| to stake in order to obtain one unit of \verb|iTKN|. A positive APY corresponds to an increasing share price: the faster it increases, the higher the APY.
+\subsubsection{Liquidators}\label{liquidatorSubSub}
+A {\bf liquidator} is anybody who makes an agreement with positive {\bf liquidation score} to be forcefully exited. In this case, the liquidator becomes the owner of the agreement and gets the remaining funds as a reward. In case no liquidity is left, LPs in junior tranches are charged for the liquidation rewards due. In this way, liquidators ensure the loans are repaid in the fastest way as possible: even if a loss is inevitable, liquidation will be quickly performed and minimise it.
 
-A fundamental property of the share price is the fact that it does not change when users stake their tokens. Indeed, assuming one LP deposits an amount $D$ of \verb|TKN|, then the amount of \verb|iTKN| to be minted is calculated by Equation \eqref{wrappedtokens}. Note that we drop the subscripts to ease the notation. We then have
-$$P' = \frac{LPL + D}{S + \frac{S}{LPL}D} = \frac{LPL}{S} = P.$$
-In Section \ref{redSub}, we show in the same way that the share price does not change when users unstake their tokens, thus preventing arbitrage on the wrapped token's share price.
+\subsubsection{Harvesters}\label{harvesterSubSub}
+A {\bf harvester} is anybody who triggers special functions to improve the performance of a Service and it is always rewarded using part of the extra value given to the Service. 
 
-\subsection{Fee generation}\label{fgSub}
-The expression \eqref{shareprice} for the share price makes evident that, in order to increase the share price, and thus the APY, the LPL must increase. This is where {\bf fees} come into play.
+This abstract definition is better explained with examples (see Section \ref{servicesSec} for further details on these examples): the ``Balancer + Aura" Service needs Aura harvesting to increase the Service overall APY via compounding and the harvester is rewarded with part of the extra liquidity given by Aura; the ``Boosting" strategy needs continuous minting or burning of Vault's tokens to rebalance the Service inner value locked and the harvester is rewarded with part of such tokens.
 
-\subsubsection{Interest rate}\label{irSubSub}
-When some amount of tokens \verb|TKN| are taken from a Strategy as a loan (see \ref{siSub}), the user who launched the investment needs to pay some {\it interest rate} and a {\it fixed fee} on the transaction. 
+The precise properties of harvesting greatly vary from Service to Service and it is directly in control of the developer.
 
-The interest rate is calculated with the following formula (we avoid the subscripts \verb|TKN| for readability, but recall that all data, in particular the interest rate, are token-specific):
-\begin{equation}\label{interestRate}
-r_{\text{nd}} = \frac{1+\delta}{2\kappa}\left(r_{\text{base}} + \frac{L + \max(L-IRL;0)}{B+L-IRL}\beta\right).
-\end{equation}
+\section{Examples of Services}\label{servicesSec}
 
-As in Section \ref{wtSub}, $L$ are the total loans already taken, IRL is the Insurance Reserve Liquidity as in Section \ref{vaultSub}, and $B$ is simply the total vault's token balance (regardless of LPL, BL and locked fees). We also call $B-IRL$ the {\it free liquidity}, i.e. the liquidity ready to be used for the investments. The new parameters in Equation \eqref{interestRate} are the following.
-\begin{itemize}
-\item The {\bf collateralization} $\kappa$, which is the ratio between the margin posted as a collateral by the user and the amount taken for the loan (see \ref{lrSub}). In the particular case of zero loan taken, i.e. $\kappa = \infty$, this makes the interest rate zero.
-\item The {\bf risk factor} $\beta$, which is the riskiness of the chosen investment. This has key importance in liquidations (see \ref{rflsSub}), and has both a governance and an algorithmic component.
-\item The {\bf discount} $\delta$, defined as the ratio of the initial asset balance in the strategy, and the final one. This achieves {\it diversification}: it will be more costly to obtain the same interest rate in a intensively used strategy, with respect to a poorly used one. 
-\item The {\bf base rate} $r_\text{base}$, which is the minimal interest rate to be applied. The governance chooses it.
-\end{itemize}
+Examples of Services, with the respective Targets and the way they work, are the following.
 
-\subsubsection{Fees calculation}\label{dfSubSub}
-
-The interest rate is computed by the vault at the moment the position is opened and the loan is taken, and is attached to the position in that moment. The fees to be paid to the vault are then calculated {\it at the closure} of the position, using the following formula 
-\begin{equation}\label{duefees}
-f = m(f_{\text{fixed}} + rT),
-\end{equation}
-where
-\begin{itemize}
-\item $m$ is the total investment amount, composed by margin {\it and} loan taken,
-\item $f_{\text{fixed}}$ is the fixed fee, decided by the governance and token-specific,
-\item  $r$ is the interest rate computed in \eqref{interestRate},
-\item $T$ is the time passed between the opening and closure of the position.
-\end{itemize}
-
-If a loan of $l$ was necessary to open a position, an amount of $l + f$ must be given back to the Vault at the closure. 
-
-\subsubsection{LPL/IRL split}\label{lisSubSub}
-
-When fees are generated, they are distributed between LPL and IRL following the {\bf insurance portion} $\iota$, which is algorithmically computed in \ref{iotaSubSub} from the Vault's state. Precisely, we have
-\begin{equation}\label{feesplit}
-\begin{cases}
-LPL' = LPL + (1-\iota)f \\
-IRL' = IRL + \iota f.
-\end{cases}
-\end{equation}
-
-In particular {\it when fees are generated, the share price \eqref{shareprice} increases}, thus allowing the LPs to redeem more than the amount they initially staked.
-
-Notice that, thanks to Equation \eqref{wrappedtokens}, only fees generated {\it after} a given LP has staked contribute to that LP gain, and once the fees are generated, they can be redeemed at any time by that given LP. This is due to the fact that withdrawals do not change the share price (see \ref{wtSub}). In this way, faster redeemers do not get more fees, but rather fewer, since they renounce to the subsequent fees generated after they unstaked.
-
-\subsubsection{Calculation of $\iota$ and the optimal ratio}\label{iotaSubSub}
-
-As can be seen by \eqref{feesplit}, the Insurance Reserve Liquidity IRL increases at each fee generation. The quantity $\iota$ is computed to make the IRL increase faster when its amount, compared to the total Vault's liquidity, is low. Explicitly, we have
-\begin{equation}\label{iota}
-\iota = \left(1-\frac{\max(IRL-L;0)}{B}\right)\rho_0,
-\end{equation}
-where 
-\begin{itemize}
-\item IRL is the Insurance Reserve Liquidity,
-\item $L$ are the loans taken,
-\item $B$ is the total token balance of the Vault,
-\item $\rho_0$ is the {\bf optimal ratio} of the Vault.
-\end{itemize}
-
-The optimal ratio prescribes the "best" proportion of the Insurance Reserve with respect to the total Vault's balance. It is computed algorithmically, assuming that the more the loans are at risk, the higher $\rho_0$ should be. Calling $\beta_l$ the risk factor for each loan (see \ref{rflsSub} for more information about risk factors), and $l$ the amount of such loan, then we have
-\begin{equation}\label{optimalratio}
-\rho_0 = \frac{1}{L}\sum_{l \in \text{loans}}l \beta_l.
-\end{equation}
-
-The optimal ratio and IRL adjustments have a crucial role in Ithil's tokenomics: see \ref{irladjSub} for more details.
-
-\subsection{Locking}\label{lockSub}
-
-When fees are generated, the part of fees not included in the insurance reserve is {\it locked} and it cannot be immediately withdrawn. Unlocking occurs linearly with time, and after 6 hours the entire amount of fees is available to be withdrawn. This system is classical among many DeFi protocols and it is necessary to mitigate attacks in which an attacker stakes a huge amount of capital just before fees are generated (eventually through a flashloan) and unstakes it in the same block, thus claiming the majority of the generated fees.
-
-Technically, this is achieved as follows: every time fees are generated, an onchain datum \verb|latestRepay| is updated with the current \verb|block.timestamp|, and another onchain datum \verb|currentProfits| is updated as the current {\it locked} profits plus the generated fees (minus insurance reserve):
-$$\text{Current Profits} = \text{Old Locked Profits} + \text{Fees} - \text{IR Portion}.$$
-
-At any given time, the locked profits (the missing summand in Equation \eqref{LPL}) are calculated as 
-$$Lock = \max\left\{\text{currentProfits}\cdot\left(1 - \frac{\text{timetamp} - \text{latestRepay}}{21600}\right); 0 \right\}.$$
-
-The locked profits are then subtracted from the current liquidity to calculate the amount to deliver to the LP when unstaking (see Section \ref{redSub}).
-
-\subsection{Redemptions}\label{redSub}
-
-The wrapped tokens \verb|iTKN| can be redeemed at any time to obtain \verb|TKN|. The amount obtained is calculated by solving Equation \eqref{wrappedtokens}:
-\begin{equation}\label{redemptions}
-R_{\text{TKN}} = \frac{LPL_{\text{TKN}}}{S_{\text{iTKN}}}B_{\text{iTKN}} = P_{\text{TKN}} B_{\text{iTKN}},
-\end{equation}
-where $R_{\text{TKN}}$ is the quantity of $TKN$ which are redeemed (transferred to the burner), $B_{\text{iTKN}}$ is the amount of \verb|iTKN| burnt by the Vault, and the other data are as in Section \ref{wtSub}. Notice that the amount redeemed is simply computed using the share price $P_{\text{TKN}}$ defined in \eqref{shareprice}.
-
-Similarly to what we showed in Section \ref{wtSub}, we show that redemptions do not modify the share price. Dropping subscripts, if one burns $B$ \verb|iTKN|, afterwards we have 
-$$P' = \frac{LPL - \frac{LPL}{S}B}{S - B} = \frac{LPL}{S} = P.$$
-In short, neither redemptions nor deposits modify the share price, but only fee generation as in \ref{fgSub}. In particular, this means that one cannot grab the fees already generated by staking and unstaking tokens and that unstaking first does not provide any advantage in terms of redeemed amount: arbitraging on the share price change is not possible.
-
-\begin{remark}
-Since \verb|iTKN| and \verb|TKN| are linked to one another via the share price, any external market \footnote{We are thinking of external dexes like Uniswap} willing to price the pair \verb|iTKN|/\verb|TKN| must stick with the share price. Otherwise, arbitrage on the external market would be possible (in one direction or the other, depending on whether the market price is higher or lower than the share price).
-\end{remark}
-
-\subsubsection{Lack of liquidity}\label{lackSubSub}
-In the case too much liquidity is locked into the Strategies, and at the same time a great amount of LPs want to redeem their \verb|iTKN| simultaneously, the Vault may not have enough liquidity to immediately redeem them.
-
-In this case, the first to redeem will get their \verb|TKN| immediately, but then the denominator of Equation \eqref{interestRate} will drastically decrease. Therefore, a user willing to open a new position in this situation will need to pay a {\it very high interest rate}, thus discouraging the user from taking a further loan. As soon as the open positions are closed, more and more liquidity becomes available (and at a higher share price, due to fees generation), thus also the redeemers who did not manage to redeem their \verb|iTKN| will now be able to do that.
-
-Interest rate and the liquidation system (see Section \ref{liqSec}) assure that the positions are either liquidated after a long time, in which the interest rate has eroded too much of the investment's value, or accumulated so large fees, that it is very profitable to keep them staked.
-
-\subsection{Boosting liquidity and APY increase}\label{glSub}
-
-The Boosting Liquidity (BL) already mentioned in Section \ref{vaultSub} is particularly important to bootstrap the protocol and can increase the Vaults' APY when they fail to be competitive.
-
-Anybody, at any time, can inject or withdraw some BL in a given Vault (i.e. in a given token). Strategies can then borrow this liquidity and therefore generate fees. However {\it these fees are distributed to the LPL and IRL}: in other words, the BL does not accumulate fees. 
-
-In order to see this, we see the system \eqref{feesplit}, which tells that the total fees $f$ are not distributed to the BL. Moreover, Equation \eqref{LPL} shows that when BL is deposited or withdrawn, neither LPL nor IRL change, since the amount $B - BL$ remains constant.
-
-Since the BL has an APY of zero, the typical booster are Ithil's treasury and backing contract (in stablecoins) or external DAOs in the context of partnerships (in any token).
-
-The BL is particularly efficient in the case the LPL is very low: in this case, the {\bf APY boost} experience by early stakers is so high, that it can attract stakers and therefore increase the LPL and improve Ithil's liquidity.
-
-\begin{example}\label{bigapy}
-Assume the BL in a given Vault is of $1000000$ \verb|DAI|, while just 1 \verb|DAI| has been staked, so that the LPL is 1 \verb|DAI|. Assuming that, in a given day, a small gain of $0.01\%$ has been made thanks to the fees generated by the loans taken from the BL, and assuming a $\iota$ of $25\%$, this means that $75$ \verb|DAI| are distributed to the LPL, which has made a gain of $7500\%$ in only one day, thus experiencing a $2737500\%$ APR on \verb|DAI|. \footnote{The APY, in this case, is very similar since the compounding effects are minimal.}
-\end{example}
-
-The enormous APY obtained as described in Example \ref{bigapy} will then benefit early stakers, who will compete to have the higher portion of the BL's fees. Notice, however, that {\it the booster's liquidity is not given out to LPs}: if a booster puts some amount $M$ as BL, then the same amount $M$ can be withdrawn by the same booster at any time. Moreover, booster liquidity is the {\it most senior} when it comes to Bad Liquidation Events (see Section \ref{bleSubSub}): in this way, a lower risk compensates for the lack of APY.
-
-\section{Strategies}\label{stratSec}
-
-Ithil's {\bf Strategies} are smart contracts representing a particular investment, that is, an exchange of user's and Vault's liquidity to obtain some {\bf assets} on external DeFi protocols. \footnote{Internal transfers can also be taken into consideration.} Users, in order to launch a Strategy, need to deposit some {\bf margin} into the Strategy itself. Closing a position amounts to exchanging the assets to obtain the original token. This one is given to restore the Vault's liquidity (plus fees) and to pay the user in the case the investment has proven profitable. 
-
-Ithil's modularity allows for many possible strategies, with new ones being listed and old ones delisted by the governance, following market conditions and sentiments. The architecture in place allows for immediate and secure integration of new strategies.
-
-\subsection{The Base Strategy}\label{asSub}
-
-In order to provide a standard for all strategies to be implemented, Ithil provides a {\bf Base Strategy} (BS) contract. All Strategies must inherit from this contract in order to be listed. The BS is an \verb|abstract| Solidity smart contract, which only implements the generic Strategy logic with respect to loans, repayments, and collateral management. In particular, it does not implement the interaction with external protocols, but leaves the relevant functions as \verb|virtual|. The only thing specific Strategies must do is implement the BS's \verb|virtual| functions, thus simplifying a lot the developers' task of building new strategies.
-
- In this section, we consider a Strategy that exchanges \verb|TKA| for \verb|TKB| on some external protocol in {\it some way} (recall that the Base Strategy abstracts the actual implementation: we will discuss this in \ref{siSub}). In Ithil's terminology, \verb|TKA| is the {\bf owed token}, in that the Strategy {\it owes} it to the Vault after borrowing it, and \verb|TKB| is the {\bf held token}, since it is held (locked) within the Strategy.
-
-\subsubsection{Opening a position}\label{opSubSub}
-We describe here in detail the workflow of the BS, i.e. the sequence of calls and methods used by the BS to open a position.
-
-\begin{enumerate}
-\item The user posts some amount $m$ of {\bf margin} into the desired Strategy (in particular, the user also has to choose an implementation: see \ref{siSub}). The margin can be in either \verb|TKA| or \verb|TKB|.
-\item The user chooses a quantity $A$ and an {\bf amount} to be invested. This is the quantity of \verb|TKA| to be exchanged in order to get \verb|TKB|.
-\item If the user has posted the margin in \verb|TKA|, the Strategy takes $A-m$ \verb|TKA| from the Vault as a loan. Otherwise the margin is in \verb|TKB| and the Strategy takes $A$ \verb|TKA| as a loan from the Vault.
-\item The Strategy computes the {\bf collateral} placed by the user for the loan. If the margin is in \verb|TKA|, then the collateral is equal to the margin, while if it is in \verb|TKB|, the \verb|quote| function of the Strategy's implementation (see \ref{siSub}) calculates the value of the margin in terms of \verb|TKA|.
-\item The Vault computes the interest rate (see \ref{irSubSub}), which is passed to the Strategy as a return value.
-\item The external contract required by the specific strategy's implementation is called (see \ref{siSub}), and the amount of \verb|TKB| obtained is registered.
-\item All the relevant data are registered, and a \verb|Position| data structure is saved on-chain in the Strategy's state.
-\end{enumerate}
-
-In this way, the position is open onchain, as it is part of the Strategy's state, and can be read by anyone. The assets received, i.e. the \verb|TKB| obtained from the external protocols and eventually from the user's margin, are locked in the Strategy. Notice that this allows for an under-collateralised loan from the Vault in a secure way (the user cannot run away with the assets). 
-
-\subsubsection{Closing a position}\label{cpSubSub}
-
-When a position is opened by a user, its address is stored as the \verb|owner| member of the \verb|Position| structure. That address can {\bf close} the position it opened by launching the specific Strategy's function. Again, the particular actions to perform the closure belong to the Strategy's implementation (see \ref{siSub}). However, in the Base Strategy the general workflow of starting with \verb|TKB|, obtaining back \verb|TKA|, and repaying the Vault and the user is implemented.
-
-\begin{enumerate}
-\item The user calls for the closure of the position. If the caller is the position's owner, the closure starts.
-\item If the user has posted, at the opening, a \verb|TKA| margin, the entirety of \verb|TKB| obtained during the Strategy's opening \footnote{If TKB supports rebasing, the reflections are also considered} are exchanged through the external DeFi protocol (see \ref{siSub}) to obtain back as many \verb|TKA| as possible. Otherwise, it exchanges only the necessary amount of \verb|TKB| to obtain enough \verb|TKA| to repay the loan taken from the Vault plus fees.
-\item In normal conditions, the liquidation system assures the quantity of \verb|TKA| obtained is sufficient to repay the Vault and its fees. If it is not the case, the closure is reverted: only liquidators can close the position in this case. See Section \ref{liqSec} for more details about Ithil's liquidation system.
-\item The Strategy repays the Vault by transferring the necessary amount of \verb|TKA| in it. The remaining part of \verb|TKA| or \verb|TKB|, depending on the user's initial margin, are transferred back to the user. All the necessary states involved in the fees generation process (see \ref{fgSub}) are updated.
-\item The \verb|Position| data structure corresponding to the position just closed is deleted.
-\end{enumerate}
-
-In a profitable investment with a \verb|TKA| margin, the amount of \verb|TKA| obtained at the closure is higher than those spent at the opening. In the case of margin in \verb|TKB|, the amount of \verb|TKB| necessary to close the position is lower than the ones obtained at the opening. In both cases, the user experience a gain on a capital amount that is much higher than the margin posted, thanks to the funds borrowed from the Vault.
-
-\subsubsection{Editing a position}\label{editSubSub}
-
-While a position is open, its owner can decide at any moment to {\bf edit} it by posting extra collateral. This can be useful if the position is too close to a liquidation (see Section \ref{liqSec}), and is known in TradFi as {\it margin call}. \footnote{If the position is liquidable, liquidators can perform a forced margin call and become the position's owners. See \ref{tolSub} for more details.} The collateral is transferred to the Vault if it is in the owed token, and to the Strategy if it is in the held token.
-
-When this is done, the due fees are computed and registered in the \verb|Position| struct, and the interest rate is re-computed. In this case, also, the fees are paid at the position's closure.
-
-\subsection{Loans and repayments}\label{lrSub}
-
-The Base Strategy also deals with Vault's loans and repayments. It assures that all loans are correctly repaid and that the due fees are generated so that this core feature is respected regardless of the particular Strategy's implementation.
-
-The two Vault functions to deal with this process are \verb|borrow| and \verb|repay|. Such functions have the \verb|onlyStrategy| modifier, meaning that they can only be called by {\bf whitelisted} addresses, i.e. the Strategies which are inserted in the Strategy list by the governance.
+\subsection{Debit services}
+These services are characterised by liquidity that goes {\it from} the Vault {\it to} the particular service. In this case the Vault issues a loan to the Service by transferring the liquidity to the Service smart contract, which then locks any asset obtained. This loan is repaid when the agreement is exited.
 
 \begin{itemize}
-\item \verb|borrow| When this function is called, the Strategy passes the risk factor (see \ref{rflsSub}), the collateral placed, and the desired amount to be borrowed as parameters. Then the Vault computes the loan's interest rate, transfers the tokens to the Strategy, and registers the loan taken onchain. If the free liquidity is not enough, or if the interest rate exceeds the maximum one (this happens, for instance, if the required leverage is too high: see \ref{irSubSub}), the transaction reverts.
-\item \verb|repay| This function, also callable by the Strategy only, withdraws the owed tokens from the Strategy, updates the Vault's net loans (a state variable) and repays the position's owner by transferring the extra amount, not necessary to repay the loan and fees. Finally, it generates fees as described in \ref{fgSub}.
+\item {\bf Yearn}. Liquidity is taken from a Vault and deployed on Yearn; the resulting y-Tokens are then locked into the resulting agreement NFT. At the exit, the service's y-Tokens are redeemed on Yearn to repay the loan from the Vault.
+
+\item {\bf Balancer + Aura}. Liquidity is taken from a Vault and deployed on a Balancer pool; the resulting BP-Tokens are then deployed on Aura and the resulting liquidity entitlement is given to the agreement NFT address. During the service's life, harvesters (see \ref{harvesterSub}) collect the Aura rewards and fill (via a reflaction) all open agreement NFT's. At the exit, the BP-Tokens are unstaked from Aura and redeemed on Balancer to repay the loan from the Vault.
+
+\item {\bf Uniswap V3}. Liquidity is taken from one or two Vaults and deployed within a price range on Uniswap V3. The resulting UniV3 NFT is then locked into Ithil's agreement NFT. At the exit, the liquidity and generated fees are withdrawn from Uniswap NFT and the loan to the Vault is repaid.
+
+\item {\bf OpenSea}. Liquidity is taken from a Vault to purchase an NFT from OpenSea, which is then locked into the agreement NFT. In order to keep the position open, the user must regularly inject liquidity into the Vault to partially repay the loan. At the exit, the loan is fully repaid and the original NFT is transferred to the user.
 \end{itemize}
+\subsection{Credit services}
 
-\subsection{Strategy implementation}\label{siSub}
-The Base Strategy does not deal with the actual implementation of any particular investment. By ``implementation", we mean all the necessary external contract calls \footnote{Of course, even internal transfers are {\it a priori} possible.} which have the final effect of having an {\it exposure} to some external market movement. Such movement can be, in principle, of any type: from the increase of the share price of an LP token (for instance when staking into a yield-providing protocol \ref{lyfSubSub}), to the appreciation of one token with respect to the other (for instance in margin trading, see \ref{mtSubSub}), to gain exposure to real-world assets like in synthetics-related strategies, to raffles, et cetera.
-
-Ithil's modularity allows to list or de-list Strategies at any time, through a governance decision. Since much of the logic contained in the Base Strategy, the effort necessary to code a particular implementation is reduced to the minimum.
-
-The Base Strategy has three \verb|virtual| functions: two \verb|internal| ones named \verb|_openPosition| and \verb|_closePosition|, and a \verb|public| one named \verb|quote|. The Strategy's implementation just needs to inherit the Base Strategy and implement these functions.
+These services are characterized by liquidity that goes {\it to} the Vault {\it from} the particular service. In this case the User provides the liquidity to the Service smart contract, which then transfers it to the Vault and gets the resulting Vault's token. The token is then used for the Service particular functionalities and it is redeemed to the Vault when the agreement is exited.
 
 \begin{itemize}
-\item \verb|_openPosition| accepts an \verb|Order| data structure, which has \verb|spentToken| and \verb|obtainedToken| as address members. The goal of \verb|_openPosition| is to spend \verb|spentTokens| on some external DeFi protocol, and obtain some quantity of \verb|obtainedToken|. Also, the amount spent should not be above the \verb|maxSpent| field of the Order, and the amount obtained not below the \verb|minObtained| field of the order. Except for that, the function will attempt to obtain as many tokens as possible, or spending as few as possible depending on the particular cases. This is an \verb|internal| function.
-\item \verb|_closePosition| accepts a \verb|Position| data structure, which has \verb|owedToken| and \verb|heldToken| as address members, and an \verb|allowance| member representing the quantity of \verb|heldToken| entitled to the position. The goal of \verb|_closePosition| is to spend \verb|heldToken| on some external DeFi protocols, to obtain some \verb|owedToken|. The maximum amount of \verb|heldToken| to spend is always the position's \verb|allowance|. \footnote{Except for tokens with a reflection: in this case the reflected tokens can also be spent.} Depending on the cases, the function will try to spend as little as possible to obtain a fixed amount, or to spend the maximum amount to obtain as much as possible. This is an \verb|internal| function.
-\item \verb|quote| accepts two tokens \verb|source| and \verb|destination|, and an \verb|amount| as parameters. The goal of this function is to tell how many \verb|destination| tokens one would obtain by exchanging an \verb|amount| of \verb|source| tokens with the same methods as the one implemented in \verb|_closePosition|. This is a \verb|public view| function.
+\item {\bf Boosting}. Liquidity is deposited into a Vault and the resulting ERC4626 are redirected into Ithil's boosting Service. Harvesters (see \ref{harvesterSubSub}) periodically transfer part of the Vault's accrued fees into the Service, and if ERC4626 collateralization decreases, harvesters restore the boosters' total value by minting extra Vault's tokens (this means that the boosters are {\it senior} with respect to regular LP, and they are accepting a lower APY in return of a lower risk). When the agreement is exited, the relative ERC4626 tokens are redeemed.
+
+\item {\bf Insurance}. Liquidity is deposited  into a Vault and the resulting ERC4626 are redirected into Ithil's insurance Service.  Harvesters (see \ref{harvesterSubSub}) periodically transfer part of the Vault's accrued fees (a larger part than the Boosting case) into the Service,  and if ERC4626 collateralization decreases, harvesters restore the Vault's total value by burning some Vault's tokens  (this means that the insurers are {\it junior} with respect to regular LP, and they are accepting a higher risk in return of a higher APY). When the agreement is exited, the relative ERC4626 tokens are redeemed.
+
+\item {\bf LP'ing}. Regular LP'ing can be considered a "trivial" Credit Service, with intermediate seniority between Boosters (senior) and Insurers (junior).
+
+\item {\bf ITHIL call options}. Liquidity is deposited  into a Vault and the resulting ERC4626 are redirected into Ithil's call option Service. This gives the right to buy a certain amount of ITHIL tokens at a given price (the {\it strike}) at a certain moment in the future (the {\it expiration date}). Both the strike and the expiration date are algorithmically computed. At the exit, the user can choose whether to buy or not the tokens, and depending on this choice either ITHIL or the original Vault's token is transferred to the user. This is an example of a Service with {\it multiple exit scenarios}.
+
+\item {\bf ITHIL put options}. As in the previous case, but now the user has the right to {\it sell} ITHIL tokens at a given price (the {\it strike}) at a certain moment in the future (the {\it expiration date}). Both the strike and the expiration date are algorithmically computed.
 \end{itemize}
 
-Once these three functions are implemented, the Strategy contract is not \verb|abstract| anymore, and it can be deployed and, eventually, whitelisted by the governance to be used on Ithil. If a Strategy is implemented, deployed but not whitelisted, it will not be able to call the \verb|borrow| and \verb|repay| functions of the Vault, thus resulting in a revert. Notice that since \verb|_openPosition| and \verb|_closePosition| are \verb|internal|, they cannot be accessed directly. There is no way to exchange tokens within a Strategy except by calling a function in the Base Strategy contract.
+\newpage
+\section{The Vaults}\label{vaultSec}
 
-\subsection{Example of strategies}\label{exstrSub}
+We now look more deeply into the technical specifications of Ithil's Vaults. As mentioned in \ref{vaultSub}, the Vault is yield bearing token following the ERC4626 standard, and its purpose is collecting all liquidity deposited by LP's and Credit Services, and lending this liquidity to Debit Services.
 
-In what follows, two examples of strategies are given. It is essential to understand that these two are just examples, and they are inserted here {\it for illustration purposes only}: they are by no means the "most important" or "most used", or "most anything" ones. Moreover, giving a comprehensive treatment of these strategies, or of others, is out of the scope of this whitepaper. 
+First of all, the Vault inherits from ERC4626 and from OpenZeppelin's Ownable contract:
+$$ \verb|contract Vault is ERC4626, Ownable| \  \ \{ \verb|...| \}$$
+We will not dig down into ERC4626 and Ownable's contract specification and redirect the interested reader into the respective contracts' documentations.
 
-However, since they are somewhat different in nature, riskiness, and implementation, they illustrate well the flexibility of Ithil's architecture.
- 
-\subsubsection{Leveraged yield farming}\label{lyfSubSub}
+We will instead talk about Ithil's overrides to the inherited ERC4626 functions and Ithil's specific functions.
 
-In {\bf Leveraged Yield Farming} (LYF), a token of the Vault's can be staked in an external protocol to obtain the APY provided by that protocol and eventually some other tokens associated with liquidity mining programs. Since there are numerous protocols in the DeFi space offering this service, this Strategy is, in reality, a {\it class of strategies}: Strategies using different protocols must be implemented separately.
+\subsection{Accounting}\label{accountingSub}
+The Vault keeps three state variables for accounting: 
+$$ \verb|uint256 netLoans|, \ \ \verb|int256 currentProfits|, \ \ \verb|uint256 latestRepay|$$
+The variable \verb|netLoans| registers the total amount of loans given across all Debit Services, while \verb|currentProfits| the total {\it locked} profits at the moment of the latest repay. The block's timestamp of the latest repay is registered into \verb|latestRepay|.
 
-Typically, these kinds of strategies are of relatively low risk. However, the possibility of negative APY on the external protocol, amplified by the eventual leverage requested by the user, make it necessary to provide a non-zero risk factor (see \ref{rflsSub}) to these strategies as well. Among other things, elements such as the external protocol's reliability, its TVL, the nature of the staked tokens and the presence of liquidity mining programs are considered when assessing the riskiness of a staking strategy.
+\subsection{Locking}\label{lockingSub}
+Fees and losses (see \ref{repaySub}) undergo a locking period to dampen the movements of the Vault's token price per share. The locked fees are computed via the \verb|calculateLockedProfits()| function, whose formula is
+$$L = P\cdot\frac{\max(T_L+T_U-T),0)}{T_U} $$
+where $L$ is the result of the function, $P$ is the \verb|currentProfits|, $T_U$ is the Vault's \verb|unlockTime|, a governance-decided variable initialized at 6 hours, $T_L$ is the \verb|latestRepay| and $T$ is the current block's timestamp.
 
-In what follows, consider a scenario in which \verb|TKA| can be staked into some external {\bf staking protocol} which we call SP. For simplicity, assume there is no liquidity mining program, and that SP gives back wrapped tokens \verb|spTKA| to represent the staked liquidity. As a disclaimer, notice that the numbers listed in the following example are fictitious.
+In particular, when $T = T_L$, that is at the moment of profit (or loss) generation, we have $L = P$ and all \verb|currentProfits| are locked. After the locking period, that is $T \ge T_L + T_U$, we will have $L=0$ so all fees are unlocked. For $T_L \le T \le T_L + T_U$, we simply have $$L = P\cdot\left(1- \frac{T - T_L}{T_U} \right)$$ meaning that the fees and the losses unlock {\it linearly} with time.
 
-\begin{itemize}
-\item A user posts a margin of 100 \verb|TKA| to the LYF Strategy contract and decides to go with a 10x leverage.
-\item The Strategy will borrow 900 \verb|TKA| from the Vault and stake the 1000 \verb|TKA| on SP, obtaining say 1000 \verb|spTKA|.
-\item Assume that, after one month, the rolling APR of SP has been 60\%, thus giving a monthly gain of 5\%. Also, assume that the monthly interest rate applied by Ithil's Vault has been 3\%.
-\item If the user closes its position, the Strategy will redeem 1000 \verb|spTKA| on SP, to obtain 1050 \verb|TKA|. The Strategy then repays the Vault with 927 \verb|TKA| (900 \verb|TKA| borrowed, plus 3\%). 
-\item The remaining 123 \verb|TKA| are given back to the user.
-\end{itemize}
- Notice that the user has seen a 23\% gain in one month, using a staking protocol that only gives 5\% of yield. This is the effect of the leverage, damped by Ithil's interest rate.
+\subsection{Total Assets}\label{totalAssetsSub}
 
-Notice also, that if in the previous scenario the monthly gain obtained by SP were {\it below} Ithil's interest rate of $3\%$, then by closing the user would incur a {\it loss} or, if the loss is too heavy, the user could be liquidated (see Section \ref{liqSec}).
+Both borrowing from the Vault and repaying would modify the value of \verb|totalAssets| as defined in the original ERC4626 contract and the resulting token price per share. Since loans are just temporarily moved from the vault, and since fees need to undergo a locking period, we need to factor this in into the definition of total assets. Therefore we have $$\verb|totalAssets| = \verb|super.totalAssets + netLoans - calculateLockedProfits()|$$ with the use of mathematical overflow and capping checks so that to always make \verb|totalAssets| $> 0$ and never make the above computation overflow (this is the recommended ERC4626 standard for overriding this function).
 
-The margin, together with the liquidation process, ensures that the $900$ \verb|TKA| lent by the Vault to Strategy, will be repaid in any case to the Vault (except BLE's, see \ref{liqSub0}, in which the IRL guarantees the repayment).
+\subsection{Free Liquidity}\label{freeLiquidity}
 
-\subsubsection{Margin trading}\label{mtSubSub}
+The Free Liquidity is the amount of liquidity that can be freely borrowed or withdrawn. Of course, it would be impossible to transfer an amount higher than the Vault's native token balance, but also locked profits should not be available for borrowing or withdrawal. Therefore, letting $L = \verb|calculateLockedProfits()|$ we define
+$$\verb|freeLiquidity| = \begin{cases}
+\verb|native.balanceOf(vault)| - L &\text{ if } L > 0 \\
 
-The {\bf Margin Trading Strategy} (MTS) consists of exchanging directly some amount of \verb|TKA| into some other amount of \verb|TKB| using an external Decentralised Exchange ({\it dex}) or Automatic Market Maker ({\it AMM}). \footnote{Many times, the terms are used quite interchangeably, and some protocols have aspects of both a dex and an AMM, therefore the distinction is often not so important.}  As in \ref{lyfSubSub}, since many protocols are offering these services, this Strategy is a class of Strategies: Strategies using different protocols must be implemented separately.
+\verb|native.balanceOf(vault)| &\text{ otherwise}.
+\end{cases} $$
 
-Depending on the tokens exchanged, these Strategies can be highly hazardous: if the price of \verb|TKB| moves in a way, which is different from the one foreseen by the user at the moment the position is opened, the user can incur high losses, amplified by the leverage requested. Conversely, the potential gains are incredibly high if the price moves favourably for the user, thanks to the leverage. The risk factors (see \ref{rflsSub}) of these strategies are specific to the pair of tokens traded, and elements like historic volatility of the tokens' price and the external dex's pool liquidity are taken into account to assess the riskiness of a token pair.
+An important caveat is that {\it the entirety of the free liquidity cannot be borrowed or withdrawn at once}. Indeed, this could cause the Vault to become {\bf unhealthy} as per ERC4626 standard. Therefore, the functions \verb|borrow|, \verb|withdraw| and \verb|redeem| have a check so to revert if the entirety of the free liquidity is taken. 
+\subsection{Borrow}\label{borrowSub}
 
-Let us make a numerical example of a {\bf long position} of \verb|TKA| against \verb|TKB| (the user foresees that the exchange rate \verb|TKA|/\verb|TKB| will {\it increase}) on an external dex that we call DEX:
+The Vault's \verb|borrow(amount, receiver)| function is an only-owner function which directly transfers \verb|amount| of the native asset from the Vault to a \verb|receiver|. In order to register the loan, the \verb|netLoans| state variable is incremented by \verb|amount|. In practice, the receiver will be one of the whitelisted Debit Services, as the Router is in control of the list of receivers.
 
-\begin{itemize}
-\item A user posts a margin of 100 \verb|TKA| to the MTS contract and decides to go long with a x10 leverage on \verb|TKB|.
-\item Assuming an exchange rate of 50 \verb|TKA|/\verb|TKB|, the MTS will then borrow 900 \verb|TKA| from the Vault, say at a daily interest rate of 0.4\% and exchange 1000 \verb|TKA| to obtain 20 \verb|TKB| from DEX. 
-\item If the user closes the position after 10 days, and the exchange rate provided by DEX has increased by 20\% to 60 \verb|TKA|/\verb|TKB|, then exchanging 20 \verb|TKB| back will provide 1200 \verb|TKA| to the MTS.
-\item The MTS will repay the 936 \verb|TKA| to the vault (900 borrowed plus 4\% interest) and deliver the remaining 264 \verb|TKA| to the user.
-\end{itemize}
+In order to insure the Vault is {\it healthy} as per ERC4626 standard (this means that the Vault's balance cannot be zero if the Vault's supply is higher than zero),  the \verb|amount| must be {\it strictly less} than the Vault's {\it free liquidity}.
 
-Notice that, with a market movement of only 20\%, the user has realised a 164\% gain from the 10x leverage.
-In the case of a {\bf short position} of \verb|TKA| against \verb|TKB| (the user foresees that the exchange rate \verb|TKA|/\verb|TKB| will {\it decrease}) the situation is similar:
+The typical use case is liquidity lent to a Debit Service contract in order to make a user enter an Agreement.
 
-\begin{itemize}
-\item A user posts a margin of 100 \verb|TKA| to the MTS contract and decides to go short with a x10 leverage on \verb|TKB|.
-\item Assuming an exchange rate of 50 \verb|TKA|/\verb|TKB|, the MTS will then borrow 20 \verb|TKB| from the vault, say at a daily interest rate of 0.4\% and exchange them on DEX to obtain 1000 \verb|TKA|. At this point, 1100 \verb|TKA| are locked in the MTS as allowance.
-\item If the user closes the position after 10 days, when the exchange rate has decreased by 20\% to 40 \verb|TKA|/\verb|TKB|, then only 832 \verb|TKA| are necessary to obtain the 20.8 \verb|TKB| back to repay the vault (20 borrowed plus 4\% interest).
-\item The Strategy performs the swap of 832 \verb|TKA| to repay the Vault, and delivers the remaining 268 \verb|TKA| to the user. 
-\end{itemize}
-Again, a market movement of only 20\% has made the trader earn 168\% from the 10x leverage.
+\subsection{Repay}\label{repaySub}
 
-\section{Risk and liquidations}\label{liqSec}
-Since Ithil's loans to a given Strategy can be under-collateralised, if the market moves in an unfavourable direction, the liquidity borrowed from the Vault during a given position can become at risk. If this happens, the position can be {\bf liquidated}, i.e. forcefully closed in some of the available ways (see \ref{tolSub}), in order to complete the repayment of the loan taken from the Vault.
+The Vault's \verb|repay(assets, debt, repayer)| function is an only-owner function which directly transfers \verb|assets| of the native asset from the \verb|repayer| to the Vault. The \verb|debt| is the amount of loan this function is declared to repay: the \verb|netLoans| state variable is decremented by \verb|debt| within this function.
 
-Ithil's liquidation system is totally {\it decentralised}: anyone can liquidate open positions by launching the functions of the \verb|Liquidator| smart contract. The check for liquidability of a given position is totally {\it on-chain}. It is based on the usage of the \verb|quote| function of the particular Strategy (see \ref{siSub}): this assesses the value of a given position in the moment the function is called, and together with the {\bf risk factor} contributes to the calculation of the {\bf liquidation score} (see \ref{rflsSub}). If the liquidation score of a given position is positive, the position is {\bf liquidable}, and can be closed by the liquidator, who gets rewards doing this (see \ref{liqrewSub}).
+The parameter \verb|assets| can be either larger or smaller than \verb|debt|. In the former case, we say that the difference \verb|assets - debt| is the {\bf fees} paid to the Vault for lending its liquidity; in the latter case, we say that the difference \verb|debt - assets| is the {\bf loss} incurred by the Vault for lending its liquidity. We call the former case a {\bf Good Repay Event (GRE)} and the latter case a {\bf Bad Repay Event (BRE)}. 
 
-Liquidation is done at the level of the Base Strategy (see \ref{asSub}), in particular, it does not depend on the particular strategy implementation: the liquidator is free to choose the most convenient liquidation system for the particular strategy.
+Both the fees and the losses undergo a {\bf locking period} which protects the Vault from flashloaners draining all the incoming fees and disincentivize LPs to frontrun losses. In order to do this, the \verb|currentProfits| and \verb|latestRepay| variables are updated as 
+$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() + assets - debt|$$ 
+$$\verb|latestRepay| \mapsto \verb|block.timestamp|$$ 
+Notice that \verb|currentProfits| increases in a GRE and decreases in a BRE and that although this variable can become negative, a BRE may not be sufficient to make it negative if the current locked profits are large enough. Conversely, a high enough GRE can make positive a formerly negative \verb|currentProfits|.
 
-\subsection{Liquidators}\label{liqSub}
-In what follows, a {\bf liquidator} is any address attempting to liquidate one or more positions, using any of the available liquidation systems (see \ref{tolSub}). In order to liquidate, the liquidator must give
-\begin{itemize}
-\item The {\bf Strategy's address}: the particular Strategy in which the liquidated position resides.
-\item The {\bf position's id} of the liquidated position: recall that the positions are stored onchain, and the id is required to identify them.
-\item Further parameters, depending on the particular liquidation system.
-\end{itemize}
+As per ERC4626 standards, a positive \verb|currentProfits| will tend to increase the Vault's token price per share, while a negative one will tend to decrease it.
 
-Once the position is liquidated, it is deleted and it will not be visible anymore onchain. Since liquidating a position can come with high rewards (see \ref{liqrewSub}), a fast liquidation is crucial for the liquidator, in order not to be front-run by other liquidators.
+This function is called every time an Agreement for a Debit Service is exited.
 
-When one of the available liquidation systems is used, the contract checks the liquidability of the position on-chain. If the position is found to be not liquidable (with a negative liquidation score: see \ref{rflsSub}), the call is reverted. In particular, although not necessary, an off-chain check would be beneficial to any liquidator to avoid the gas costs associated with a reverted call. The critical function \verb|computeLiquidationScore| (see \ref{rflsSub}) is \verb|public view| and can therefore be called without any gas cost, thus assuring complete alignment of on-chain and off-chain checks.
+\subsection{Direct mint}\label{directMint}
+Via \verb|directMint(shares,receiver)| the Router can directly mint \verb|shares| of the Vault's ERC4626 tokens to the \verb|receiver|. In practice, the receiver will be one of the whitelisted Credit Services, as the Router is in control  of the list of receivers.
 
-Ithil's {\bf treasury} (see \ref{ItSub}) participates in the liquidation process just like any other liquidator: no particular advantage is given to the treasury with respect to any other address. The rewards eventually accumulated by the treasury are totally redistributed to Ithil's community via the backing contract (see \ref{bpaSub}), thus contributing to the increase of Ithil's value.
+This function has the effect of decreasing the Vault's price per share, while distributing part of the Vault's assets to the receiver by reflection. In that sense, it is considered a {\it loss} for the Vault and as such it needs to undergo the usual locking period. In order to calculate the loss, we use the native ERC4626 \verb|convertToAssets| function and update 
+$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() - convertToAssets(shares)|$$ 
+$$\verb|latestRepay| \mapsto \verb|block.timestamp|$$
 
-\subsection{Risk factor and liquidation score}\label{rflsSub}
+The typical use case of this function is the distribution of part of the accrued fees to a Credit Service.
 
-The {\bf risk factor} is a parameter already discussed upon in Section \ref{fgSub}: it is a number $0 < \beta < 1$ assessing the riskiness of the particular investment taken. The risk factor is governance based and it is both strategy and token-specific. 
-Notice that, following \ref{irSubSub}, the higher the risk factor, the higher the interest rate necessary to open a position. 
+\subsection{Direct burn}\label{directBurn}
+Via \verb|directBurn(shares,owner)| the Router can directly burn \verb|shares| of the Vault's ERC4626 tokens to the \verb|owner|. In practice, the owner will be one of the whitelisted Credit Services, as the Router is in control of the list of owners.
 
-The risk factor enters directly into the calculation of the {\bf liquidation score} $\lambda$, which is the parameter used to assess the liquidability of a given position. The liquidation score is computed via \verb|computeLiquidationScore|, which is a \verb|public view| function. Such function computes the {\bf profit-and-loss} P\&L of a given position using the \verb|quote| function. Precisely,
-\begin{equation}\label{profitandloss}
-\text{P\&L} = \begin{cases}
-\text{obtained} - \text{principal} - \text{fees}, & \text{ if collateral } = \text{ owed, } \\
-\text{allowance} - \text{cost}, & \text{ if collateral } = \text{ held. }
-\end{cases} 
-\end{equation}
+This function has the effect of increasing the Vault's price per share, while distributing part of the owner's assets to the Vault by reflection. In that sense, it is considered a {\it profit} for the Vault and as such it needs to undergo the usual locking period. In order to calculate the profit, we use the native ERC4626 \verb|convertToAssets| function and update 
+$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() + convertToAssets(shares)|$$ 
+$$\verb|latestRepay| \mapsto \verb|block.timestamp|$$
 
-In \eqref{profitandloss}, "obtained" is the number of owed tokens obtained by exchanging the allowance, and "cost" is the cost of repaying the quantity principal + fees; both are calculated by \verb|quote|. Thus they are as if the position had to be closed when the P\&L is calculated. In short, the P\&L is the number of tokens the user would obtain if the position were closed at that moment: see Section \ref{stratSec} for more details on these concepts.
-
-The liquidation score is finally computed as
-\begin{equation}\label{liquidationscore}
-\lambda = \beta \times \text{collateral} - \text{P\&L}.
-\end{equation}
-
-The position is said to be {\bf liquidable} if $\lambda > 0$: as mentioned, if a liquidation call results in $\lambda \le 0$, the call is reverted and liquidation does not occur.
-
-Notice that, if $\lambda = 0$, we have $\text{P\&L} = \beta\times\text{collateral}$, therefore $\beta$ can be seen as the {\it loss} the collateral can experience before a position gets liquidated. In particular, a positive collateral amount is still left at the moment liquidation occurs, thus making the Vault's repayment more robust and allowing to reward the liquidator (see \ref{liqrewSub}).
-
-\subsection{Types of liquidations}\label{tolSub}
-There are three types of possible liquidation procedures, all of them have the primary goal of either repaying the Vault's loan, or making the position's liquidation score \eqref{liquidationscore} negative by increasing the collateral.
-
-\subsubsection{Forced closure}\label{fcSubSub}
-In this method, the position is closed by launching a \verb|_closePosition|. This has the same effect, on the Vault's side, as the user directly closes the position, except that the payoff given to the user will be significantly smaller due to the liquidator's reward. As in \ref{cpSubSub}, the owed tokens obtained by the closure are transferred to the Vault in order to repay the loan, and the remaining collateral is split between the liquidator and the treasury (see \ref{sgtSub}).
-
-This liquidation system has the lowest risk for the liquidator since no amount needs to be paid. However, it is more complex (and thus expensive) in terms of gas.
-
-\begin{example}\label{mtLiqEx1}
-Let us take the example of the Margin Trading Strategy as in \ref{mtSubSub}. Assume the risk factor of the position is $\beta = 0.5$, that the position is long \verb|TKB| versus \verb|TKA| with 100 \verb|TKA| as collateral, the exchange rate is $50$ \verb|TKA|/\verb|TKB|, and assume the user has requested x10 leverage so that 1000 \verb|TKA| are exchanged to get 20 \verb|TKB| from an external DEX. If the exchange rate goes down until 48 \verb|TKA|/\verb|TKB|, and the fees accumulated so far are of 15\verb|TKA| the quoter would calculate $$\text{P\&L} =  48\ \verb|TKA|/\verb|TKB| \times 20  \verb|TKB| -  900 \verb|TKA| - 15\verb|TKA|= 45  \verb|TKA|,$$ therefore the liquidation score would be $$\lambda = 0.5 \times 100\verb|TKA| - 45 \verb|TKA| = 5  \verb|TKA| > 0.$$ 
-
-Therefore, the position can be liquidated by swapping back the allowance of 20\verb|TKB|, obtaining 960\verb|TKA| from the DEX which will be used to pay the 915\verb|TKA| due to repay the Vault's loan and fees, and the remaining part is split between the treasury, the liquidator, and the original position owner following the scheme of Section \ref{liqrewSub}.
-\end{example}
-
-\subsubsection{Position purchase}\label{ppSubSub}
-The liquidator can also purchase the position's held tokens by repaying the Vault. The liquidator transfers the principal amount and the fees to the Vault, and the Strategy transfers the tokens locked in the position to the liquidator's address. The position is then deleted, and the liquidator can choose what to do with the assets obtained.
-
- This is the quickest and most gas-efficient way to liquidate, but it requires a high down payment from the liquidator (the principal and due fees to the Vault). Moreover, the assets obtained a value at risk for the liquidator, who must manage them well afterwards to obtain a good gain.
-
-\begin{example}\label{mtLiqEx2}
-In the same situation as Example \ref{mtLiqEx1}, a liquidator can directly transfer 915\verb|TKA| to the Vault to close the liquidable position, and have the allowance of 20\verb|TKB| be transferred to the address used to call the liquidation function. At this point, the liquidator is free to use these 20\verb|TKB| as preferred. Swapping them back to DEX as in \ref{mtLiqEx1} (if the price hasn't changed in the meantime) would yield $960$\verb|TKA| to the liquidator, thus realizing a gain of $960-915 = 45$ \verb|TKA| for the entire procedure. However, the liquidator might want to keep them for other reasons, or use them in separate investments. 
-\end{example}
-
-\subsubsection{Margin call}\label{mcSubSub}
-Not technically a "liquidation", since the effect of the margin call is not the closure of a position, a liquidator can choose to insert more margin into the position to make the liquidation score lower than $0$ (see \ref{rflsSub}). If this is the case, the position {\it stays open} and the liquidator becomes its owner, thus leaving the liquidator with the decision of what to do with it.
-
-It requires a small down payment and is not too expensive in terms of gas, but keeping the position open the liquidator stays exposed to the position's risk, and must be careful not to be in turn liquidated if the market keeps on moving unfavorably.
-
-\begin{example}\label{mtLiqEx3}
-In the situation of Example \ref{mtLiqEx1}, the liquidator can choose to perform a margin call by transferring $20$\verb|TKA| to the vault. In this way, the position's principal becomes $880$ \verb|TKA|, thus the new payoff will be $$\text{P\&L} =  48\ \verb|TKA|/\verb|TKB| \times 20  \verb|TKB| -  880 \verb|TKA| - 15\verb|TKA|= 65  \verb|TKA| $$
-and the new collateral is $100 + 20 = 120 \verb|TKA|$. Therefore, the liquidation score becomes $$\lambda = 0.5\times 120\verb|TKA| - 65\verb|TKA| = -5\verb|TKA| < 0 $$
-and the position is not liquidable anymore. The liquidator becomes now the owner of this open position, and can choose what to do with it. Closing it immediately would deliver a payoff of 65\verb|TKA| to the liquidator, which will then realize a gain of $65-20 = 45$\verb|TKA| for the full procedure. Notice that in all cases, the liquidator gets 45\verb|TKA| in the situation considered: all methods give the same payoff opportunity to the liquidator.
-\end{example}
-
-\subsection{Liquidator's rewards}\label{liqrewSub}
-
- We assumed the liquidator gets all the rewards to simplify the treatment in the previous examples. In reality, the reward given to the liquidator is split between the Insurance Reserve (see \ref{insResSub}) and the liquidator. The liquidator can increase the amount of reward obtained by staking governance tokens (see \ref{sgtSub}).
-
-The minimum reward a liquidator gets is adjusted to the various liquidation systems in the following way.
-
-\begin{itemize}
-\item In a {\bf forced closure} liquidation, the liquidator gets the greatest between the trader's P\&L and $5\%$ of the borrowed assets obtained by closing the position.
-\item In a {\bf position purchase} liquidation, the liquidator can purchase the assets at a $5\%$ discount with respect to the market fair value, obtained by Ithil's \verb|quote| function.
-\item In a {\bf margin call} liquidation, the liquidator can reduce the due fees by $50\%$.
-\end{itemize}
-
-All these numbers refer to the {\it maximum} reward a liquidator can obtain. The actual reward depends on how much governance token the liquidator has staked into the Liquidator's contract. The governance decides a {\it maximum stake} $M$, which can change over time depending on the governance token's value: the liquidator's reward will then be a factor $0<\gamma < 1$ of the maximum reward, computed as
-\begin{equation}\label{actualReward}
-\gamma = \max\left\{\frac{S}{M};\, 1\right\}
-\end{equation}
-where $S$ is the amount of governance tokens staked by the liquidator.
-
-\subsubsection{Bad liquidation events}\label{bleSubSub}
-A {\bf bad liquidation} is a liquidation in which  $\text{P\&L} < 0$, with notation as in \eqref{profitandloss} or, looking at the definition of the liquidation score in \eqref{liquidationscore}, 
-$$\lambda > \beta \cdot \text{collateral}.$$ In this situation, the amount obtained by closing the position is not sufficient to repay the principal and interest of the position (or the cost to repay the loan is higher than the allowance in the case of a held collateral).
-
-Due to a BLE, part of the Vault's liquidity is lost, which is the only case where this happens. From Section \ref{liqrewSub}, we see that in this case the liquidator's reward is in any case lower than in a good liquidation event: liquidating quickly, when the liquidation score is low, is encouraged through a higher reward.
-
-In the case of a BLE, the IRL covers for the liquidity loss (see \ref{insResSub}), including the funds necessary to reward the liquidator. In this way, the LPs do not see their APY go negative even if there is a BLE, as far as there is enough IRL. If a BLE occurs {\it and} the IRL is not enough, then the LPL decreases.
-
-\begin{remark}\label{nopunishments}
-Notice that the minimum reward to give to a liquidator is necessary, even in the case of a BLE. Indeed, the gas cost related to a liquidation could bring the liquidator to wrap the call into an \verb|if| statement, which does not perform the call if the reward is too low. In this case, a position that is losing too much could stay open and keep on losing virtually until the entire allowance is worthless, thus making the Vault lose a significant amount of funds. With the minimum reward, it is ensured that it is always convenient to liquidate a position, and as discussed in this Section, the sooner it is liquidated, the better.
-\end{remark} 
-
-\section{Tokenomics}\label{tokSec}
-Ithil's tokenomics is conceived to maximize the protocol's attractiveness by raising its APY, consolidating the earnings of the LPs, and rewarding the community solidly and sustainably.
-
-\subsection{The governance token}\label{govSub}
-The governance token ITHIL represents a unit portion of the protocol: any owner of ITHIL can be considered a member of Ithil's community. ITHIL token has the following characteristic.
-\begin{itemize}
-\item It is {\it deflationary}: the total supply of ITHIL is minted at the launch, and no other tokens are minted after that moment.
-\item It is a {\it utility token}: it can be used in various ways on the protocol in exchange for services.
-\item It is {\it backed}: it can always be exchanged on Ithil's backing system (see \ref{bpaSub}) at a never decreasing floor price.
-\end{itemize}
-
-The total supply of the governance tokens is approximately allocated as follows  \footnote{The precise allocation will be displayed in a dedicated website}:
-\begin{itemize}
-\item 20\% to the core team
-\item 10\% to early investors, advisors and VC's
-\item 30\% to Ithil's treasury (see \ref{ItSub}), 
-\item 40\% to the market, starting from the backing contract (see \ref{bpaSub})
-\end{itemize}
-
-\subsection{IRL adjustments}\label{irladjSub}
-
-The passage from Ithil's core protocol and its tokenomics is done through the IRL. As seen in \ref{iotaSubSub}, a given vault's IRL can be adjusted by the governance. If the current ratio is lower than the optimal one, the governance can decide to use part of the treasury's funds to increase it up to the optimal ratio. At the same time, if it is larger, the governance can decrease it, still until the optimal ratio is restored.
-
-In the second case, the funds obtained are {\it algorithmically} transferred to the backing contract (see \ref{bpaSub}), thus increasing the backed price \footnote{Eventually, a swap may be necessary to convert them into the stablecoins backing ITHIL}. In particular, no governance decision is involved in this process: the treasury has no way to withdraw such funds. The effect of this is beneficial to all ITHIL holders, and indirectly to the treasury, which is the primary holder at inception: the treasury is entitled to the funds obtained only in the sense that it is a ITHIL holder, just like all the others.
-
-\subsection{Backing}\label{bpaSub}
-
-ITHIL is the native token of one or more asymmetric AMM pools whose numeraire are stablecoins. Although a precise treatment of this system would go far beyond the scope of this whitepaper, we can mention here that the {\bf bid price} (or {\bf backed price}) of such pool is calculated as follows. Letting $B$ be the balance of the pool in stablecoins, $S$ the balance of the pool in ITHIL coins, and $S_T$ the total ITHIL supply, then
-\begin{equation}\label{backedprice}
-P_\text{backed} = \frac{B}{S_T-S}.
-\end{equation}
-In the backing pool, any quantity of ITHIL can be exchanged to get the backing stablecoins at the backed price. Conversely, the pool also has a {\bf ask price} $P_{\text{ask}} \ge P_{\text{bid}}$ at which ITHIL tokens can be bought.
-
-It can be shown that with this system, all circulating ITHIL can potentially be redeemed on the backing pool at the backed price, redemptions do not change the backed price, and purchases of ITHIL tokens increase the backed price. In particular, {\it mathematically, there exists no event which can decrease the backed price.} It can also be shown that any market price outside the pool (for instance, how much ITHIL is exchanged on an external dex) must lie between $P_\text{backed}$ and $P_\text{ask}$. In particular, since it must be higher than $P_{\text{backed}}$, which is constantly increasing in time, this result represents a guarantee for ITHIL holders that their tokens' value cannot go below such floor.
-
-When IRL adjustments occur (see \ref{irladjSub}), the funds obtained are swapped for stablecoins or ITHIL in the market (depending on which of the two systems brings a greater backed price increase) and injected in the backing pool: in this way, the backed price $P_{\text{backed}}$ increases, at the benefit of all ITHIL holders.
-
-The difference function between the bid and ask price is called a {\bf spread model} for the backing pool.
-
-\subsection{Boosting}\label{boostSub}
-
-The backing contract is a {\it booster} (see Section \ref{glSub}): the idle funds of the backing are used to boost Ithil's stablecoin APY's. Since, as discussed in \ref{glSub}, boosters are the most senior LPs, the backing contract's liquidity has the highest level of protection, thus making the backed price as solid as possible. Since boosting means more APY, which in turn means more liquidity, more usage, more fees and eventually more backing, this system builds a positive feedback mechanism which is beneficial to ITHIL's backed price and ultimately to ITHIL holders.
-
-\subsection{Ithil's treasury}\label{ItSub}
-Ithil's treasury is made exclusively by ITHIL tokens. This treasury is used to feed the BL of a given Vault, to pay for community mining initiatives and airdrops, and to participate in eventual external investments, managed by Ithil's governance in the form of DAO. At inception, the Treasury will also have the keys to call the \verb|onlyOwner| functions of the contract: the DAO can decide to remove this privilege by a governance vote.
+The typical use case of this function is the return of part of the accrued fees from a Credit Service to the Vault.
 
 
 \end{document}
