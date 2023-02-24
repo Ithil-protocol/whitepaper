@@ -390,14 +390,14 @@ The {\bf specific functions} take into account the {\it default risk} of the bor
 \begin{itemize}
 \item \verb|quote(Agreement agreement)|, a virtual function without implementation, is aimed to compute the amount of tokens obtained in a \verb|close| call done in that specific moment.
 \item \verb|liquidationScore(uint256 id)| a virtual function computing a number which determines the "health" of the position by considering the Loan of \verb|agreements[id]| and calling the \verb|quote| function. By default, the Agreement is {\it liquidable} if its liquidation score is positive: in this case, anybody can close the Agreement by calling the \verb|close| function. The precise calculation uses the {\bf liquidation threshold}:
-$$LT = L + M\cdot \frac{S}{I+S}$$ where $L$ is the loan amount, $M$ is the margin, $S$ is the risk spread and $I$ is the interest rate applied to that particular agreement. The liquidation score is then $$LS = \left(1 - \frac{Q}{LT}\right)_+$$ where $Q$ is the quoted amount. \footnote{In order to avoid rounding and normalization errors, this quantity is a dimensionless 18 digit fixed point integer.} This formula is valid for a single token loan: the liquidation score of a multi-token loan is the sum of the single liquidation scores for each token.
+$$LT = L + M\cdot \frac{S}{I+S}$$ where $L$ is the loan amount, $M$ is the margin, $S$ is the risk spread and $I$ is the interest rate applied to that particular agreement. The liquidation score is then $$LS = \left(1 - \frac{Q}{LT}\right)_+$$ where $Q$ is the quoted amount.\footnote{In order to avoid rounding and normalization errors, this quantity is a dimensionless 18 digit fixed point integer.} This formula is valid for a single token loan: the liquidation score of a multi-token loan is the sum of the single liquidation scores for each token.
 \end{itemize}
 
 \subsection{Securitisable Service}\label{securitisableServiceSub}
 In traditional finance, {\bf securitisation} is the process of selling a particular asset or basket of assets under management to a willing investor who takes their risk and rewards.
 
 In our implementation, a {\bf Securitisable Service} is a Debit Service whose credit, which initially belongs to the Vault, can be freely {\it purchased} by directly repaying the Vault at a discount. This has actually the effect of changing the {\it lender}: that's why the contract has a storage state variable
-$$mapping(uint256 => address) lenders$$
+$$\verb|mapping(uint256 => address) lenders|$$
 who associates, for each index, the address of the lender who purchased the credit.
 
 The Contract definition is defined as
@@ -430,11 +430,42 @@ $$\verb|abstract contract WhitelistedService is Service {...| $$
 in particular, implementations of any of the types of services described above (Debit, Credit, Securitised) may or may not inherit from Whitelisted.
 
 \section{Fees}\label{feesSec}
-\subsection{Payoffs}\label{payoffsSubSec}
-\subsection{Interest rate}\label{interestRateSubSec}
+Ithil's core, as discussed in the previous sections, does not have any implementation of fees, and instead leaves to the single Service implement the most suitable fee structure. These structures are implemented in separate contracts which are inherited by the particular Service. For example, if a particular ParticularService, which is a Securitisable, Whitelisted DebitService, needs to adopt the fee model implemented in the FixedFee contract, its definition would be
+$$\verb|ParticularService is Securitisable, Whitelisted, FixedFee {...| $$
+We will not deep dive here into the particular fee models currently implemented by Ithil's development team, nor of the countless existing in the various Web3 protocols. However, given that we encountered Debit Services, which borrow assets from the Vault, it is clear that such services need to have an {\bf base interest rate} $B$ and a {\bf risk spread} $S$ to account for the cost of borrowing. The sum of these two number gives the total interest rate $I = B + S$ of an Agreement.
+
+When an Agreement is closed, the fees to pay are thus calculated as $$F = L * I * (t - t_0) $$ where $F$ are the fees, $L$ is the loan taken, $I$ is the interest rate applied, $t_0$ is the time the Agreement was created at, and $t$ is the current time. All fees are transferred to the Vaults during the call to \verb|repay|.
+
+\subsection{Base Interest rate}\label{interestRateSubSec}
+The base interest rate is a number capturing the cost of borrowing capital from the Vault, considering the Vault's specific parameters such as utilization rate or token's volatility. In particular, it is not intended to capture the precise riskiness of the investment, but rather how much the lenders want to be paid to lend their assets.  Many interest rate models have been proposed in the Web3 world, while an example of a new one used by Ithil is the {\bf Auction Model}, which we will now illustrate.
+
+We want to stress that, just like the case of Services, also the Interest Rates are important components in order for a contract to be whitelisted, but they are not part of Ithil's core: new interest rate models can be conceived by Services developers, and the current phylosophy is to design an architecture so to make future developments seamless, in an effort to make Ithil as dynamic and modular as possible. In particular, the following rate model is an {\it example} of what Ithil can support.
+
+\subsubsection{Auction Rate Model}\label{auctionSubSub}
+In this model, we want to capture both the Vault's usage (the less free liquidity, the higher the rate for the same loan) and the time passed after the last loan (the more time passes, the lower the rate for the same free liquidity and loan). In this way, the rate follows a {\it Dutch auction model} which naturally makes the interest rate go down if nobody asks for a loan, thus facilitating the creation of a market equilibrium between lenders and borrowers and increasing capital efficiency.
+
+\begin{itemize}
+\item By labelling the sequence of loans in time with $l_1, l_2, \ldots$ we have a corresponding sequence of base rates $b_1,b_2, \ldots$ and times $t_1, t_2, \ldots$
+\item We have the recursive definition $$b_{i+1} = b_i \cdot \frac{FL}{FL-l_{i+1}}\cdot\frac{H}{H + t_{i+1} - t_i}$$ where $FL$ is the Vault's free liquidity and $H$ is a Governance chosen time parameter called {\bf halving time}. It can be interpreted as the time after $t_i$ which cuts the base rate exactly by half. Notice that, thanks to the fact that the entire free liquidity cannot be withdrawn as per ERC4626 health check, the denominator cannot be zero.
+\item The new rate $b_{i+1}$ is calculated at the time a new loan is taken with the above formula, and it is stored in the Contract's state together with $t_{i+1}$
+\end{itemize}
+
 \subsection{Risk spread}\label{riskSpreadSubSec}
 
-\section{Harvesting}\label{harvestingSec}
-\subsection{Credit Services}\label{harvestCreditSubSec}
-\subsection{Debit Services}\label{harvestDebitSubSec}
+The risk spread is a fixed number, chosen by the Governance, representing the riskiness of a particular loan\footnote{This is called credit risk or default risk in traditional finance} and it is added to the base interest rate to calculate the "full" interest rate of an Agreement.
+
+Therefore, we will have $$I = B + S$$ where $I$ is the interest rate, $B$ is the base interest rate as in Subsection \ref{interestRateSubSec}, and $S$ is the risk spread. It can be seen as the minimum rate, below which no Agreement can be opened for that particular Service and token.
+
+For example, by looking at the Auction Model \ref{auctionSubSub}, we see that the base rate could also become zero after a very long time: there are no positive lower bounds to it. Therefore, the interest rate will converge to the risk spread with time.
+
+\section{Automations}\label{automationsSec}
+Each Service may have one or several {\bf automations}, that is actions which can be executed to change the Service state in a controlled way, independently on the opening and closing of each Agreement. Since this concept is rather abstract, we will illustrate some examples based on the Service structure described in the previous sections.
+\subsection{Credit Services}\label{automationCreditSubSec}
+As seen in \ref{creditServiceSub}, Credit Services can call a function using the Manager's \verb|directMint| or \verb|directBurn|, in exchange of a dedicated \verb|deposit| on the Vault. At any time, these functions can be called by anyone (who obtains a reward for doing so) to redistribute or slash assets to the users of the Service.
+For example, the Insurance Reserve Service will call a \verb|directBurn| when a loss occurs, and a \verb|directMint| when a profit occurs (the latter is necessary to compensate the possibility of being slashed, and it has the effect of giving insurers a higher APY than the other lenders, in case no losses occur).
+
+\subsection{Debit Services}\label{automationDebitSubSec}
+The most important automation in Debit Services is clearly {\bf liquidation}, in which anybody can close an Agreement with positive liquidation score (see \ref{debitServiceSub}) and get a reward in doing so. This automation is so important that the Governance itself has a liquidation bot running on the whitelisted Services, although such bot has no edge with respect of any other player executing the same function. 
+
+To give another example, many DeFi-style Debit Services consist in deploying liquidity into an external protocol who, in exchange, emits {\it spurious tokens}, i.e. tokens different from the ones in the Loan or Collateral part of the Agreement. Such tokens can then be swapped in batch to obtain loan tokens, which are distributed to the users. Such process, traditionally called {\bf harvesting} in DeFi, is very general and also applicable to non-DeFi Services as long as one action distributes extra value to the users. 
 \end{document}
