@@ -42,7 +42,7 @@
         \begin{abstract}        
         Ithil aims to become the base layer for decentralised financial services via a well-thought system of composable smart contracts, paired with liquidity vaults to issue debit or credit to.
         
-        Modular and easily upgradable, Ithil offers users and other protocols composable audited lego blocks, enabling an entirely new range of financial opportunities to be created. Developers can speed up the go-to-market by having an existing infrastructure and access to liquidity from day 1, investors can find novel solutions to speculate on and lenders can get hedged exposure to the whole web3 space from a single platform.
+        Modular and easily upgradable, Ithil offers users and other protocols composable, audited lego blocks, enabling an entirely new range of financial opportunities to be created. External protocols can speed up their go-to-market by having an existing infrastructure and access to liquidity from day 1, investors can find novel solutions to speculate on and lenders can get diversifie exposure to the whole web3 space from a single platform.
         \end{abstract}
             
     \end{center}
@@ -198,7 +198,7 @@ These services are characterised by liquidity that goes {\it from} the Vault {\i
 
 \item {\bf OpenSea}. Liquidity is taken from a Vault to purchase an NFT from OpenSea, which is then locked into the agreement NFT. In order to keep the position open, the user must regularly inject liquidity into the Vault to partially repay the loan. At the exit, the loan is fully repaid and the original NFT is transferred to the user.
 \end{itemize}
-\subsection{Credit services}
+\subsection{Credit services}\label{csFirstSec}
 
 These services are characterized by liquidity that goes {\it to} the Vault {\it from} the particular service. In this case the User provides the liquidity to the Service smart contract, which then transfers it to the Vault and gets the resulting Vault's token. The token is then used for the Service particular functionalities and it is redeemed to the Vault when the agreement is exited.
 
@@ -221,25 +221,28 @@ We now look more deeply into the technical specifications of Ithil's Vaults. As 
 
 First of all, the Vault inherits from ERC4626 and from OpenZeppelin's Ownable contract:
 $$ \verb|contract Vault is ERC4626, Ownable| \  \ \{ \verb|...| \}$$
+Since every Vault is deployed by the Manager contract (see \ref{managerSec}), this contract is the owner of all the Vaults.
 We will not dig down into ERC4626 and Ownable's contract specification and redirect the interested reader into the respective contracts' documentations.
 
 We will instead talk about Ithil's overrides to the inherited ERC4626 functions and Ithil's specific functions.
 
 \subsection{Accounting}\label{accountingSub}
 The Vault keeps three state variables for accounting: 
-$$ \verb|uint256 netLoans|, \ \ \verb|int256 currentProfits|, \ \ \verb|uint256 latestRepay|$$
-The variable \verb|netLoans| registers the total amount of loans given across all Debit Services, while \verb|currentProfits| the total {\it locked} profits at the moment of the latest repay. The block's timestamp of the latest repay is registered into \verb|latestRepay|.
+$$ \verb|uint256 netLoans|, \ \ \verb|uint256 currentProfits|, $$ $$\verb|uint256 currentLosses|, \ \ \verb|uint256 latestRepay|$$
+The variable \verb|netLoans| registers the total amount of loans given across all Debit Services, while \verb|currentProfits| and  \verb|currentLosses| are the total {\it locked} profits and losses respectively, at the moment of the latest repay. The block's timestamp of the latest repay is registered into \verb|latestRepay|.
 
 \subsection{Locking}\label{lockingSub}
-Fees and losses (see \ref{repaySub}) undergo a locking period to dampen the movements of the Vault's token price per share. The locked fees are computed via the \verb|calculateLockedProfits()| function, whose formula is
-$$L = P\cdot\frac{\max(T_L+T_U-T),0)}{T_U} $$
-where $L$ is the result of the function, $P$ is the \verb|currentProfits|, $T_U$ is the Vault's \verb|unlockTime|, a governance-decided variable initialized at 6 hours, $T_L$ is the \verb|latestRepay| and $T$ is the current block's timestamp.
+Fees and losses (see \ref{repaySub}) undergo a locking period to dampen the movements of the Vault's token price per share and protect the Vault from flashloan attacks. The locked fees are computed via the \verb|calculateLockedProfits()| function, whose formula is
+$$L = P\cdot\frac{(T_L+T_U-T)_+}{T_U} $$
+where $L$ is the result of the function, $P$ is the \verb|currentProfits|, $T_U$ is the Vault's \verb|unlockTime|, a governance-decided variable initialized at 6 hours, $T_L$ is the \verb|latestRepay| and $T$ is the current block's timestamp. The subscript "$+$" indicates the positive part.
 
-In particular, when $T = T_L$, that is at the moment of profit (or loss) generation, we have $L = P$ and all \verb|currentProfits| are locked. After the locking period, that is $T \ge T_L + T_U$, we will have $L=0$ so all fees are unlocked. For $T_L \le T \le T_L + T_U$, we simply have $$L = P\cdot\left(1- \frac{T - T_L}{T_U} \right)$$ meaning that the fees and the losses unlock {\it linearly} with time.
+In particular, when $T = T_L$, that is at the moment of profit (or loss) generation, we have $L = P$ and all \verb|currentProfits| are locked. After the locking period, that is $T \ge T_L + T_U$, we will have $L=0$ so all fees are unlocked. For $T_L \le T \le T_L + T_U$, we have $$L = P\cdot\left(1- \frac{T - T_L}{T_U} \right)$$ meaning that the fees and the losses unlock {\it linearly} with time.
+
+The function \verb|calculateLockedLosses()| does the exact same with the variable \verb|currentLosses| instead.
 
 \subsection{Total Assets}\label{totalAssetsSub}
 
-Both borrowing from the Vault and repaying would modify the value of \verb|totalAssets| as defined in the original ERC4626 contract and the resulting token price per share. Since loans are just temporarily moved from the vault, and since fees need to undergo a locking period, we need to factor this in into the definition of total assets. Therefore we have $$\verb|totalAssets| = \verb|super.totalAssets + netLoans - calculateLockedProfits()|$$ with the use of mathematical overflow and capping checks so that to always make \verb|totalAssets| $> 0$ and never make the above computation overflow (this is the recommended ERC4626 standard for overriding this function).
+Both borrowing from the Vault and repaying would modify the value of \verb|totalAssets| as defined in the original ERC4626 contract and the resulting token price per share. Since loans are just temporarily moved from the vault, and since fees need to undergo a locking period, we need to factor this in into the definition of total assets. Therefore we have $$\verb|totalAssets| = \verb|super.totalAssets + netLoans +| $$ $$\verb| + calculateLockedLosses() - calculateLockedProfits()|$$ with the use of mathematical overflow and capping checks so that to always make \verb|totalAssets| $> 0$ and never make the above computation overflow (this is the recommended ERC4626 standard for overriding this function).
 
 \subsection{Free Liquidity}\label{freeLiquidity}
 
@@ -250,6 +253,8 @@ $$\verb|freeLiquidity| = \begin{cases}
 \verb|native.balanceOf(vault)| &\text{ otherwise}.
 \end{cases} $$
 
+Notice that locked losses are not added to this calculation, since that would give the possibility of borrowing lost assets, thus breaking the mathematical soundness of the Vault.
+
 An important caveat is that {\it the entirety of the free liquidity cannot be borrowed or withdrawn at once}. Indeed, this could cause the Vault to become {\bf unhealthy} as per ERC4626 standard. Therefore, the functions \verb|borrow|, \verb|withdraw| and \verb|redeem| have a check so to revert if the entirety of the free liquidity is taken. 
 \subsection{Borrow}\label{borrowSub}
 
@@ -259,6 +264,7 @@ In order to insure the Vault is {\it healthy} as per ERC4626 standard (this mean
 
 The typical use case is liquidity lent to a Debit Service contract in order to make a user enter an Agreement.
 
+By checking the formulas for \verb|totalAssets()|, we see that the \verb|borrow| function does not modify the total assets immediately after being called: the total assets are an {\it invariant} of the borrow function.
 \subsection{Repay}\label{repaySub}
 
 The Vault's \verb|repay(assets, debt, repayer)| function is an only-owner function which directly transfers \verb|assets| of the native asset from the \verb|repayer| to the Vault. The \verb|debt| is the amount of loan this function is declared to repay: the \verb|netLoans| state variable is decremented by \verb|debt| within this function.
@@ -266,31 +272,169 @@ The Vault's \verb|repay(assets, debt, repayer)| function is an only-owner functi
 The parameter \verb|assets| can be either larger or smaller than \verb|debt|. In the former case, we say that the difference \verb|assets - debt| is the {\bf fees} paid to the Vault for lending its liquidity; in the latter case, we say that the difference \verb|debt - assets| is the {\bf loss} incurred by the Vault for lending its liquidity. We call the former case a {\bf Good Repay Event (GRE)} and the latter case a {\bf Bad Repay Event (BRE)}. 
 
 Both the fees and the losses undergo a {\bf locking period} which protects the Vault from flashloaners draining all the incoming fees and disincentivize LPs to frontrun losses. In order to do this, the \verb|currentProfits| and \verb|latestRepay| variables are updated as 
-$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() + assets - debt|$$ 
+$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() + (assets - debt)|_+$$ 
+$$\verb|currentLosses| \mapsto \verb|calculateLockedLosses() + (debt - assets)|_+$$ 
 $$\verb|latestRepay| \mapsto \verb|block.timestamp|$$ 
-Notice that \verb|currentProfits| increases in a GRE and decreases in a BRE and that although this variable can become negative, a BRE may not be sufficient to make it negative if the current locked profits are large enough. Conversely, a high enough GRE can make positive a formerly negative \verb|currentProfits|.
+where the "$+$" subscript stands for the positive part of the subtraction.
 
-As per ERC4626 standards, a positive \verb|currentProfits| will tend to increase the Vault's token price per share, while a negative one will tend to decrease it.
+Notice that \verb|currentProfits| increases in a GRE, and the \verb|currentLosses| increases in a BRE. Since the Vault's total assets are the sum of profits and losses, good repays and bad repays can compensate each other.
 
-This function is called every time an Agreement for a Debit Service is exited.
+As per ERC4626 standards, a high \verb|currentProfits| will tend to increase the Vault's token price per share, while a high \verb|currentLosses| will tend to decrease it.
+
+The typical use case is to repay a loan when exiting an Agreement of a Debit Service contract.
+
+By checking the formulas for \verb|totalAssets()| and locking, we see that the \verb|repay| function does not modify the total assets immediately after being called: the total assets are an {\it invariant} of the repay function.
 
 \subsection{Direct mint}\label{directMint}
-Via \verb|directMint(shares,receiver)| the Router can directly mint \verb|shares| of the Vault's ERC4626 tokens to the \verb|receiver|. In practice, the receiver will be one of the whitelisted Credit Services, as the Router is in control  of the list of receivers.
+The Vault's \verb|directMint(shares,receiver)| function is an only-owner function which directly mints \verb|shares| of the Vault's ERC4626 tokens to the \verb|receiver|. In practice, the receiver will be one of the whitelisted Credit Services, as the Manager is in control of the list of receivers.
 
 This function has the effect of decreasing the Vault's price per share, while distributing part of the Vault's assets to the receiver by reflection. In that sense, it is considered a {\it loss} for the Vault and as such it needs to undergo the usual locking period. In order to calculate the loss, we use the native ERC4626 \verb|convertToAssets| function and update 
-$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() - convertToAssets(shares)|$$ 
+$$\verb|currentProfits| \mapsto \verb|calculateLockedProfits()|$$ 
+$$\verb|currentLosses| \mapsto \verb|calculateLockedLosses() + convertToAssets(shares)|$$ 
 $$\verb|latestRepay| \mapsto \verb|block.timestamp|$$
 
 The typical use case of this function is the distribution of part of the accrued fees to a Credit Service.
 
+By checking the formulas for \verb|totalAssets()| and ignoring unlocking, we see that the \verb|directMint| function decreases the total assets immediately after being called. However, as long as currentProfits are positive, it is always possible to choose a value for \verb|shares| such that unlocking of profits compensate the distribution of fees to the receiver, so that the other lenders do not experience any decrease in their share value.
+
 \subsection{Direct burn}\label{directBurn}
-Via \verb|directBurn(shares,owner)| the Router can directly burn \verb|shares| of the Vault's ERC4626 tokens to the \verb|owner|. In practice, the owner will be one of the whitelisted Credit Services, as the Router is in control of the list of owners.
+The Vault's \verb|directBurn(shares,owner)|  function is an only-owner function which burns \verb|shares| of the Vault's ERC4626 tokens to the \verb|owner|. In practice, the owner will be one of the whitelisted Credit Services, as the Manager is in control of the list of owners. In order for the burning to be successful, the owner must have approved the Vault to burn at least the amount of shares to be burned.
 
 This function has the effect of increasing the Vault's price per share, while distributing part of the owner's assets to the Vault by reflection. In that sense, it is considered a {\it profit} for the Vault and as such it needs to undergo the usual locking period. In order to calculate the profit, we use the native ERC4626 \verb|convertToAssets| function and update 
 $$\verb|currentProfits| \mapsto \verb|calculateLockedProfits() + convertToAssets(shares)|$$ 
+$$\verb|currentLosses| \mapsto \verb|calculateLockedLosses()|$$ 
 $$\verb|latestRepay| \mapsto \verb|block.timestamp|$$
 
 The typical use case of this function is the return of part of the accrued fees from a Credit Service to the Vault.
+By checking the formulas for \verb|totalAssets()| and ignoring unlocking, we see that the \verb|directBurn| function increases the total assets immediately after being called. The same unlocking reasoning as in \verb|directMint| apply to this function.
 
+\section{Manager}\label{managerSec}
+The {\bf Manager} is the contract in charge of managing cashflows and risk across the Vaults and the Services. The Manager is the also the deployer and owner of all the Vaults (in particular, it can call the borrow, repay, directMint and directBurn functions of the Vaults). By setting a nonzero {\bf cap}, the Manager can whitelist a given Service, while setting the {\bf risk spreads} the Manager defines the risk of each Service. In this way, Ithil can provide a complete risk management system easily scalable and with a full control of the various allocations.
 
+The core of the Manager thus consists of two state variables:
+$$\verb|mapping(address => address) vaults|$$
+$$\verb|mapping(address => mapping(address => RiskParams)) riskParams|$$
+where \verb|RiskParams| is a data structure containing the spreads and caps of each Service:
+$$\verb|struct RiskParams = {uint256 cap, uint256 riskSpread}|$$
+
+The \verb|vaults| mapping simply contains the Vault address for each underlying asset, while the \verb|riskParams| register the risk parameters of each Service address (first argument) for a given token (second argument).
+
+\subsection{Manager's functions}
+The Manager's function fall into two categories: onlyOwner functions and whitelisted functions.
+
+The {\bf onlyOwner} functions can only be used by Ithil's governance and are the following:
+\begin{itemize}
+\item \verb|create(address token)|: deploys a new Vault with \verb|token| as underlying asset
+\item \verb|setSpread(address service, address token, address spread)|: sets a spread in \verb|riskParams| for a given service and token
+\item \verb|setCap(address service, address token, address spread)|: sets a cap in \verb|riskParams| for a given service and token
+\end{itemize}
+
+The {\bf whitelisted} functions can only be called by addresses whose \verb|cap| in \verb|riskParams| is positive.
+\begin{itemize}
+\item \verb|borrow(token, amount, exposure, receiver)|: calls the Vault's \verb|borrow| function and checks whether the new exposure (see \ref{servicesSec}) stays below the Service's cap for the particular \verb|token|. In the parameters, \verb|exposure| is the current exposure of the Service and it is stored in the Service itself and passed to the Manager. Since Services are whitelisted by the Governance (by setting a nonzero cap), we can assume the datum passed to the Manager as exposure is reliable.
+\item \verb|repay(token, amount, debt, repaier)| calls the Vault's \verb|repay| function (no exposure checks are performed on this function).
+\item \verb|directMint(token,to,shares,exposure)| calls the Vault's \verb|directMint| funciton and checks whether the new exposure (see \ref{servicesSec}) stays below the Service's cap for the particular \verb|token|.
+\item \verb|directBurn(token,from,shares,exposure)| calls the Vault's \verb|directBurn| funciton and checks whether the new exposure (see \ref{servicesSec}) stays below the Service's cap for the particular \verb|token|.
+\end{itemize}
+
+\section{Services}\label{servicesSec}
+
+The Manager allows any address with positive cap to borrow and repay the Vaults. Therefore, in theory, any address could be whitelisted. In practice, the Governance whitelists other Smart Contracts called {\bf Services}.
+
+In principle, anybody can suggest a Service and submit it for approval by the Governance. Currently, Ithil developers have designed a suite of Smart Contracts, aiming to make the development of new Services as easy as possible, yet producing well-thought and secure ways to use the Vaults' liquidity. In this section, we describe this suite, while in the next section we discuss a few examples about how to apply this architecture in practice.
+
+It is important to stress out that Ithil's core, consisting of the Manager and the Vaults, is agnostic of the functioning of the whitelisted contracts, therefore (as long as the Governance agrees), even a Service which does not respect the structure described below might be whitelisted in the future.
+
+\subsection{Base Service}\label{baseServiceSub}
+The {\bf Base Service} contract (also simply called \verb|Service|) is an abstract contract containing the basic functionality every Service must have in order to be whitelisted. The contract inheritance is as follows:
+$$ \verb|abstract contract Service is Ownable, ERC721 {...|$$
+In particular, it is minted as an NFT to the caller or the \verb|open| function. We call {\it user} the caller of this function, and we say that the user {\it enters an Agreement}.
+
+\subsubsection{Storage and data structures}\label{dataStructureSubSub}
+The main storage of the Service consists of two state variables:
+$$\verb|mapping(address => uint256) exposures|$$
+$$\verb|Agreement[] agreements|$$
+
+The \verb|exposures| variable registers the sum of all loan amounts for a given token. This variable is passed to the Manager (see \ref{managerSec}) to enforce caps.
+
+The \verb|agreements| is an array of data structures:
+$$ \verb|struct Agreement = {Loan[] loans, Collateral[] collaterals,| $$ $$ \verb|uint256 createdAt, Status status}|$$
+which in turn contains the data structures
+$$ \verb|struct Loan = {address token, uint256 amount,| $$ $$  \verb|uint256 margin, uint256 interestAndSpread}|$$
+and
+$$ \verb|struct Collateral = {ItemType item, address token,| $$ $$  \verb|uint256 identifier, uint256 amount}|.$$
+The \verb|Loan| structure contains the data of the assets flow {\it to or from the Vault} \footnote{In case of flow towards the Vault, the lender of the loan is the user.} for a given token, registering the eventual margin posted by the user, the interest rate and risk spread applied (these two are packed in a single integer to save gas).
+
+The \verb|Collateral| structure contains the data of the assets {\it locked as collateral} to the Loan given or taken. This specifies the \verb|ItemType|, which currently can be ERC20, ERC721 or ERC1155, the token address, the identifier (only applicable for the ERC721 item type) and the amount.
+
+\subsubsection{Functions}
+The public functions of the Service contract are all \verb|virtual| and overridden by the inheriting Contracts, and they are the following:
+\begin{itemize}
+\item \verb|open(Order order)|: mints an NFT to the user, performs an internal abstract \verb|_open| function, implemented on a derived contract (see later subsections), and stores the resulting Agreement in the \verb|agreements| with a particular index. The \verb|Order| is a data structure containing the desired Agreement together with additional \verb|data| to adjust to the particular implementation of the Service.
+\item \verb|close(uint256 index, bytes data)|: burns the relative NFT from the user, performs an internal abstract \verb|_close| function, and deletes the corresponding Agreement from the \verb|agreements|. The \verb|data| paarameter allows to adjust to the particular implementation of the Service.
+\item \verb|edit(uint256 index, Agreement agreement, bytes data)|: allows the owner of the NFT to change the existing Agreement in the \verb|agreements| into the new one \verb|agreement|. The \verb|data| parameter allows to adjust to the particular implementation of the Service. Currently it is fully virtual, not implemented in the Base Service.
+\end{itemize}
+
+\subsection{Debit Service}\label{debitServiceSub}
+The {\bf Debit Service} is the prototype of a Smart Contract calling (through the Manager) the \verb|borrow| and \verb|repay| functions of the Vaults. Since it still does not have a precise implementation, the contract definition is as follows:
+$$\verb|abstract contract DebitService is Service {...| $$
+It does not have any native storage (beyond the one inherited by the Service contract). The functions are both contract specific and overridden ones.
+
+The {\bf overridden function} are as follows:
+\begin{itemize}
+\item \verb|open(Order order)|: updates the \verb|exposures| by adding the Loan's \verb|amount|, transfers the Loan's \verb|margin| from the caller (in particular, the caller must approve the contract beforehand), and borrows the Loan's \verb|amount| by calling the Manager's \verb|borrow| function. Finally, it calls the overlying \verb|open| function.
+\item \verb|close(uint256 index, bytes data)|: calls the overlying \verb|close| function, updates the exposures by subtracting the loan amounts, and repays the Vault by calling the Manager's \verb|repay| function. A modifier enforces that the caller must be the owner of the NFT with that index, unless the Agreement is liquidable (see below).
+\end{itemize}
+
+The {\bf specific functions} take into account the {\it default risk} of the borrowing procedure, which is mitigated through liquidation:
+\begin{itemize}
+\item \verb|quote(Agreement agreement)|, a virtual function without implementation, is aimed to compute the amount of tokens obtained in a \verb|close| call done in that specific moment.
+\item \verb|liquidationScore(uint256 id)| a virtual function computing a number which determines the "health" of the position by considering the Loan of \verb|agreements[id]| and calling the \verb|quote| function. By default, the Agreement is {\it liquidable} if its liquidation score is positive: in this case, anybody can close the Agreement by calling the \verb|close| function. The precise calculation uses the {\bf liquidation threshold}:
+$$LT = L + M\cdot \frac{S}{I+S}$$ where $L$ is the loan amount, $M$ is the margin, $S$ is the risk spread and $I$ is the interest rate applied to that particular agreement. The liquidation score is then $$LS = \left(1 - \frac{Q}{LT}\right)_+$$ where $Q$ is the quoted amount. \footnote{In order to avoid rounding and normalization errors, this quantity is a dimensionless 18 digit fixed point integer.} This formula is valid for a single token loan: the liquidation score of a multi-token loan is the sum of the single liquidation scores for each token.
+\end{itemize}
+
+\subsection{Securitisable Service}\label{securitisableServiceSub}
+In traditional finance, {\bf securitisation} is the process of selling a particular asset or basket of assets under management to a willing investor who takes their risk and rewards.
+
+In our implementation, a {\bf Securitisable Service} is a Debit Service whose credit, which initially belongs to the Vault, can be freely {\it purchased} by directly repaying the Vault at a discount. This has actually the effect of changing the {\it lender}: that's why the contract has a storage state variable
+$$mapping(uint256 => address) lenders$$
+who associates, for each index, the address of the lender who purchased the credit.
+
+The Contract definition is defined as
+$$\verb|abstract contract SecuritisableService is DebitService {...| $$
+
+and it consists of:
+\begin{itemize}
+\item  The specific function \verb|purchaseCredit(uint256 id)|, which computes the {\bf fair price} of the credit coming from the Agreement with \verb|id| index and repays the Vault via a call to the Manager's \verb|repay| function and stores the purchaser into the \verb|lenders| storage variable. It also decreases the \verb|exposures| accordingly. The fair price is calculated as $$FP =  L + F\cdot\frac{S}{I+S}$$ where $L$ is the loan amount, $F$ are the fees accrued so far, $S$ is the risk spread and $I$ is the interest rate applied to that particular agreement.
+\item The overridden function \verb|close| checks whether a given lender has been initialized: in this case, the repay is done to the lender via a direct transfer, rather than through a \verb|repay| call.
+\end{itemize}
+
+\subsection{Credit Service}\label{creditServiceSub}
+The {\bf Credit Service} is the prototype of a Smart Contract calling (through the Manager) the \verb|directMint| and \verb|directBurn| functions of the Vault. In order to be able to have this privilege, the user must deposit some liquidity to the Vault, therefore these services can be considered as a loan given {\it by the user to the Vault} (that is, the user acquires a credit, rather than a debit, towards the Vault).
+
+The definition of this contract is 
+$$\verb|abstract contract CreditService is Service {...| $$
+and it only consists of two overridden functions:
+\begin{itemize}
+\item \verb|open| calls the overlying open function, calls the \verb|deposit| ERC4626 function of the Vault and updates the \verb|exposures| with the obtained shares.
+\item \verb|close| calls the overlying close function and updates the \verb|exposures|.
+\end{itemize}
+Since the exit from credit Agreements can be of various types (see the {\it multiple exit scenarios} in \ref{csFirstSec}), we do not assume a \verb|withdraw| is called at exit, and leave the specific implementaiton to the inheriting contracts.
+
+\subsection{Whitelisted Service}\label{whitelistedServiceSub}
+In {\bf Whitelisted Services}, the Governance maintains a mapping
+$$\verb|mapping(address=>bool) whitelisted|$$
+which checks whether a given user is whitelisted or not. Only whitelisted users can access to such services if the \verb|enabled| flag is set to true, and this is enforced by implementing the \verb|_beforeOpening| hook.
+The definition of this contract is 
+$$\verb|abstract contract WhitelistedService is Service {...| $$
+in particular, implementations of any of the types of services described above (Debit, Credit, Securitised) may or may not inherit from Whitelisted.
+
+\section{Fees}\label{feesSec}
+\subsection{Payoffs}\label{payoffsSubSec}
+\subsection{Interest rate}\label{interestRateSubSec}
+\subsection{Risk spread}\label{riskSpreadSubSec}
+
+\section{Harvesting}\label{harvestingSec}
+\subsection{Credit Services}\label{harvestCreditSubSec}
+\subsection{Debit Services}\label{harvestDebitSubSec}
 \end{document}
